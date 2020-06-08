@@ -1,0 +1,22 @@
+{
+  "name": "newwebdevproject",
+  "version": "1.0.0",
+  "description": "New project to create a personal website using express.js and react w/ mongodb.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZackFiner/NewWebDevProject.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZackFiner/NewWebDevProject/issues"
+  },
+  "homepage": "https://github.com/ZackFiner/NewWebDevProject#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

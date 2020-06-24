@@ -15,7 +15,7 @@ createItem = (req, res) => {
 
     const store_item = new StoreItem(body);
 
-    if (store_item) {
+    if (!store_item) {
         return res.status(400).json({success: false, error: 'Issue parsing item'});
     }
 

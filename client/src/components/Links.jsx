@@ -34,6 +34,11 @@ class Links extends Component {
                                 Post Item
                             </Link>
                         </Item>
+                        <Item>
+                            <Link to="/items/update/:id" className="nav-link">
+                                Update Item
+                            </Link>
+                        </Item>
                     </List>
                 </Collapse>
             </React.Fragment>

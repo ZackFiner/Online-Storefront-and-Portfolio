@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { NavBar } from '../components';
-import {ItemInsert, ItemUpdate, ItemList} from '../pages'
+
+import {ItemInsert, ItemUpdate, ItemList, StoreFront} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -14,6 +15,7 @@ function App() {
         <Route path="/items/list" exact component={ItemList} />
         <Route path="/items/create" exact component={ItemInsert} />
         <Route path="/items/update/:id" exact component={ItemUpdate} />
+        <Route path="/" exact component={StoreFront} />
       </Switch>
     </Router>
   );//note the :id tells react to await for a param called id when making the requenst.

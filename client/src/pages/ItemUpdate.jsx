@@ -44,6 +44,7 @@ class ItemUpdate extends Component {
             name: '',
             reviews: [],
             description: '',
+            thumbnail_img: '',
         };
     }
 
@@ -57,6 +58,11 @@ class ItemUpdate extends Component {
         this.setState({ description: description });
     }
 
+    handleChangeThumbnail = async event => {
+        const thumbnail_img = event.target.value;
+        this.setState({ thumbnail_img: thumbnail_img });
+    }
+
     handleUpdateItem = async () => {
         const { id, name, reviews, description } = this.state;
         const payload = { name, reviews, description };
@@ -67,6 +73,7 @@ class ItemUpdate extends Component {
                 name: '',
                 reviews: '',
                 description: '',
+                thumbnail_img: '',
             })
         })
     }
@@ -79,13 +86,14 @@ class ItemUpdate extends Component {
             name: item.data.data.name,
             reviews: item.data.data.reviews,
             description: item.data.data.description,
+            thumbnail_img: item.data.data.thumbnail_img,
         });
         
     }
 
     render() {
 
-        const {name, description} = this.state;
+        const {name, description, thumbnail_img} = this.state;
 
         return(
             <Wrapper>
@@ -102,7 +110,12 @@ class ItemUpdate extends Component {
                     value={description}
                     onChange={this.handleChangeInputDescription}
                 />
-
+                <Label>Thumbnail: </Label>
+                <InputText
+                    type="text"
+                    value={thumbnail_img}
+                    onChange={this.handleChangeThumbnail}
+                />
                 <Button onChange={this.handleUpdateItem}>Update</Button>
                 <Link to="/items/list">
                 <CancelButton>Cancel</CancelButton>

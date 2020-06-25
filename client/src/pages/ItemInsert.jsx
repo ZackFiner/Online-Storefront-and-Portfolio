@@ -44,6 +44,7 @@ class ItemInsert extends Component {
             name: '',
             reviews: [],
             description: '',
+            thumbnail_img: '',
         }
     }
 
@@ -57,6 +58,11 @@ class ItemInsert extends Component {
         this.setState({ description: description });
     }
 
+    handleChangeThumbnail = async event => {
+        const thumbnail_img = event.target.value;
+        this.setState({ thumbnail_img: thumbnail_img });
+    }
+
     handelIncludeItem = async () => {
         const { name, reviews, description } = this.state;
         const payload =  { name, reviews, description };
@@ -67,12 +73,13 @@ class ItemInsert extends Component {
                 name: '',
                 reviews: [],
                 description: '',
+                thumbnail_img: '',
             });
         })
     }
 
     render() {
-        const { name, reviews, description } = this.state;
+        const { name, reviews, description, thumbnail_img } = this.state;
         return (
             <Wrapper>
                 <Title>Create Item</Title>
@@ -87,6 +94,12 @@ class ItemInsert extends Component {
                     type="text"
                     value={description}
                     onChange={this.handleChangeInputDescription}
+                />
+                <Label>Thumbnail: </Label>
+                <InputText
+                    type="text"
+                    value={thumbnail_img}
+                    onChange={this.handleChangeThumbnail}
                 />
                 <Button onClick={this.handelIncludeItem} >Insert Item</Button>
                 <Link to="/items/list">

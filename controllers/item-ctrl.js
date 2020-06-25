@@ -3,6 +3,7 @@ const StoreItem = require('../models/item-model');
 createItem = (req, res) => {
     /*
     TODO: add input sanitization here
+    TODO: add support for thumbnail image settings
     */
     const body = req.body
 

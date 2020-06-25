@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router-dom';
 import api from '../api';
 
 import styled from 'styled-components';
@@ -103,7 +104,9 @@ class ItemUpdate extends Component {
                 />
 
                 <Button onChange={this.handleUpdateItem}>Update</Button>
-                <CancelButton href='/'>Cancel</CancelButton>
+                <Link to="/items/list">
+                <CancelButton>Cancel</CancelButton>
+                </Link>
             </Wrapper>
         );
     }

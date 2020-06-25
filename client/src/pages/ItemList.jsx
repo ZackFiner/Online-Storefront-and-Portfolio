@@ -23,12 +23,11 @@ const Delete = styled.div`
 class UpdateItem extends Component {
     updateItem = event => {
         event.preventDefault();
-
         window.location.href = `/items/update/${this.props.id}`;
     }
 
     render() {
-        return <Update onClick={this.updateUser}>Update</Update>
+        return <Update onClick={this.updateItem}>Update</Update>
     }
 }
 
@@ -47,7 +46,7 @@ class DeleteItem extends Component {
     }
 
     render() {
-        return <Delete onClick={this.deleteUser}>Delete</Delete>
+        return <Delete onClick={this.deleteItem}>Delete</Delete>
     }
 }
 

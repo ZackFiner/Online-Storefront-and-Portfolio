@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import api from '../api';
+import {Link} from 'react-router-dom';
 
 import styled from 'styled-components';
 
@@ -88,9 +89,11 @@ class ItemInsert extends Component {
                     onChange={this.handleChangeInputDescription}
                 />
                 <Button onClick={this.handelIncludeItem} >Insert Item</Button>
-                <CancelButton href='/'>Cancel</CancelButton>
+                <Link to="/items/list">
+                <CancelButton>Cancel</CancelButton>
+                </Link>
             </Wrapper>
         )
     }
-}//The Cancel button doesn't work, fix this please.
+}
 export default ItemInsert;

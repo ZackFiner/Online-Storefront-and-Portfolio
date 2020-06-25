@@ -75,7 +75,6 @@ class ItemList extends Component {
 
     render() {
         const {items, isLoading} = this.state;
-        console.log('Test: ItemList -> render -> items', items);
         const columns = [
             {
                 Header: 'ID',

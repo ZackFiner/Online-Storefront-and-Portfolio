@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 
 import ItemThumbnail from './ItemThumbnail'
 
@@ -46,12 +47,15 @@ class ItemFrame extends Component {
     render() {
         const {id, name, description, thumbnail_img} = this.state;
         return(
+            
             <Wrapper>
+                <Link to={`/items/view/${id}`}>
                 <FrameBody>
                 <ItemThumbnail item_id={id} item_img={thumbnail_img} />
                 <CardTitle>{name}</CardTitle>
                 <CardDetails>Id: {id}</CardDetails>
                 </FrameBody>
+                </Link>
             </Wrapper>
         );
 

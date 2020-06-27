@@ -10,6 +10,11 @@ export const updateItemById = (id, payload) => api.put(`/item/${id}`, payload);
 export const deleteItemById = id => api.delete(`/item/${id}`);
 export const getItemById = id => api.get(`/item/${id}`);
 
+export const getReviewById = id => api.get(`/review/${id}`);
+export const insertReview = () => api.post(`/review`);
+export const deleteReviewById = id => api.delete(`/review/${id}`);
+
+
 const apis = {
     insertItem,
     getAllItems,
@@ -17,6 +22,10 @@ const apis = {
     updateItemById,
     deleteItemById,
     getItemById,
+
+    getReviewById,
+    insertReview,
+    deleteReviewById,
 }
 
 export default apis;

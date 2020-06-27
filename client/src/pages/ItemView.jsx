@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import {ReviewView} from '../components'
+
 import api from '../api';
 
 const Wrapper = styled.div`
@@ -18,7 +20,7 @@ class ItemView extends Component {
         super(props);
 
         this.state = {
-            id: this.props.match.params.id,
+            id: props.match.params.id,
             name: '',
             description: '',
             reviews: [],
@@ -31,13 +33,13 @@ class ItemView extends Component {
     componentDidMount = async () => {
         this.setState({isLoading: true});
 
-        api.getItemById(this.state.id).then( itemData => {
+        api.getItemById(this.state.id).then( item => {
+           
             this.setState({
-                name: itemData.name,
-                description: itemData.description,
-                reviews: itemData.thumbnail_img,
-                thumbnail_img: itemData.thumbnail_img,
-
+                name: item.data.data.name,
+                description: item.data.data.description,
+                reviews: item.data.data.thumbnail_img,
+                thumbnail_img: item.data.data.thumbnail_img,
                 isLoading: false,
             })
         })
@@ -45,12 +47,16 @@ class ItemView extends Component {
 
     render() {
         const {name, description, reviews, thumbnail_img} = this.state;
+        const reviewsSection = reviews ? reviews.map( reviewId => {
+            return <ReviewView id={reviewId}/>
+        }) : [];
         return (
             <Wrapper>
                 <Title>{name}</Title>
                 <DescriptionArea>
                     <DescriptionText>{description}</DescriptionText>
                 </DescriptionArea>
+                {reviewsSection}
             </Wrapper>
         )
     }

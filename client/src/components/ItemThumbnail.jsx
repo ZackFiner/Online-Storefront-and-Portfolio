@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+import placeholder_thumb from '../assets/placeholder.png'
+
 const ThumbnailContainer = styled.img`
 `
 
@@ -15,7 +17,7 @@ class ItemThumbnail extends Component {
 
     render() {
         const {item_img} = this.state;
-        return <ThumbnailContainer src={item_img} alt="Missing Thumbnail" width="300" Height="180" />
+        return <ThumbnailContainer src={item_img ? item_img : placeholder_thumb} alt="Missing Thumbnail" width="300" Height="180" />
     }
 }
 export default ItemThumbnail;

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { NavBar } from '../components';
 
-import {ItemInsert, ItemUpdate, ItemList, StoreFront} from '../pages'
+import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -15,6 +15,7 @@ function App() {
         <Route path="/items/list" exact component={ItemList} />
         <Route path="/items/create" exact component={ItemInsert} />
         <Route path="/items/update/:id" exact component={ItemUpdate} />
+        <Route path="items/view/:id" exact component={ItemView} />
         <Route path="/" exact component={StoreFront} />
       </Switch>
     </Router>

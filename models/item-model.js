@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const StoreItem = new Schema(
     {
         name: {type: String, required: true},
-        reviews: {type: [String], required: true},
+        reviews: {type: [mongoose.Types.ObjectId], required: true},
         description: {type: String, required: true},
         thumbnail_img: {type: String, required: false},
     },

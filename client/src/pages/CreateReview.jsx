@@ -118,7 +118,7 @@ class CreateReview extends Component {
                 <Label>Review Text:</Label>
                 <InputText onChange={this.handleChangeInputText} />
                 <Link to={`/items/${itemId}`}>
-                    <Button onClick={this.handle.handleSubmitReview}/>
+                    <Button onClick={this.handleSubmitReview}/>
                     <CancelButton />
                 </Link> 
             </Wrapper>

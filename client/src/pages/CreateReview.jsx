@@ -110,9 +110,10 @@ class CreateReview extends Component {
     }
 
     render() {
-        const { itemId } = this.state;
+        const { itemId, author } = this.state;
         return (
             <Wrapper>
+                <Label>Author: {author}</Label>
                 <Label>Rating Value:</Label>
                 <RatingSelect onChange={this.handleChangeInputRating} />
                 <Label>Review Text:</Label>

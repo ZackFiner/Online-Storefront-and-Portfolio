@@ -14,6 +14,7 @@ class ReviewView extends Component {
             id: props.match.params.id,
             author: '',
             reviewText: '',
+            rating: -1,
         }
     }
 
@@ -22,6 +23,7 @@ class ReviewView extends Component {
             this.setState({
                 author: review.data.data.author,
                 reviewText: review.data.data.reviewText,
+                rating: review.data.data.rating,
             })
         }).catch(err => {
             console.log(err);
@@ -29,10 +31,11 @@ class ReviewView extends Component {
     }
 
     render() {
-        const {author, reviewText} = this.state;
+        const {author, reviewText, rating} = this.state;
         return (
             <Wrapper>
                 <p>Written By: {author}</p>
+                <p>Rating: {rating}</p>
                 <p>{reviewText}</p>
             </Wrapper>
         )

@@ -24,7 +24,7 @@ createReview = (req, res) => {
         .save()
         .then( (savedReview) => {
             // update the corresponding item to have the review on it
-            StoreItem.findOneAndUpdate({_id: savedReview.itemId},
+            await StoreItem.findOneAndUpdate({_id: savedReview.itemId},
                 {$push: {reviews: savedReview._id}},
                 done)
 
@@ -51,7 +51,7 @@ deleteReview = async (req, res) => {
             return res.status(400).json({ success: false, error: 'No such review exists'});
         }
         // find the corresponding item entry and remove this review from its list
-        StoreItem.findOneAndUpdate({_id: req.params.id}, 
+        await StoreItem.findOneAndUpdate({_id: req.params.id}, 
             {$pop: {reviews: item._id}},
             done)
         return res.status(200).json({success: true, data: item});

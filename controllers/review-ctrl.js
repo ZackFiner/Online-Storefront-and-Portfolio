@@ -1,7 +1,7 @@
 const UserReviewModel = require('../models/review-model');
 const StoreItem = require('../models/item-model');
 
-createReview = (req, res) => {
+createReview = async (req, res) => {
     const body = req.body;
 
     if (!body) {
@@ -24,14 +24,14 @@ createReview = (req, res) => {
         .save()
         .then( (savedReview) => {
             // update the corresponding item to have the review on it
-            await StoreItem.findOneAndUpdate({_id: savedReview.itemId},
+            StoreItem.findOneAndUpdate({_id: savedReview.itemId},
                 {$push: {reviews: savedReview._id}},
                 done)
-
-            return res.status(201).json({
-                success: true,
-                message: 'Review Created'
-            })
+            .then(() => {
+                return res.status(201).json({
+                    success: true,
+                    message: 'Review Created'
+                })})
         })
         .error( error => {
             return res.status(500).json({
@@ -51,10 +51,12 @@ deleteReview = async (req, res) => {
             return res.status(400).json({ success: false, error: 'No such review exists'});
         }
         // find the corresponding item entry and remove this review from its list
-        await StoreItem.findOneAndUpdate({_id: req.params.id}, 
+        StoreItem.findOneAndUpdate({_id: req.params.id}, 
             {$pop: {reviews: item._id}},
             done)
-        return res.status(200).json({success: true, data: item});
+        .then( () => {
+            return res.status(200).json({success: true, data: item});
+        })
     }).catch(error => {
         console.log(error);
     })

@@ -90,7 +90,7 @@ class CreateReview extends Component {
         this.setState({rating: value});
     }
 
-    handleChangeInputText = async () => {
+    handleChangeInputText = async event => {
         const value = event.target.value;
         this.setState({reviewText: value});
     }

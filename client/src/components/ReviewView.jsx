@@ -11,7 +11,7 @@ class ReviewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: props.match.params.id,
+            id: props.id,
             author: '',
             reviewText: '',
             rating: -1,

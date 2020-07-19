@@ -22,18 +22,18 @@ createReview = async (req, res) => {
 
     review
         .save()
-        .then( (savedReview) => {
+        .then( (value) => {
             // update the corresponding item to have the review on it
-            StoreItem.findOneAndUpdate({_id: savedReview.itemId},
-                {$push: {reviews: savedReview._id}},
-                done)
-            .then(() => {
-                return res.status(201).json({
-                    success: true,
-                    message: 'Review Created'
-                })})
+            StoreItem.findOneAndUpdate({_id: value.itemId},
+                {$push: {reviews: value._id}}).then( () => {
+    
+            return res.status(201).json({
+                success: true,
+                message: 'Review Created'
+            })})
         })
-        .error( error => {
+        .catch( error => {
+            console.log(error);
             return res.status(500).json({
                 error,
                 message: 'Review could not be created'
@@ -52,11 +52,10 @@ deleteReview = async (req, res) => {
         }
         // find the corresponding item entry and remove this review from its list
         StoreItem.findOneAndUpdate({_id: req.params.id}, 
-            {$pop: {reviews: item._id}},
-            done)
-        .then( () => {
-            return res.status(200).json({success: true, data: item});
-        })
+            {$pop: {reviews: item._id}}).then(() => {
+
+        return res.status(200).json({success: true, data: item});
+    })
     }).catch(error => {
         console.log(error);
     })

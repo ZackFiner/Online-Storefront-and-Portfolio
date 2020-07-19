@@ -8,14 +8,17 @@ const InputGrid = styled.div.attrs({
     className: `rating-input-wrapper`
 })`
     display: inline-grid;
-    grid-template-rows: auto;
-    grid-gap: 20px;
+    grid-template-columns: ${'auto '.repeat(11)};
+    grid-gap: 10px;
+    justify-content: left;
 `
-const RatingRadioButton = styled.input.attrs( ({ val, selectFunc }) => ({
+const RatingRadioButton = styled.input.attrs( ({ key, val, selectFunc }) => ({
     className: `rating-input-btn`,
     type: `radio`,
     value: val,
+    key: key,
     onChange: selectFunc,
+    name: `rating-select-button`
 }))`
 `
 class RatingSelect extends Component {
@@ -31,9 +34,9 @@ class RatingSelect extends Component {
 
     render() {
         const { inputHandler } = this.state;
-        const inputElements = [ ...Array(11)].map( index => {
+        const inputElements = [ ...Array(11)].map( (value, index, _) => {
             return (
-                <RatingRadioButton val={index} selectFunc={inputHandler}/>
+                <RatingRadioButton key={index} val={index} selectFunc={inputHandler}/>
             )
         });
         return (
@@ -48,6 +51,7 @@ const Wrapper = styled.div.attrs({
     className: 'form-group',
 })`
     margin: 0 30px;
+    display: block;
 `
 
 const Label = styled.label`
@@ -77,7 +81,7 @@ class CreateReview extends Component {
         // furthermore, we should validate the id to make sure it's actually valid, 
         this.state={
             rating: 5,
-            author: '',
+            author: 'testauth',
             reviewText: '',
             itemId: this.props.match.params.id,
         }
@@ -98,6 +102,7 @@ class CreateReview extends Component {
     handleSubmitReview = async () => {
         const {rating, author, reviewText, itemId} = this.state;
         const payload = {rating, author, reviewText, itemId};
+        
         api.insertReview(payload).then( res => {
             window.alert('Review Successfully Submission');
             this.setState({
@@ -107,6 +112,7 @@ class CreateReview extends Component {
                 itemId: this.props.match.params.id,
             });
         });
+        //TODO: re-route us back to the item view page
     }
 
     render() {
@@ -118,10 +124,10 @@ class CreateReview extends Component {
                 <RatingSelect onChange={this.handleChangeInputRating} />
                 <Label>Review Text:</Label>
                 <InputText onChange={this.handleChangeInputText} />
-                <Link to={`/items/${itemId}`}>
-                    <Button onClick={this.handleSubmitReview}/>
-                    <CancelButton />
-                </Link> 
+                <Button onClick={this.handleSubmitReview}>
+                        Submit
+                    </Button>
+                    <CancelButton>Cancel</CancelButton>
             </Wrapper>
         )
     }

@@ -38,7 +38,7 @@ class ItemView extends Component {
             this.setState({
                 name: item.data.data.name,
                 description: item.data.data.description,
-                reviews: item.data.data.thumbnail_img,
+                reviews: item.data.data.reviews,
                 thumbnail_img: item.data.data.thumbnail_img,
                 isLoading: false,
             })

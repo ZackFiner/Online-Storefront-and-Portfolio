@@ -11,7 +11,7 @@ export const deleteItemById = id => api.delete(`/item/${id}`);
 export const getItemById = id => api.get(`/item/${id}`);
 
 export const getReviewById = id => api.get(`/review/${id}`);
-export const insertReview = () => api.post(`/review`);
+export const insertReview = payload => api.post(`/review`, payload);
 export const deleteReviewById = id => api.delete(`/review/${id}`);
 
 

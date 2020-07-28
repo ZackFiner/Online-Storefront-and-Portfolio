@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
 const db = require('./db');
@@ -12,6 +13,7 @@ const apiPort = 3000;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

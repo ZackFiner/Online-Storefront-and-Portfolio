@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { NavBar } from '../components';
 
-import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview} from '../pages'
+import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -12,6 +12,8 @@ function App() {
     <Router>
       <NavBar />
       <Switch>
+        <Route path="/login" exact component={LoginPage} />
+        <Route path="/createAccount" exact component={CreateAccountPage} />
         <Route path="/items/list" exact component={ItemList} />
         <Route path="/items/create" exact component={ItemInsert} />
         <Route path="/items/update/:id" exact component={ItemUpdate} />

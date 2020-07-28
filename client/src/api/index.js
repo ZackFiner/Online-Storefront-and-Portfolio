@@ -14,6 +14,8 @@ export const getReviewById = id => api.get(`/review/${id}`);
 export const insertReview = payload => api.post(`/review`, payload);
 export const deleteReviewById = id => api.delete(`/review/${id}`);
 
+export const createUserAccount = payload => api.post(`/users`, payload);
+export const authUser = payload => api.post(`/authenticate`, payload);
 
 const apis = {
     insertItem,
@@ -26,6 +28,9 @@ const apis = {
     getReviewById,
     insertReview,
     deleteReviewById,
+
+    createUserAccount,
+    authUser,
 }
 
 export default apis;

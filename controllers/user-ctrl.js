@@ -91,4 +91,4 @@ authUser = (req, res) => {
     })
 }
 
-module.exports = {createUser}
+module.exports = {createUser, authUser}

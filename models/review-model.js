@@ -11,4 +11,4 @@ const UserReviewModel = new Schema(
     {timestamps: true},
 )
 
-module.exports = mongoose.model('user_review', UserReviewModel);
+module.exports = mongoose.model('user_reviews', UserReviewModel);

@@ -7,7 +7,7 @@ const db = require('./db');
 const itemRouter = require('./routes/item-router');
 const reviewRouter = require('./routes/review-router');
 const userRouter = require('./routes/user-router');
-const authRouter = requre('./routes/auth-router');
+const authRouter = require('./routes/auth-router');
 
 const app = express();
 const apiPort = 3000;

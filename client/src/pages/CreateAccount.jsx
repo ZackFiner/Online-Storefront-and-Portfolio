@@ -1,4 +1,4 @@
-import react, {Component} from 'react'
+import React, {Component} from 'react'
 import styled from 'styled-components'
 import api from '../api'
 
@@ -83,7 +83,7 @@ class CreateAccountPage extends Component {
                     <Label>Password</Label><InputText onChange={this.handleChangePasswordText} />
                     <Label>Repeat Password</Label><InputText onChange={this.handleChangePasswordVerifyText} />
                 </TextInputSection>
-                <Button onChange = {this.handleSubmit}>Submit</Button>
+                <Button onClick = {this.handleSubmit}>Submit</Button>
                 <CancelButton>Cancel</CancelButton>
             </Wrapper>
         )

@@ -2,8 +2,8 @@ const express = require('express');
 
 const UserCtrl = require('../controllers/user-ctrl');
 
-const router = epxress.router();
+const router = express.Router();
 
-router.post('/authenticate', UserCtrl.authUser);
+router.post('/', UserCtrl.authUser);
 
 module.exports = router;

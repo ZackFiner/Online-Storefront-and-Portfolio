@@ -10,7 +10,6 @@ createUser = (req, res) => {
             error: 'Request body missing'
         })
     }
-
     const userAccount = new UserModel(body);
 
     if (!userAccount) {

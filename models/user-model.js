@@ -25,12 +25,13 @@ UserModel.methods.isCorrectPassword = function( password, callback ) {
 
 UserModel.pre('save', function(next) { // use a hook to hash the plain text password being sent from the front end
     if (this.isNew || this.isModeified('password')) {
-        bcrypt.hash(this.password, password_saltRounds,
+        const document = this; // we need to save parent function state (the document itself)
+        bcrypt.hash(document.password, password_saltRounds,
             function(err, hashedPassword) {
                 if (err) {
                     next(err);
                 } else {
-                    this.password = hashedPassword;
+                    document.password = hashedPassword;
                     next();
                 }
             });
@@ -39,4 +40,4 @@ UserModel.pre('save', function(next) { // use a hook to hash the plain text pass
     }
 });
 
-module.exports = mongoose.model( 'user_data', UserModel );
+module.exports = mongoose.model( 'user_datas', UserModel );

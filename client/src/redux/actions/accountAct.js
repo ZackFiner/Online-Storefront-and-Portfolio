@@ -1,6 +1,5 @@
 export const LOAD_ACCOUNT = 'LOAD_ACCOUNT';
 export const FREE_ACCOUNT = 'FREE_ACCOUNT';
-import api from '../../api'
 
 // so apparently redux requires higher level functions
 // loadAccount is a higher level function, as it accepts an account_id and returns a function
@@ -16,14 +15,14 @@ import api from '../../api'
 }*/
 
 
-export const loadAccount = userdata => ({
+export const loadAccount = userdata => { return {
     type: LOAD_ACCOUNT,
-    payload: { ... userdata }
-})
+    payload: userdata
+}}
 
-export const freeAccount = () => ({
+export const freeAccount = () => {return {
     type: FREE_ACCOUNT,
-})
+}}
 
 
 // actions are where you collect and package information for reducers, reducers are what actually manage

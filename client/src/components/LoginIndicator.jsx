@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 
+import { loadAccount } from '../redux/actions/accountAct'
+import { connect } from 'mongoose';
+
+
 const Wrapper = styled.div.attrs({
     className: 'login-indicator-wrp',
 })`
@@ -25,4 +29,8 @@ class LoginIndicator extends Component {
     }
 }
 
-export default LoginIndicator;
+
+export default connect(
+    null,
+    { loadAccount }
+)(LoginIndicator);

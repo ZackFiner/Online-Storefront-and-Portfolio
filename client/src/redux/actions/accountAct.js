@@ -1,3 +1,5 @@
+import api from '../../api'
+
 export const LOAD_ACCOUNT = 'LOAD_ACCOUNT';
 export const FREE_ACCOUNT = 'FREE_ACCOUNT';
 
@@ -19,6 +21,7 @@ export const loadAccount = userdata => { return {
     type: LOAD_ACCOUNT,
     payload: userdata
 }}
+
 
 export const freeAccount = () => {return {
     type: FREE_ACCOUNT,

@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import styled from 'styled-components';
 
-import { loadAccount } from '../redux/actions/accountAct'
-import { connect } from 'mongoose';
+import { freeAccount } from '../redux/actions/accountAct'
+import { connect } from 'react-redux';
 
 
 const Wrapper = styled.div.attrs({
@@ -14,23 +14,31 @@ const Wrapper = styled.div.attrs({
 class LoginIndicator extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-        }
+        this.state = {/**/};
     }
 
     render() {
-        return (
-            <Wrapper>
-                <Link to={'/login'} className='nav-link'>Login</Link>
-                <Link to={'/createAccount'} className='nav-link'>Create Account</Link>
-            </Wrapper>
-        )
+        const {loggedin, userdata} = this.props;
+        console.log(this.props);
+        if (!loggedin) {
+            return (
+                <Wrapper>
+                    <Link to={'/login'} className='nav-link'>Login</Link>
+                    <Link to={'/createAccount'} className='nav-link'>Create Account</Link>
+                </Wrapper>
+            )
+        } else {
+            return <Wrapper>{'test'}</Wrapper>
+        }
     }
 }
 
+const mapStateToProps = state => ({
+    userdata: state.userdata,
+    loggedin: state.loggedin,
+});
 
 export default connect(
-    null,
-    { loadAccount }
+    mapStateToProps,
+    { freeAccount }
 )(LoginIndicator);

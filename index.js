@@ -13,7 +13,7 @@ const app = express();
 const apiPort = 3000;
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cors());
+app.use(cors({origin:'http://localhost:8000', credentials:true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 

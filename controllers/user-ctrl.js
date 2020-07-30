@@ -112,7 +112,7 @@ getUserData = async (req, res) => {
         })
     }
 
-    const userdata = body.userdata;
+    const userdata = req.userdata;
     if (!userdata) {
         return res.status(400).json({
             success: false,

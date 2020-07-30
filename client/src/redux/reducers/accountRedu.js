@@ -11,12 +11,15 @@ const accounts = (state = defaultState, action) => {
     switch(action.type) {
         case LOAD_ACCOUNT:
             return {
+                ... state,
                 userdata: {... action.userdata},
                 loggedin: true,
             };
         case FREE_ACCOUNT:
             return {
-                 ... defaultState
+                ... state,
+                userdata: {},
+                loggedin: false,
             };
         default:
             return state

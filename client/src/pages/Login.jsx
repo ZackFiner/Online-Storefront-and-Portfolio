@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import styled from 'styled-components';
 import api from '../api';
 
+import {loadAccount} from '../redux/actions/accountAct'
+import {connect} from 'react-redux';
+
 const Wrapper = styled.div.attrs({
     className: 'form-group',
 })`
@@ -60,7 +63,17 @@ class LoginPage extends Component {
         api.authUser(payload)
         .then( res => {
             if (res.status === 200 ) {
-                this.props.history.push('/'); // send the user back to the homepage
+                const topdoc = this;
+                api.getUserData().then(res => {
+                    if (res.status === 200) {
+                        const store_payload = res.data;
+                        topdoc.props.loadAccount(store_payload); // pass the retrieved account data to redux for storage
+                        topdoc.props.history.push('/'); // send the user back to the homepage
+                    } else {
+                        console.log('There was an issue retrieving account data')
+                    }
+                })
+                
             } else {
                 const error = new Error(res.error);
                 throw error;
@@ -85,4 +98,4 @@ class LoginPage extends Component {
     }
 }
 
-export default LoginPage;
+export default connect( null, { loadAccount } )(LoginPage);

@@ -11,10 +11,21 @@ const Wrapper = styled.div.attrs({
 })`
 `
 
+const NavButton = styled.button.attrs({
+    className: 'logout-btn'
+})`
+`
+
 class LoginIndicator extends Component {
     constructor(props) {
         super(props);
         this.state = {/**/};
+    }
+
+    handleLogout = (event) => {
+        //TODO this may not be the place to do it, but you need to delete that auth cookie when you logout
+        this.props.freeAccount();
+        this.props.history.push('/');
     }
 
     render() {
@@ -28,7 +39,12 @@ class LoginIndicator extends Component {
                 </Wrapper>
             )
         } else {
-            return <Wrapper>{'test'}</Wrapper>
+            return (
+                <Wrapper>
+                    <Link to={'/'} className='nav-link'>{userdata.email}</Link>
+                    <NavButton onClick={this.handleLogout}>Logout</NavButton>
+                </Wrapper>
+            )
         }
     }
 }
@@ -36,8 +52,8 @@ class LoginIndicator extends Component {
 const mapStateToProps = state => {
     const payload = state.accountRedu;
     return {
-    userdata: payload.userdata,
-    loggedin: payload.loggedin,
+        userdata: payload.userdata,
+        loggedin: payload.loggedin,
     };
 }
 

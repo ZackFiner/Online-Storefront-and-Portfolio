@@ -12,7 +12,7 @@ const accounts = (state = defaultState, action) => {
         case LOAD_ACCOUNT:
             return {
                 ... state,
-                userdata: {... action.userdata},
+                userdata: {... action.payload},
                 loggedin: true,
             };
         case FREE_ACCOUNT:

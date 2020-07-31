@@ -33,10 +33,13 @@ class LoginIndicator extends Component {
     }
 }
 
-const mapStateToProps = state => ({
-    userdata: state.userdata,
-    loggedin: state.loggedin,
-});
+const mapStateToProps = state => {
+    const payload = state.accountRedu;
+    return {
+    userdata: payload.userdata,
+    loggedin: payload.loggedin,
+    };
+}
 
 export default connect(
     mapStateToProps,

@@ -24,6 +24,11 @@ const InputText = styled.input.attrs({
     margin: 5px;
 `
 
+const InputImage = styled.input.attrs({
+    className: 'form-img-control',
+})`
+`
+
 const Button = styled.button.attrs({
     className: `btn btn-primary`,
 })`
@@ -39,12 +44,13 @@ class ItemInsert extends Component {
 
     constructor(props) {
         super(props);
-
+        this.fileInput = React.createRef(); // we need a DOM node to handle file access
         this.state = {
             name: '',
             reviews: [],
             description: '',
             thumbnail_img: '',
+            selectedFile: null,
         }
     }
 
@@ -62,11 +68,19 @@ class ItemInsert extends Component {
         const thumbnail_img = event.target.value;
         this.setState({ thumbnail_img: thumbnail_img });
     }
-
+    handleFileUpload = async event => {
+        this.setState({selectedFile: event.target.files[0]});
+    }
     handelIncludeItem = async () => {
-        const { name, reviews, description } = this.state;
-        const payload =  { name, reviews, description };
-
+        const { name, reviews, description, selectedFile } = this.state;
+        const payload =  {
+            body : {
+                name, 
+                reviews, 
+                description,
+            },
+            file: selectedFile,
+        };
         await api.insertItem(payload).then(res => {
             window.alert(`Item Inserted Successfully`);
             this.setState({
@@ -74,6 +88,7 @@ class ItemInsert extends Component {
                 reviews: [],
                 description: '',
                 thumbnail_img: '',
+                selectedFile: null,
             });
         })
     }
@@ -96,10 +111,10 @@ class ItemInsert extends Component {
                     onChange={this.handleChangeInputDescription}
                 />
                 <Label>Thumbnail: </Label>
-                <InputText
-                    type="text"
-                    value={thumbnail_img}
-                    onChange={this.handleChangeThumbnail}
+                <InputImage 
+                    type="file"
+                    onChange = {this.handleFileUpload}
+                    ref={this.fileInput}
                 />
                 <Button onClick={this.handelIncludeItem} >Insert Item</Button>
                 <Link to="/items/list">

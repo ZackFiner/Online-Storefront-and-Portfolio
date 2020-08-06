@@ -3,11 +3,12 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-const db = require('./db');
+const {mongoosedb} = require('./db');
 const itemRouter = require('./routes/item-router');
 const reviewRouter = require('./routes/review-router');
 const userRouter = require('./routes/user-router');
 const authRouter = require('./routes/auth-router');
+const mediaRouter = require('./routes/media-router');
 
 const app = express();
 const apiPort = 3000;
@@ -17,7 +18,7 @@ app.use(cors({origin:'http://localhost:8000', credentials:true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.get('/', (req,res) => {
     res.send('Hello World!');
@@ -27,5 +28,6 @@ app.use('/api', itemRouter);
 app.use('/api', reviewRouter);
 app.use('/api/users', userRouter);
 app.use('/api/authenticate', authRouter);
+app.use('/api/media', mediaRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

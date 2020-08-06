@@ -1,11 +1,12 @@
 const StoreItem = require('../models/item-model');
+const ImageModel = require('../models/img-model');
 
-createItem = (req, res) => {
+createItem = async (req, res) => {
     /*
     TODO: add input sanitization here
     TODO: add support for thumbnail image settings
     */
-    const body = req.body
+    const body = JSON.parse(req.body.body); // because this is packaged as a multipart form, the body is strinfied
 
     if (!body) {
         return res.status(400).json({
@@ -15,11 +16,22 @@ createItem = (req, res) => {
     }
 
     const store_item = new StoreItem(body);
-
     if (!store_item) {
         return res.status(400).json({success: false, error: 'Issue parsing item'});
     }
 
+    if (req.file) { //if the user specified a file
+        const image_media = new ImageModel(req.file);
+        if (image_media) {
+            try {
+                const saved_image = await image_media.save();
+                store_item.thumbnail_img = saved_image._id;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+    
     store_item
         .save()
         .then(() => {

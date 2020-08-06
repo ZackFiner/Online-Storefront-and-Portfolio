@@ -1,7 +1,7 @@
 const ImageModel = require('../models/img-model');
 
 
-getImage = (req, res) => {
+getImage = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         return res.status(400).json({

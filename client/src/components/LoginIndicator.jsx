@@ -23,8 +23,8 @@ class LoginIndicator extends Component {
     }
 
     handleLogout = (event) => {
-        this.props.freeAccount();
-        this.props.history.push('/');
+        event.preventDefault();
+        this.props.freeAccount(this.props.history);
     }
 
     render() {

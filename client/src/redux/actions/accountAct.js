@@ -48,11 +48,12 @@ export const loadAccount = (payload, history) => dispatch => {
     })
 }
 
-export const freeAccount = () => dispatch => {
+export const freeAccount = (history) => dispatch => {
     api.logUserOut() // this should delete the authentication cookie
     .then( res => {
         if (res.status === 200) {
             dispatch({type: FREE_ACCOUNT,}); // remove the retrieved client info from the store
+            history.push('/');
         } else {
             const error = new Error(res.error);
             throw error;

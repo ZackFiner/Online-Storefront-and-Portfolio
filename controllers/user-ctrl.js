@@ -95,7 +95,8 @@ authUser = (req, res) => {
 }
 
 userLogOut = (req, res) => {
-    return res.cookie('token', {expirse: Date.now()}).sendStatus(200);
+    res.clearCookie('token', {path:'/', httpOnly: true});
+    return res.sendStatus(200);
 }
 
 function processUserData(userData) {

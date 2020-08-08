@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { createStore } from 'redux';
-import reducer from './reducers'
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { createStore, applyMiddleware  } from 'redux';
+import thunk from 'redux-thunk';
+import reducer from './reducers';
  // state is perserved between page refreshes via local storage, 
  // which i feel kind of defeats the point of using redux
 
@@ -28,7 +30,7 @@ const persistedState = loadFromLocalStorage();
 const store = createStore(
     reducer,
     persistedState,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    composeWithDevTools(applyMiddleware(thunk))
 )
 
 store.subscribe(() => saveToLocalStorage(store.getState()));

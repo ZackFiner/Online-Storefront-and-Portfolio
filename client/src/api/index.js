@@ -30,6 +30,7 @@ export const deleteReviewById = id => api.delete(`/review/${id}`);
 export const createUserAccount = payload => api.post(`/users`, payload);
 export const getUserData = (/*userID and Email should be attached during authentication*/) => api.get(`/users`, {withCredentials: true});
 export const authUser = payload => api.post(`/authenticate`, payload, {withCredentials: true});
+export const logUserOut = () => api.delete(`/authenticate`);
 
 export const getMediaById = id => api.get(`/media/${id}`);
 
@@ -48,6 +49,7 @@ const apis = {
     createUserAccount,
     getUserData,
     authUser,
+    logUserOut,
 
     getMediaById,
 }

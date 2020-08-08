@@ -94,6 +94,9 @@ authUser = (req, res) => {
     })
 }
 
+userLogOut = (req, res) => {
+    return res.cookie('token', {expirse: Date.now()}).sendStatus(200);
+}
 
 function processUserData(userData) {
     return {
@@ -138,4 +141,4 @@ getUserData = async (req, res) => {
     })
 }
 
-module.exports = {createUser, getUserData, authUser}
+module.exports = {createUser, getUserData, authUser, userLogOut}

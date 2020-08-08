@@ -57,31 +57,10 @@ class LoginPage extends Component {
     }
 
     handleSubmit = async (event) => {
-        const {email, password, } = this.state;
+        const { email, password, } = this.state;
         const payload = {email, password};
         event.preventDefault();
-        api.authUser(payload)
-        .then( res => {
-            if (res.status === 200 ) {
-                const topdoc = this;
-                api.getUserData().then(res => {
-                    if (res.status === 200) {
-                        const store_payload = res.data;
-                        topdoc.props.loadAccount(store_payload); // pass the retrieved account data to redux for storage
-                        topdoc.props.history.push('/'); // send the user back to the homepage
-                    } else {
-                        console.log('There was an issue retrieving account data')
-                    }
-                })
-                
-            } else {
-                const error = new Error(res.error);
-                throw error;
-            }
-        })
-        .catch( err => {
-            console.error(err);
-        })
+        this.props.loadAccount(payload, this.props.history);
     }
 
     render() {

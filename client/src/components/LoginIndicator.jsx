@@ -23,7 +23,6 @@ class LoginIndicator extends Component {
     }
 
     handleLogout = (event) => {
-        //TODO this may not be the place to do it, but you need to delete that auth cookie when you logout
         this.props.freeAccount();
         this.props.history.push('/');
     }

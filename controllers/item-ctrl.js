@@ -3,7 +3,7 @@ const ImageModel = require('../models/img-model');
 
 
 async function packageMedia(storeItem) {
-    let packagedItem = { ... storeItem }; // this is already making me uncomfortable, hopefully this syntax is valid for documents
+    let packagedItem = new StoreItem(storeItem); // this is already making me uncomfortable, hopefully this syntax is valid for documents
     try {
         if (storeItem.gallaryItems) {
             // so Mongoose queries are NOT promises, but they do have then() methods for convenience
@@ -160,7 +160,7 @@ getItemById = async (req, res) => {
         }
         packageMedia(item)
         .then((value) => {
-            return res.status(200).json({ success: true, data: packagedItem });
+            return res.status(200).json({ success: true, data: value });
         });
     }).catch(err => console.log(err));
 }

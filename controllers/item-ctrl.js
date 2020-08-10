@@ -1,6 +1,44 @@
 const StoreItem = require('../models/item-model');
 const ImageModel = require('../models/img-model');
 
+
+async function packageMedia(storeItem) {
+    let packagedItem = { ... storeItem }; // this is already making me uncomfortable, hopefully this syntax is valid for documents
+    try {
+        if (storeItem.gallaryItems) {
+            // so Mongoose queries are NOT promises, but they do have then() methods for convenience
+            // to get a query promise, you need to use the .exec() function
+            // The wiki states that awaiting the promise via exec() yields a nicer stack trace on errors
+            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallaryItems }}).exec();
+            packagedItem.gallaryItems = unpackedItems;
+        }
+        if (storeItem.thumbnail_img) {
+            const unpackedThumbnail = await ImageModel.findOne({_id: storeItem.thumbnail_img}).exec();
+            packagedItem.thumbnail_img = unpackedThumbnail;
+        }
+    } catch (error) {
+        console.error(`Failed to package media for item ${storeItem._id}: ${error.message}`);
+    }
+    return packagedItem;
+}
+
+async function grabAndPackItem(id) {
+    retrieved_item = await StoreItem.findOne({_id:id});
+    if (retrieved_item) {
+        return packageMedia(retrieved_item);
+    }
+}3
+
+async function grabAndPackItems(ids = null) {
+    if (ids) {
+        let retrievedItems = await StoreItem.find({ _id: {$in: ids} })
+        return Promise.all(retrievedItems.map( (item) => packageMedia(item)));
+    } else {
+        let retrievedItems = await StoreItem.find({});
+        return Promise.all(retrievedItems.map( (item) => packageMedia(item)));
+    }
+}
+
 createItem = async (req, res) => {
     /*
     TODO: add input sanitization here
@@ -120,6 +158,7 @@ getItemById = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `Item not found`});
         }
+
         return res.status(200).json({ success: true, data: item });
     }).catch(err => console.log(err));
 }
@@ -138,6 +177,8 @@ getItems = async (req, res) => {
         return res.status(200).json({ success: true, data: items});
     }).catch(err => console.log(err));
 }
+
+
 
 module.exports = {
     createItem,

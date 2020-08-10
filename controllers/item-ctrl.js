@@ -3,7 +3,7 @@ const ImageModel = require('../models/img-model');
 
 
 async function packageMedia(storeItem) {
-    let packagedItem = new StoreItem(storeItem); // this is already making me uncomfortable, hopefully this syntax is valid for documents
+    let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents
     try {
         if (storeItem.gallaryItems) {
             // so Mongoose queries are NOT promises, but they do have then() methods for convenience
@@ -13,6 +13,7 @@ async function packageMedia(storeItem) {
             packagedItem.gallaryItems = unpackedItems;
         }
         if (storeItem.thumbnail_img) {
+            
             const unpackedThumbnail = await ImageModel.findOne({_id: storeItem.thumbnail_img}).exec();
             packagedItem.thumbnail_img = unpackedThumbnail;
         }

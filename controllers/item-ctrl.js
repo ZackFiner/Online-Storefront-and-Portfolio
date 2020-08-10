@@ -158,8 +158,10 @@ getItemById = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `Item not found`});
         }
-
-        return res.status(200).json({ success: true, data: item });
+        packageMedia(item)
+        .then((value) => {
+            return res.status(200).json({ success: true, data: packagedItem });
+        });
     }).catch(err => console.log(err));
 }
 
@@ -174,7 +176,11 @@ getItems = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `Item not found`});
         }
-        return res.status(200).json({ success: true, data: items});
+
+        Promise.all(items.map(item => packageMedia(item)))
+        .then( packagedItems => {
+            return res.status(200).json({ success: true, data: packagedItems});
+        });
     }).catch(err => console.log(err));
 }
 

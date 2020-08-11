@@ -86,6 +86,7 @@ class MultiImageInput extends Component {
     }
     handleDragImage = async vent => {
     }
+
     componentDidMount = async () => {
 
     }
@@ -96,7 +97,9 @@ class MultiImageInput extends Component {
             const {prev_url, id} = value[1];
             const imageInfo = {prev_url, id};
             const name = `${outer_this.state.imageInputID}${id}`;
-            return (<DragableImage name={name} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/>)
+            return (
+                <DragableImage name={name} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/>
+            );
         });
 
         return (
@@ -104,7 +107,7 @@ class MultiImageInput extends Component {
                 {imageElements}
                 <AddImageButton type='file' onChange={handleAddImage} />
             </DragableImageGrid>
-        )
+        );
     }
 }
 

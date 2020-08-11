@@ -40,6 +40,54 @@ const CancelButton = styled.button.attrs({
     margin: 15px 15px 15px 15px;
 `
 
+class MultiImageInput extends Component {
+    constructor(props) {
+        super(props);
+        const itemId = Math.random().toString(36).substring(6, 15) + Math.random().toString(36).substring(6,15);
+        this.state = {
+            fileInputs: {},
+            imageInputCount: 0,
+            imageInputID: itemId,
+            saltLength: itemId.length,
+        }
+    }
+    handleAddImage = async event => {
+        const targetFile = event.target.files[0];
+        const prev_url = URL.createObjectURL(prev_url);
+        const prevInputCount = this.state.imageInputCount;
+        // there's probably a more efficent way to do this (dynamically add an entry to teh fileinputs object)
+        // TODO: figure this out
+        let prevFileInputs = { ...this.state.fileInputs};
+        prevFileInputs[`ID#${prevInputCount}`] = {targetFile: targetFile, prev_url: prev_url, id: prevInputCount};
+        
+        this.setState({
+            fileInputs: prevFileInputs,
+            imageInputCount: prevInputCount + 1,
+        });
+    }
+    handleRemoveImage = async event => {
+        const imageTag = event.target.name;
+        const id = imageTag.substring(saltLength);
+        let prevFileInputs = { ...this.state.fileInputs}
+        delete prevFileInputs[`ID#${id}`];// remove the entry in question, also deleting predifined javascript objects can crash things
+        
+        this.setState({
+            fileInputs: prevFileInputs,
+        });
+        // note that we are simply deleting an internal state value, we will need another way of removing the object from display
+    }
+    handleDragImage = async vent => {
+
+    }
+    componentDidMount = async () => {
+
+    }
+
+    render() {
+
+    }
+}
+
 class ItemInsert extends Component {
 
     constructor(props) {

@@ -79,7 +79,7 @@ class ItemInsert extends Component {
                 reviews, 
                 description,
             },
-            file: selectedFile,
+            thumbnail: {file: selectedFile,},
         };
         await api.insertItem(payload).then(res => {
             window.alert(`Item Inserted Successfully`);

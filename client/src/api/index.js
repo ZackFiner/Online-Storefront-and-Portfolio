@@ -9,7 +9,8 @@ export const insertItem = payload => {
      * we need to repackage the contents into a multipart form
      */
     const formData = new FormData();
-    formData.append('selectedThumbnail', payload.file);
+    formData.append('selectedThumbnail', payload.thumbnail.file);
+    formData.append('galleryImages', payload.galleryImages.files);
     formData.append('body', JSON.stringify(payload.body));
     const config = {
         headers: {

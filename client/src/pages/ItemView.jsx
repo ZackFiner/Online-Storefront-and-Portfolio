@@ -32,13 +32,15 @@ class ItemView extends Component {
 
     componentDidMount = async () => {
         this.setState({isLoading: true});
-        let gallery_images = [];
         
-        if (item.data.data.gallery_images) {
-            gallery_images = item.data.data.gallery_images.map( img => ({original: img.path, thumbnail: img.path}) );
-        }
-
+        
         api.getItemById(this.state.id).then( item => {
+            let gallery_images = [];
+            
+            if (item.data.data.gallery_images) {
+                gallery_images = item.data.data.gallery_images.map( img => ({original: img.path, thumbnail: img.path}) );
+            }
+    
             this.setState({
                 name: item.data.data.name,
                 description: item.data.data.description,

@@ -4,5 +4,6 @@ import NavBar from './NavBar';
 import ItemGrid from './ItemGrid';
 import ItemFrame from './ItemFrame';
 import ReviewView from './ReviewView';
+import MultiImageInput from './MultiImageInput';
 
-export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView };
+export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput };

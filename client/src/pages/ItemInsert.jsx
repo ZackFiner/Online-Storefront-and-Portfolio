@@ -40,6 +40,41 @@ const CancelButton = styled.button.attrs({
     margin: 15px 15px 15px 15px;
 `
 
+const DeleteButton = styled.button.attrs({
+    className: `close`
+})`
+`
+const ImagePreview = styled.image.attrs({
+    className: `draggable-image-preview`
+})`
+`
+const DraggableImageFrame = styled.div.attrs({
+    className: `draggable-image-frame`
+})`
+`
+
+class DragableImage extends Component {
+    constructor(props) {
+        super(props);
+        const {prev_url, id} = props.params.imageInfo;
+        this.state = {
+            prev_url:prev_url,
+            id:id,
+            name: props.params.name,
+            onDelete: props.params.onDelete,
+        };
+    }
+
+    render() {
+        const {name, prev_url, id} = this.state;
+        return (
+            <DraggableImageFrame name={`frm-${name}`}>
+                <DeleteButton name={name} onClick={this.state.onDelete} />
+                <ImagePreview src={prev_url} />
+            </DraggableImageFrame>
+        )
+    }
+}
 class MultiImageInput extends Component {
     constructor(props) {
         super(props);
@@ -58,7 +93,7 @@ class MultiImageInput extends Component {
         // there's probably a more efficent way to do this (dynamically add an entry to teh fileinputs object)
         // TODO: figure this out
         let prevFileInputs = { ...this.state.fileInputs};
-        prevFileInputs[`ID#${prevInputCount}`] = {targetFile: targetFile, prev_url: prev_url, id: prevInputCount};
+        prevFileInputs[`ID#${prevInputCount}`] = {targetFile: targetFile, prev_url: prev_url, id: prevInputCount,};
         
         this.setState({
             fileInputs: prevFileInputs,
@@ -77,7 +112,6 @@ class MultiImageInput extends Component {
         // note that we are simply deleting an internal state value, we will need another way of removing the object from display
     }
     handleDragImage = async vent => {
-
     }
     componentDidMount = async () => {
 

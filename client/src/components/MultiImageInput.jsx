@@ -85,14 +85,14 @@ class MultiImageInput extends Component {
         try {
             const targetFile = event.target.files[0];
             const prev_url = URL.createObjectURL(targetFile);
-            const prevInputCount = this.state.imageInputCount;
             // there's probably a more efficent way to do this (dynamically add an entry to the fileinputs object)
             // TODO: figure this out
             
             this.setState(prevState => ({
+                ...prevState,
                 fileInputs: [
                     ...prevState.fileInputs,
-                    {targetFile: targetFile, prev_url: prev_url, id: `${prevState.imageInputID}${prevInputCount+1}`,}
+                    {targetFile: targetFile, prev_url: prev_url, id: `${prevState.imageInputID}${prevState.imageInputCount}`,}
                 ],
                 imageInputCount: prevState.imageInputCount + 1,
             }));
@@ -119,12 +119,13 @@ class MultiImageInput extends Component {
 
     render() {
         const outer_this = this;
-        console.log(this.state);
         const imageElements = this.state.fileInputs.map((value, _) => {
-            const {prev_url, id} = value;
-            const imageInfo = {prev_url, id};
+            const imageInfo = {
+                prev_url: value.prev_url, 
+                id: value.id,
+            };
             return (
-                <DragableImageListElement><DragableImage name={id} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/></DragableImageListElement>
+                <DragableImageListElement><DragableImage key={value.id} name={value.id} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/></DragableImageListElement>
             );
         });
 

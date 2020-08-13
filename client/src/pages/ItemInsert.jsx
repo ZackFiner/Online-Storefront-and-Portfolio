@@ -45,6 +45,7 @@ class ItemInsert extends Component {
     constructor(props) {
         super(props);
         this.fileInput = React.createRef(); // we need a DOM node to handle file access
+        this.galleryImages = [];
         this.state = {
             name: '',
             reviews: [],
@@ -80,6 +81,7 @@ class ItemInsert extends Component {
                 description,
             },
             thumbnail: {file: selectedFile,},
+            galleryImages: {files: this.galleryImages},
         };
         await api.insertItem(payload).then(res => {
             window.alert(`Item Inserted Successfully`);
@@ -90,7 +92,18 @@ class ItemInsert extends Component {
                 thumbnail_img: '',
                 selectedFile: null,
             });
+            this.galleryImages = [];
         })
+    }
+    
+    handleAppendGallery = async (event, file) => {
+        this.galleryImages.push(file);
+        console.log(this.galleryImages);
+    }
+    
+    handleRemoveGallery = async (event, file) => {
+        this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
+        console.log(this.galleryImages);
     }
 
     render() {
@@ -117,7 +130,7 @@ class ItemInsert extends Component {
                     ref={this.fileInput}
                 />
                 <Label>Gallery Input:</Label>
-                <MultiImageInput />
+                <MultiImageInput handleAppendFile={this.handleAppendGallery} handleRemoveFile={this.handleRemoveGallery}/>
                 <Button onClick={this.handelIncludeItem} >Insert Item</Button>
                 <Link to="/items/list">
                 <CancelButton>Cancel</CancelButton>

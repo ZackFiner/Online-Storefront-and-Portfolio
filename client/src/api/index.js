@@ -10,7 +10,11 @@ export const insertItem = payload => {
      */
     const formData = new FormData();
     formData.append('selectedThumbnail', payload.thumbnail.file);
-    formData.append('galleryImages', payload.galleryImages.files);
+    
+    payload.galleryImages.files.forEach(file => {
+        formData.append('galleryImages', file);
+    });
+    
     formData.append('body', JSON.stringify(payload.body));
     const config = {
         headers: {

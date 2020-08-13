@@ -74,6 +74,8 @@ class MultiImageInput extends Component {
     constructor(props) {
         super(props);
         const itemId = Math.random().toString(36).substring(6, 15) + Math.random().toString(36).substring(6,15);
+        this.appendFileList = props.handleAppendFile;
+        this.removeFileList = props.handleRemoveFile;
         this.state = {
             fileInputs: [],
             imageInputCount: 0,
@@ -87,6 +89,7 @@ class MultiImageInput extends Component {
             const prev_url = URL.createObjectURL(targetFile);
             // there's probably a more efficent way to do this (dynamically add an entry to the fileinputs object)
             // TODO: figure this out
+            this.appendFileList(event, targetFile);
             
             this.setState(prevState => ({
                 ...prevState,
@@ -101,13 +104,20 @@ class MultiImageInput extends Component {
         }
     }
     handleRemoveImage = async event => {
-        const imageTag = event.target.getAttribute('name');
-        URL.revokeObjectURL(this.state.fileInputs.find(element => {return element.id === imageTag}).prev_url); // O(n) :(
-        this.setState(prevState => ({
-            fileInputs: prevState.fileInputs.filter((value, _) => {return !(value.id === imageTag)}),
-        }));
-        // I    HATE    THIS, we are copying everything in fileinputs (including the files possibly) each time we remove an element
-        
+        try {
+            const imageTag = event.target.getAttribute('name');
+            const targetObject = this.state.fileInputs.find(element => {return element.id === imageTag});
+            URL.revokeObjectURL(targetObject.prev_url);
+            
+            this.removeFileList(event, targetObject.targetFile); // notify parent of removal
+            
+            this.setState(prevState => ({
+                fileInputs: prevState.fileInputs.filter((value, _) => {return !(value.id === imageTag)}),
+            }));
+            // I    HATE    THIS, we are copying everything in fileinputs (including the files possibly) each time we remove an element
+        } catch (error) {
+            console.log(error);
+        }
         // note that we are simply deleting an internal state value, we will need another way of removing the object from display
     }
     handleDragImage = async event => {

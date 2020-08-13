@@ -9,7 +9,7 @@ const itemImageCollector = imageParser.fields([
     {name: 'galleryImages', maxCount: 16}
 ]);
 
-router.post('/item', imageParser.single('selectedThumbnail'), ItemCtrl.createItem);
+router.post('/item', itemImageCollector, ItemCtrl.createItem);
 router.put('/item/:id', ItemCtrl.updateItem);
 router.delete('/item/:id', ItemCtrl.deleteItem);
 router.get('/item/:id', ItemCtrl.getItemById);

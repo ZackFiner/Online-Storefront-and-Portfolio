@@ -5,12 +5,12 @@ const ImageModel = require('../models/img-model');
 async function packageMedia(storeItem) {
     let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents
     try {
-        if (storeItem.gallaryItems) {
+        if (storeItem.gallary_images) {
             // so Mongoose queries are NOT promises, but they do have then() methods for convenience
             // to get a query promise, you need to use the .exec() function
             // The wiki states that awaiting the promise via exec() yields a nicer stack trace on errors
-            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallaryItems }}).exec();
-            packagedItem.gallaryItems = unpackedItems;
+            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallary_images }}).exec();
+            packagedItem.gallary_images = unpackedItems;
         }
         if (storeItem.thumbnail_img) {
             
@@ -59,14 +59,29 @@ createItem = async (req, res) => {
         return res.status(400).json({success: false, error: 'Issue parsing item'});
     }
 
-    if (req.file) { //if the user specified a file
-        const image_media = new ImageModel(req.file);
+    if (req.files['selectedThumbnail'][0]) { //if the user specified a file
+        const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
         if (image_media) {
             try {
                 const saved_image = await image_media.save();
                 store_item.thumbnail_img = saved_image._id;
             } catch (error) {
                 console.error(error);
+            }
+        }
+    }
+
+    if (req.files['galleryImages']) {
+        const outer = this;
+        for(let file of req.files['galleryImages']) {
+            const image_media = ImageModel(file);
+            if (image_media) {
+                try {
+                    const saved_image = await image_media.save();
+                    store_item.gallary_images.push(saved_image._id);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
     }

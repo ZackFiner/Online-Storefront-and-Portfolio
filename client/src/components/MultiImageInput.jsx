@@ -82,6 +82,14 @@ class MultiImageInput extends Component {
             imageInputID: itemId,
             saltLength: itemId.length,
         }
+        if (props.images && props.images.length) {
+            this.state.fileInputs = props.images.map((value, index) => ({
+                targetFile: null,
+                prev_url: value.path,
+                id: `${this.state.imageInputID}${index}`,
+            }));
+            this.state.imageInputCount = props.images.length;
+        }
     }
     handleAddImage = async event => {
         try {
@@ -107,10 +115,12 @@ class MultiImageInput extends Component {
         try {
             const imageTag = event.target.getAttribute('name');
             const targetObject = this.state.fileInputs.find(element => {return element.id === imageTag});
-            URL.revokeObjectURL(targetObject.prev_url);
-            
-            this.removeFileList(event, targetObject.targetFile); // notify parent of removal
-            
+            if (targetObject.targetFile) {
+                URL.revokeObjectURL(targetObject.prev_url);
+                this.removeFileList(event, targetObject.targetFile); // notify parent of removal
+            } else {
+                this.removeFileList(event, null); // special case: we're removing a reference object
+            }
             this.setState(prevState => ({
                 fileInputs: prevState.fileInputs.filter((value, _) => {return !(value.id === imageTag)}),
             }));

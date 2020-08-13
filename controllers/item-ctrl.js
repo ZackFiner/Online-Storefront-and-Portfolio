@@ -109,7 +109,20 @@ do not both write to the same record at teh same time.
 */
 updateItem = async (req, res) => {
     const body = req.body;
-
+    /*******************************************************************************
+     * Special Considerations:
+     * 
+     * > How do we handle media changes (adding/removing images for example)?
+     *      > If an image is removed, should we simply de-couple the image object
+     *        or actually delete the image and the image object from our DB?
+     *      > If an image is added, how do we limit the number of gallary images
+     *        someone can upload without forcing them to completly re-send all
+     *        all images, or using a modified middleware instead of multer.
+     * 
+     * > Should the front end send the full copy of the item document back? Why not
+     *   simply send back a set of modifications which can be handled on this end?
+     * 
+     *******************************************************************************/
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -125,9 +138,45 @@ updateItem = async (req, res) => {
             });
         }
 
-        item.name = body.name;
-        item.reviews = body.reviews;
-        item.description = body.description;
+        try {
+            for (let [key, value] of Object.entries(body)) {
+                // we only update the entries provided: the front end need not include every entry if it isn't changed
+                item.set(key, value);
+            }
+        } catch (error) {
+            // assuming the syntax above is valid, we should send a 400 error if the request
+            // specifies some parameters modification that's not part of the schema
+        }
+
+
+        // following this logic, the client should only send files when they are changing/adding them
+        if (req.files['selectedThumbnail'][0]) { //if the user specified a file
+            const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
+            if (image_media) {
+                try {
+                    const saved_image = await image_media.save();
+                    item.thumbnail_img = saved_image._id;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    
+        if (req.files['galleryImages']) {
+            const outer = this;
+            for(let file of req.files['galleryImages']) {
+                const image_media = ImageModel(file);
+                if (image_media) {
+                    try {
+                        const saved_image = await image_media.save();
+                        item.gallary_images.push(saved_image._id);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+        }
+
         item
             .save()
             .then(() => {

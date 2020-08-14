@@ -10,7 +10,7 @@ const itemImageCollector = imageParser.fields([
 ]);
 
 router.post('/item', itemImageCollector, ItemCtrl.createItem);
-router.put('/item/:id', ItemCtrl.updateItem);
+router.put('/item/:id', itemImageCollector, ItemCtrl.updateItem);
 router.delete('/item/:id', ItemCtrl.deleteItem);
 router.get('/item/:id', ItemCtrl.getItemById);
 router.get('/items', ItemCtrl.getItems);

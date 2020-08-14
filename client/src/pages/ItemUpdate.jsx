@@ -4,6 +4,7 @@ import api from '../api';
 
 import styled from 'styled-components';
 import { MultiImageInput } from '../components';
+import { connect } from 'mongoose';
 
 const Title = styled.h1.attrs({
     className: 'h1',
@@ -47,6 +48,7 @@ class ItemUpdate extends Component {
             description: '',
             thumbnail_img: '',
             gallery_images: [],
+            dataLoaded: false,
         };
         this.thumbnailImg = null;
         this.galleryImages = [];
@@ -91,6 +93,8 @@ class ItemUpdate extends Component {
     }
 
     handleUpdateItem = async () => {
+
+        const {id} = this.state;
         const payload = {
             body: this.updatePacket,
             galleryImages: {files: this.galleryImages},
@@ -107,28 +111,26 @@ class ItemUpdate extends Component {
                 description: '',
                 thumbnail_img: '',
                 gallery_images: [],
-            })
+                dataLoaded: true,
+            });
         })
     }
 
     componentDidMount = async () => {
         const { id } = this.state;
         const item = await api.getItemById(id);
-
         this.setState({
             name: item.data.data.name,
             reviews: item.data.data.reviews,
             description: item.data.data.description,
             thumbnail_img: item.data.data.thumbnail_img,
-            gallery_images = item.data.data.gallery_images
+            gallery_images: item.data.data.gallery_images
         });
-        
+        this.dataLoaded = true;
     }
 
     render() {
-
-        const {name, description, thumbnail_img, gallery_images} = this.state;
-
+        const {name, description, thumbnail_img, gallery_images, dataLoaded} = this.state;
         return(
             <Wrapper>
                 <Title>Update Item</Title>

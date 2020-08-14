@@ -83,6 +83,7 @@ class MultiImageInput extends Component {
             saltLength: itemId.length,
         }
         if (props.images && props.images.length) {
+
             this.state.fileInputs = props.images.map((value, index) => ({
                 targetFile: null,
                 prev_url: value.path,
@@ -138,6 +139,24 @@ class MultiImageInput extends Component {
 
     componentDidMount = async () => {
 
+    }
+
+    componentDidUpdate = prevProps => {
+        let props = this.props;
+        if (props.images != prevProps.images)
+        {
+            if (props.images && props.images.length) {
+                this.setState(prevState => ({
+                    ...prevState,
+                    fileInputs: props.images.map((value, index) => ({
+                        targetFile: null,
+                        prev_url: value.path,
+                        id: `${this.state.imageInputID}${index}`,
+                    })),
+                    imageInputCount: props.images.length,
+                }))
+            }
+        }
     }
 
     render() {

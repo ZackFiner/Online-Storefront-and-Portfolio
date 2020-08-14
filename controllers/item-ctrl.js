@@ -129,70 +129,69 @@ updateItem = async (req, res) => {
             error: 'Request body missing',
         });
     }
+    try {
+        let item = await StoreItem.findOne({_id: req.params.id }).exec();
+    } catch (err) {
+        return res.status(404).json({
+            err,
+            message: 'Item not found',
+        });
+    }
 
-    StoreItem.findOne({_id: req.params.id }, (err, item) => {
-        if (err) {
-            return res.status(404).json({
-                err,
-                message: 'Item not found',
-            });
+    try {
+        for (let [key, value] of Object.entries(body)) {
+            // we only update the entries provided: the front end need not include every entry if it isn't changed
+            item.set(key, value);
         }
+    } catch (error) {
+        // assuming the syntax above is valid, we should send a 400 error if the request
+        // specifies some parameters modification that's not part of the schema
+    }
 
-        try {
-            for (let [key, value] of Object.entries(body)) {
-                // we only update the entries provided: the front end need not include every entry if it isn't changed
-                item.set(key, value);
+
+    // following this logic, the client should only send files when they are changing/adding them
+    if (req.files['selectedThumbnail'][0]) { //if the user specified a file
+        const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
+        if (image_media) {
+            try {
+                const saved_image = await image_media.save();
+                item.thumbnail_img = saved_image._id;
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            // assuming the syntax above is valid, we should send a 400 error if the request
-            // specifies some parameters modification that's not part of the schema
         }
+    }
 
-
-        // following this logic, the client should only send files when they are changing/adding them
-        if (req.files['selectedThumbnail'][0]) { //if the user specified a file
-            const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
+    if (req.files['galleryImages']) {
+        const outer = this;
+        for(let file of req.files['galleryImages']) {
+            const image_media = ImageModel(file);
             if (image_media) {
                 try {
                     const saved_image = await image_media.save();
-                    item.thumbnail_img = saved_image._id;
+                    item.gallery_images.push(saved_image._id);
                 } catch (error) {
                     console.error(error);
                 }
             }
         }
-    
-        if (req.files['galleryImages']) {
-            const outer = this;
-            for(let file of req.files['galleryImages']) {
-                const image_media = ImageModel(file);
-                if (image_media) {
-                    try {
-                        const saved_image = await image_media.save();
-                        item.gallery_images.push(saved_image._id);
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }
-            }
-        }
+    }
 
-        item
-            .save()
-            .then(() => {
-                return res.status(200).json({
-                    success: true,
-                    id: item._id,
-                    message: 'Item update',
-                });
-            })
-            .catch(error => {
-                return res.status(404).json({
-                    error,
-                    message: 'Item not update',
-                });
+    item
+        .save()
+        .then(() => {
+            return res.status(200).json({
+                success: true,
+                id: item._id,
+                message: 'Item update',
             });
-    })
+        })
+        .catch(error => {
+            return res.status(404).json({
+                error,
+                message: 'Item not update',
+            });
+        });
 }
 
 //DeleteItems should be executed asynchronusly

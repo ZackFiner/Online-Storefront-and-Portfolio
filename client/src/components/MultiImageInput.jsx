@@ -97,13 +97,16 @@ class MultiImageInput extends Component {
             const prev_url = URL.createObjectURL(targetFile);
             // there's probably a more efficent way to do this (dynamically add an entry to the fileinputs object)
             // TODO: figure this out
-            this.appendFileList(event, targetFile);
+            const id = `${this.state.imageInputID}${this.state.imageInputCount}`
+            const newFileObject = {targetFile, prev_url, id,};
+            
+            this.appendFileList(event, newFileObject);
             
             this.setState(prevState => ({
                 ...prevState,
                 fileInputs: [
                     ...prevState.fileInputs,
-                    {targetFile: targetFile, prev_url: prev_url, id: `${prevState.imageInputID}${prevState.imageInputCount}`,}
+                    newFileObject
                 ],
                 imageInputCount: prevState.imageInputCount + 1,
             }));
@@ -117,10 +120,10 @@ class MultiImageInput extends Component {
             const targetObject = this.state.fileInputs.find(element => {return element.id === imageTag});
             if (targetObject.targetFile) {
                 URL.revokeObjectURL(targetObject.prev_url);
-                this.removeFileList(event, targetObject.targetFile); // notify parent of removal
-            } else {
-                this.removeFileList(event, null); // special case: we're removing a reference object
             }
+
+            this.removeFileList(event, targetObject); // notify parent of removal
+            
             this.setState(prevState => ({
                 fileInputs: prevState.fileInputs.filter((value, _) => {return !(value.id === imageTag)}),
             }));

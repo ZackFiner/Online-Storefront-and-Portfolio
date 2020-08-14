@@ -96,13 +96,13 @@ class ItemInsert extends Component {
         })
     }
     
-    handleAppendGallery = async (event, file) => {
-        this.galleryImages.push(file);
+    handleAppendGallery = async (event, fileObject) => {
+        this.galleryImages.push(fileObject.targetFile);
         console.log(this.galleryImages);
     }
     
-    handleRemoveGallery = async (event, file) => {
-        this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
+    handleRemoveGallery = async (event, fileObject) => {
+        this.galleryImages.splice(this.galleryImages.indexOf(fileObject.targetFile), 1);
         console.log(this.galleryImages);
     }
 

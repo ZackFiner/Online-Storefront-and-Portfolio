@@ -66,25 +66,30 @@ class ItemUpdate extends Component {
         this.setState({ thumbnail_img: thumbnail_img });
     }
 
-    handleAddGalleryImage = async (event, file) => {
+    handleAddGalleryImage = async (event, fileObject) => {
+        const file = fileObject.targetFile; 
         if (file) {
-            
-           
+            this.galleryImages.push(file)
         }
     }
 
-    handleRemoveGallary = async (event, file) => {
+    handleRemoveGallary = async (event, fileObject) => {
+        const file = fileObject.targetFile;
         if (file) {
             this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
         } else {
-            this.updatePacket['gallery_images'] = event
+            if (!(this.updatePacket['gallery_images'])) {
+                this.updatePacket['gallery_images'] = this.gallery_images.map( val => { return val._id });
+            }
+            const id_of_removed = this.gallery_images.find(val => { return val.path == fileObject.prev_url; })._id;
+            this.updatePacket['gallery_images'] = this.updatePacket['gallery_images'].filter(val => {return val != id_of_removed});
         }
     }
 
     handleUpdateItem = async () => {
         const { id, name, reviews, description } = this.state;
         const payload = { name, reviews, description };
-
+        // TODO: Update this
         await api.updateItemById(id, payload).then( res => {
             window.alert(`Item Successfully Updated`);
             this.setState({
@@ -105,6 +110,7 @@ class ItemUpdate extends Component {
             reviews: item.data.data.reviews,
             description: item.data.data.description,
             thumbnail_img: item.data.data.thumbnail_img,
+            gallery_images = item.data.data.gallery_images
         });
         
     }

@@ -44,8 +44,11 @@ class ItemUpdate extends Component {
             name: '',
             reviews: [],
             description: '',
-            thumbnail_img: '',
+            thumbnail_img: null,
+            gallery_images: [],
         };
+        this.galleryImages = [];
+        this.updatePacket = {};
     }
 
     handleChangeInputName = async event => {
@@ -59,8 +62,23 @@ class ItemUpdate extends Component {
     }
 
     handleChangeThumbnail = async event => {
-        const thumbnail_img = event.target.value;
+        const thumbnail_img = event.target.files[0];
         this.setState({ thumbnail_img: thumbnail_img });
+    }
+
+    handleAddGalleryImage = async (event, file) => {
+        if (file) {
+            
+           
+        }
+    }
+
+    handleRemoveGallary = async (event, file) => {
+        if (file) {
+            this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
+        } else {
+            this.updatePacket['gallery_images'] = event
+        }
     }
 
     handleUpdateItem = async () => {

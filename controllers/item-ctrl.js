@@ -5,12 +5,12 @@ const ImageModel = require('../models/img-model');
 async function packageMedia(storeItem) {
     let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents
     try {
-        if (storeItem.gallary_images) {
+        if (storeItem.gallery_images) {
             // so Mongoose queries are NOT promises, but they do have then() methods for convenience
             // to get a query promise, you need to use the .exec() function
             // The wiki states that awaiting the promise via exec() yields a nicer stack trace on errors
-            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallary_images }}).exec();
-            packagedItem.gallary_images = unpackedItems;
+            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallery_images }}).exec();
+            packagedItem.gallery_images = unpackedItems;
         }
         if (storeItem.thumbnail_img) {
             
@@ -78,7 +78,7 @@ createItem = async (req, res) => {
             if (image_media) {
                 try {
                     const saved_image = await image_media.save();
-                    store_item.gallary_images.push(saved_image._id);
+                    store_item.gallery_images.push(saved_image._id);
                 } catch (error) {
                     console.error(error);
                 }
@@ -169,7 +169,7 @@ updateItem = async (req, res) => {
                 if (image_media) {
                     try {
                         const saved_image = await image_media.save();
-                        item.gallary_images.push(saved_image._id);
+                        item.gallery_images.push(saved_image._id);
                     } catch (error) {
                         console.error(error);
                     }

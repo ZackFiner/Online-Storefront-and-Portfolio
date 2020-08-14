@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import api from '../api';
 
 import styled from 'styled-components';
+import { MultiImageInput } from '../components';
 
 const Title = styled.h1.attrs({
     className: 'h1',
@@ -44,26 +45,22 @@ class ItemUpdate extends Component {
             name: '',
             reviews: [],
             description: '',
-            thumbnail_img: null,
+            thumbnail_img: '',
             gallery_images: [],
         };
+        this.thumbnailImg = null;
         this.galleryImages = [];
         this.updatePacket = {};
     }
 
-    handleChangeInputName = async event => {
-        const name = event.target.value;
-        this.setState({ name: name });//same as this.setState({ name })
-    }
-
-    handleChangeInputDescription = async event => {
-        const description = event.target.value;
-        this.setState({ description: description });
-    }
-
     handleChangeThumbnail = async event => {
-        const thumbnail_img = event.target.files[0];
-        this.setState({ thumbnail_img: thumbnail_img });
+        const thumbnailImg = event.target.files[0];
+        if (this.thumbnailImg) {
+            URL.revokeObjectURL(this.state.thumbnail_img);
+            const thumbnail_path = URL.createObjectURL(this.thumbnailImg);
+            this.setState({thumbnail_img:thumbnail_path});
+        }
+        this.thumbnailImg = thumbnailImg;
     }
 
     handleAddGalleryImage = async (event, fileObject) => {
@@ -86,17 +83,30 @@ class ItemUpdate extends Component {
         }
     }
 
+    handleUpdateState = async (event) => {
+        this.setState({
+            [event.target.name]: event.target.value,
+        });
+        this.updatePacket[event.target.name] = event.target.value;
+    }
+
     handleUpdateItem = async () => {
-        const { id, name, reviews, description } = this.state;
-        const payload = { name, reviews, description };
-        // TODO: Update this
+        const payload = {
+            body: this.updatePacket,
+            galleryImages: {files: this.galleryImages},
+            thumbnailImg: {file: this.thumbnailImg},
+        };
+        
+
         await api.updateItemById(id, payload).then( res => {
             window.alert(`Item Successfully Updated`);
             this.setState({
+                id: this.props.match.params.id,
                 name: '',
-                reviews: '',
+                reviews: [],
                 description: '',
                 thumbnail_img: '',
+                gallery_images: [],
             })
         })
     }
@@ -117,7 +127,7 @@ class ItemUpdate extends Component {
 
     render() {
 
-        const {name, description, thumbnail_img} = this.state;
+        const {name, description, thumbnail_img, gallery_images} = this.state;
 
         return(
             <Wrapper>
@@ -126,20 +136,23 @@ class ItemUpdate extends Component {
                 <InputText 
                     type = "text"
                     value={name}
-                    onChange={this.handleChangeInputName}
+                    name={`name`}
+                    onChange={this.handleUpdateState}
                 />
                 <Label>Description: </Label>
                 <InputText 
                     type = "text"
                     value={description}
-                    onChange={this.handleChangeInputDescription}
+                    name={`description`}
+                    onChange={this.handleUpdateState}
                 />
                 <Label>Thumbnail: </Label>
-                <InputText
-                    type="text"
-                    value={thumbnail_img}
+                <input
+                    type="file"
+                    name={`thumbnail_img`}
                     onChange={this.handleChangeThumbnail}
                 />
+                <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
                 <Button onChange={this.handleUpdateItem}>Update</Button>
                 <Link to="/items/list">
                 <CancelButton>Cancel</CancelButton>

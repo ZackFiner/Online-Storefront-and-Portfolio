@@ -8,14 +8,15 @@ export const insertItem = payload => {
     /* Because this request is handled using the multer middleware
      * we need to repackage the contents into a multipart form
      */
+    const {thumbnail, galleryImages, body} = payload;
     const formData = new FormData();
-    formData.append('selectedThumbnail', payload.thumbnail.file);
+    formData.append('selectedThumbnail', thumbnail.file);
     
-    payload.galleryImages.files.forEach(file => {
+    galleryImages.files.forEach(file => {
         formData.append('galleryImages', file);
     });
     
-    formData.append('body', JSON.stringify(payload.body));
+    formData.append('body', JSON.stringify(body));
     const config = {
         headers: {
             'content-type': 'multipart/form-data',
@@ -24,7 +25,24 @@ export const insertItem = payload => {
     return api.post(`/item`, formData, config);
 }
 export const getAllItems = () => api.get(`/items`);
-export const updateItemById = (id, payload) => api.put(`/item/${id}`, payload);
+export const updateItemById = (id, payload) => {
+    const {thumbnailImg, galleryImages, body} = payload;
+    const formData = new FormData();
+    formData.append('selectedThumbnail', thumbnailImg.file);
+    
+    galleryImages.files.forEach(file => {
+        formData.append('galleryImages', file);
+    });
+    
+    formData.append('body', JSON.stringify(body));
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data',
+        }
+    }
+
+    return api.put(`/item/${id}`, payload);
+}
 export const deleteItemById = id => api.delete(`/item/${id}`);
 export const getItemById = id => api.get(`/item/${id}`);
 

@@ -64,9 +64,8 @@ class ImageSelector extends Component {
         }
         return (
         <ImageSelectorFrame>
-            <ImageSelectorInput onChange={this.handleImageSelect}>
-                {previewFiller}
-            </ImageSelectorInput>
+            {previewFiller}
+            <ImageSelectorInput onChange={this.handleImageSelect} />
         </ImageSelectorFrame>)
     }
 }

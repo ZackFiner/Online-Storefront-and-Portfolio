@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import api from '../api';
 import {Link} from 'react-router-dom';
-import {MultiImageInput} from '../components'
+import {MultiImageInput, ImageSelector} from '../components'
 import styled from 'styled-components';
 
 const Title = styled.h1.attrs({
@@ -124,11 +124,12 @@ class ItemInsert extends Component {
                     onChange={this.handleChangeInputDescription}
                 />
                 <Label>Thumbnail: </Label>
-                <InputImage 
+                {/*<InputImage 
                     type="file"
                     onChange = {this.handleFileUpload}
                     ref={this.fileInput}
-                />
+                />*/}
+                <ImageSelector onChange={this.handleFileUpload} />
                 <Label>Gallery Input:</Label>
                 <MultiImageInput handleAppendFile={this.handleAppendGallery} handleRemoveFile={this.handleRemoveGallery}/>
                 <Button onClick={this.handelIncludeItem} >Insert Item</Button>

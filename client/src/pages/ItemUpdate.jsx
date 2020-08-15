@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import api from '../api';
 
 import styled from 'styled-components';
-import { MultiImageInput } from '../components';
+import { MultiImageInput, ImageSelector } from '../components';
 import { connect } from 'mongoose';
 
 const Title = styled.h1.attrs({
@@ -149,11 +149,12 @@ class ItemUpdate extends Component {
                     onChange={this.handleUpdateState}
                 />
                 <Label>Thumbnail: </Label>
-                <input
+                {/*<input
                     type="file"
                     name={`thumbnail_img`}
                     onChange={this.handleChangeThumbnail}
-                />
+                />*/}
+                <ImageSelector prevUrl={thumbnail_img ? thumbnail_img.path : ''} onChange={this.handleChangeThumbnail}/>
                 <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
                 <Button onChange={this.handleUpdateItem}>Update</Button>
                 <Link to="/items/list">

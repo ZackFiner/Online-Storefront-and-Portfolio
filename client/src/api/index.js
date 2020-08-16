@@ -41,7 +41,7 @@ export const updateItemById = (id, payload) => {
         }
     }
 
-    return api.put(`/item/${id}`, payload);
+    return api.put(`/item/${id}`, formData, config);
 }
 export const deleteItemById = id => api.delete(`/item/${id}`);
 export const getItemById = id => api.get(`/item/${id}`);

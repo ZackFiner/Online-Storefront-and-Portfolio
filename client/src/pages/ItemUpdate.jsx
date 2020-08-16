@@ -78,9 +78,9 @@ class ItemUpdate extends Component {
             this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
         } else {
             if (!(this.updatePacket['gallery_images'])) {
-                this.updatePacket['gallery_images'] = this.gallery_images.map( val => { return val._id });
+                this.updatePacket['gallery_images'] = this.state.gallery_images.map( val => { return val._id });
             }
-            const id_of_removed = this.gallery_images.find(val => { return val.path == fileObject.prev_url; })._id;
+            const id_of_removed = this.state.gallery_images.find(val => { return val.path == fileObject.prev_url; })._id;
             this.updatePacket['gallery_images'] = this.updatePacket['gallery_images'].filter(val => {return val != id_of_removed});
         }
     }
@@ -93,10 +93,10 @@ class ItemUpdate extends Component {
     }
 
     handleUpdateItem = async () => {
-
+        console.log('sending packet')
         const {id} = this.state;
         const payload = {
-            body: this.updatePacket,
+            body: {... this.updatePacket},
             galleryImages: {files: this.galleryImages},
             thumbnailImg: {file: this.thumbnailImg},
         };
@@ -156,7 +156,7 @@ class ItemUpdate extends Component {
                 />*/}
                 <ImageSelector prevUrl={thumbnail_img ? thumbnail_img.path : ''} onChange={this.handleChangeThumbnail}/>
                 <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
-                <Button onChange={this.handleUpdateItem}>Update</Button>
+                <Button onClick={this.handleUpdateItem}>Update</Button>
                 <Link to="/items/list">
                 <CancelButton>Cancel</CancelButton>
                 </Link>

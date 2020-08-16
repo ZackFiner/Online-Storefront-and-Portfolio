@@ -42,7 +42,7 @@ class ImageSelector extends Component {
     handleImageSelect = async (event) => {
         const {imageFile, prevUrl} = this.state;
         const newFile = event.target.files[0];
-        const newUrl = URL.createObjectURL(imageFile);
+        const newUrl = URL.createObjectURL(newFile);
         
         if (imageFile && prevUrl) {// if something was already selected
             URL.revokeObjectURL(prevUrl);

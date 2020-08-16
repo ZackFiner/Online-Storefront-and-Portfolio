@@ -108,7 +108,9 @@ Update calls should be executed asynchonusly so that two entries
 do not both write to the same record at teh same time.
 */
 updateItem = async (req, res) => {
-    const body = req.body;
+    const body = JSON.parse(req.body.body);
+    console.log(body);
+    console.log(req.params.id);
     /*******************************************************************************
      * Special Considerations:
      * 
@@ -129,8 +131,15 @@ updateItem = async (req, res) => {
             error: 'Request body missing',
         });
     }
+    let item;
     try {
-        let item = await StoreItem.findOne({_id: req.params.id }).exec();
+        item = await StoreItem.findOne({_id: req.params.id }).exec();
+        if (!item) {
+            return res.status(404).json({
+                err,
+                message: 'Item not found',
+            });
+        }
     } catch (err) {
         return res.status(404).json({
             err,
@@ -150,7 +159,7 @@ updateItem = async (req, res) => {
 
 
     // following this logic, the client should only send files when they are changing/adding them
-    if (req.files['selectedThumbnail'][0]) { //if the user specified a file
+    if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
         const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
         if (image_media) {
             try {

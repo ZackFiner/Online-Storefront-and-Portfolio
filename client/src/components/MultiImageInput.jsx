@@ -94,22 +94,26 @@ class MultiImageInput extends Component {
     }
     handleAddImage = async event => {
         try {
-            const targetFile = event.target.files[0];
-            const prev_url = URL.createObjectURL(targetFile);
-            // there's probably a more efficent way to do this (dynamically add an entry to the fileinputs object)
-            // TODO: figure this out
-            const id = `${this.state.imageInputID}${this.state.imageInputCount}`
-            const newFileObject = {targetFile, prev_url, id,};
-            
-            this.appendFileList(event, newFileObject);
-            
+            let newFileObjects = [];
+            let fileCount = 0;
+            for (const targetFile of event.target.files) {
+                const prev_url = URL.createObjectURL(targetFile);
+                // there's probably a more efficent way to do this (dynamically add an entry to the fileinputs object)
+                // TODO: figure this out
+                const id = `${this.state.imageInputID}${this.state.imageInputCount}`
+                const newFileObject = {targetFile, prev_url, id,};
+                newFileObjects.push( newFileObject );
+                
+                this.appendFileList(event, newFileObject);
+                fileCount++;
+            }
             this.setState(prevState => ({
                 ...prevState,
                 fileInputs: [
                     ...prevState.fileInputs,
-                    newFileObject
+                    ...newFileObjects,
                 ],
-                imageInputCount: prevState.imageInputCount + 1,
+                imageInputCount: prevState.imageInputCount + fileCount,
             }));
         } catch (error) {
                 console.log(error);
@@ -175,7 +179,7 @@ class MultiImageInput extends Component {
             <Wrapper>
             <DragableImageList>
                 {imageElements}
-                <DragableImageListElement><AddImageButton type='file' onChange={this.handleAddImage} /></DragableImageListElement>
+                <DragableImageListElement><AddImageButton type='file' multiple='multiple' onChange={this.handleAddImage} /></DragableImageListElement>
             </DragableImageList>
             </Wrapper>
         );

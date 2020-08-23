@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const {password_saltRounds} = require('../data/server-config');
-
+const defaultRoleId = '';
 const Schema = mongoose.Schema;
 
 const UserModel = new Schema(
     {
         email: {type: String, required: true, unique: true},
         password: {type: String, required: true },
-
+        roles: {type: [mongoose.Types.ObjectId], required: true}
     },
     {timestamps: true},
 );
@@ -35,6 +35,9 @@ UserModel.pre('save', function(next) { // use a hook to hash the plain text pass
                     next();
                 }
             });
+        if (!document.roles) { // if the user is not assigned to any role, add them to the default role
+            document.roles = [defaultRoleId];
+        }
     } else {
         next();
     }

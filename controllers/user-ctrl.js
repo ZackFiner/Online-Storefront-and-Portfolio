@@ -82,6 +82,7 @@ authUser = (req, res) => {
                         userdata: {
                             _id: user._id,
                             email: email,
+                            roles: user.roles,
                         }
                     };
                     const token = jwt.sign(payload, secret, {

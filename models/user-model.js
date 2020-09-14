@@ -4,7 +4,7 @@ const {password_saltRounds} = require('../data/server-config');
 const defaultRoleId = '';
 const Schema = mongoose.Schema;
 
-const UserModel = new Schema(
+const UserSchema = new Schema(
     {
         email: {type: String, required: true, unique: true},
         password: {type: String, required: true },
@@ -13,7 +13,7 @@ const UserModel = new Schema(
     {timestamps: true},
 );
 
-UserModel.methods.isCorrectPassword = function( password, callback ) {
+UserSchema.methods.isCorrectPassword = function( password, callback ) {
     bcrypt.compare( password, this.password, function( err, same ) {
         if (err) {
             callback(err);
@@ -23,7 +23,7 @@ UserModel.methods.isCorrectPassword = function( password, callback ) {
     });
 }
 
-UserModel.pre('save', function(next) { // use a hook to hash the plain text password being sent from the front end
+UserSchema.pre('save', function(next) { // use a hook to hash the plain text password being sent from the front end
     if (this.isNew || this.isModeified('password')) {
         const document = this; // we need to save parent function state (the document itself)
         bcrypt.hash(document.password, password_saltRounds,
@@ -42,5 +42,5 @@ UserModel.pre('save', function(next) { // use a hook to hash the plain text pass
         next();
     }
 });
-
-module.exports = mongoose.model( 'user_datas', UserModel );
+const UserModel = mongoose.model( 'user_datas', UserSchema );
+module.exports = UserModel;

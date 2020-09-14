@@ -3,7 +3,7 @@ const ImageModel = require('./img-model');
 const {RoleAccessor, hasPermission, ROLE_CONSTANTS} = require('../authorization');
 const Schema = mongoose.Schema;
 
-const StoreItem = new Schema(
+const StoreItemSchema = new Schema(
     {
         name: {type: String, required: true},
         reviews: {type: [mongoose.Types.ObjectId], required: true},
@@ -13,8 +13,8 @@ const StoreItem = new Schema(
     },
     {timestamps: true},
 )
-
-module.exports = mongoose.model('store_items', StoreItem);
+const StoreItem = mongoose.model('store_items', StoreItemSchema);
+module.exports = StoreItem;
 
 async function packageMedia(storeItem) {
     let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents

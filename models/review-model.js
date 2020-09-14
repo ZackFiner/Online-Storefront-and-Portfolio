@@ -48,9 +48,25 @@ class UserReviewAccessor extends RoleAccessor {
             return { success: false, error: 'User lacks Permission'};
         }
     }
+
     static async deleteReview(role_data, id) {
         if (hasPermission(role_data, REVIEW_DELETE, id)) {
             try {
+                const item = await UserReviewModel.findOneAndDelete({_id: id}) // review or item id?
+                if (!item) {
+                    return {
+                        success: false,
+                        error: 'No such review exists',
+                    };
+                }
+                // find the corresponding item entry and remove this review from its list
+                await StoreItem.findOneAndUpdate({_id: id}, 
+                        {$pop: {reviews: item._id}});
+            
+                return {
+                    success: true, 
+                    data: item,
+                };
             } catch (err) {
                 return {
                     success: false,
@@ -61,9 +77,21 @@ class UserReviewAccessor extends RoleAccessor {
             return { success: false, error: 'User lacks Permission'};
         }
     }
+
     static async getReviewById(role_data, id) {
         if (hasPermission(role_data, REVIEW_READ, id)) {
             try {
+                const item = await UserReviewModel.findOne( {_id: id});
+                if (!item) {
+                    return {
+                        success: false,
+                        error: `Review ${id} could not be found`
+                    };
+                }
+                return {
+                    success: true,
+                    data: item
+                };
             } catch (err) {
                 return {
                     success: false,

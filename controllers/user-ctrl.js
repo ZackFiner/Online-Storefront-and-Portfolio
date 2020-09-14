@@ -108,7 +108,9 @@ function processUserData(userData) {
     };
 }
 
-getUserData = async (req, res) => {
+getUserData = async (req, res) => { // this should not use req.userdata: this could be modified by the user
+    // instead, it should use the encrypted jwt token which (in theory) cannot be modified by the user.
+    // otherwise, someone could access other user's user data.
     const body = req.body;
     if (!body) {
         return res.status(400).json({

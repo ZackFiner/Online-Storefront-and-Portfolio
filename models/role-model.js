@@ -17,4 +17,4 @@ const UserRoleModel = new Schema({
 {timestamps: true},
 )
 
-modeule.exports = mongoose.model('user_roles', UserRoleModel);
+module.exports = mongoose.model('user_roles', UserRoleModel);

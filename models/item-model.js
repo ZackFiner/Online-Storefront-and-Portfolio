@@ -93,7 +93,7 @@ class StoreItemAccessor extends RoleAccessor {
         }
     }
 
-    static createItem(role_data, document) {
+    static async createItem(role_data, document) {
         if (hasPermission(role_data, ITEM_CREATE, '')) {
             try {
                 const store_item = new StoreItem(document);

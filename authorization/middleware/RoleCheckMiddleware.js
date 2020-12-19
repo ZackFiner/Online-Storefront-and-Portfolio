@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {secret} = require('../data/server-config');
+const {secret} = require('../../data/server-config');
 
 RoleCheckMiddleware = (role_id) => (req, res, next) => {
     const token = req.cookies.token;

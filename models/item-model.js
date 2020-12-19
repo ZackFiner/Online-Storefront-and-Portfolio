@@ -101,7 +101,7 @@ class StoreItemAccessor extends RoleAccessor {
                     return {success: false, error: 'Issue parsing item'};
                 }
 
-                await store_item.save();
+                store_item.save();
                 return {
                     success: true,
                     data: store_item._id,

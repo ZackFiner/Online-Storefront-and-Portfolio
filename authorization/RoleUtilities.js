@@ -11,7 +11,7 @@ async function unpackUserRoles(user_roles) {
     role_data = await UserRoleModel.find({_id: { $in: user_roles }});
     return role_data;
 }
-
+// We should probably also ACL, that way we can allow users to post/edit comments
 function hasPermission (role_data, op_perm, obj_perm) {
     // it's in here that we actually check permission
     for (const role in role_data) {

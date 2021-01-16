@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const RolePermissionSchema = new Schema({
     op_perm: {type: String, required: true},
-    obj_perm: {type: [mongoose.Types.ObjectId], required: true},
+    obj_perm: {type: [mongoose.Types.ObjectId]},
 },
 {timestamps: true},
 )

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const {secret} = require('../../data/server-config');
 
-RoleCheckMiddleware = (role_id) => (req, res, next) => {
+const RoleCheckMiddleware = (role_id) => (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
         return req.status(401).send('Unauthorized: No token was provided')

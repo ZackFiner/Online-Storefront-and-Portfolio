@@ -1,7 +1,9 @@
 const UserRoleModel = require('../models/role-model');
+const {ADMIN_ROLE_ID, USER_ROLE_ID} = require('../boot/role_init');
+
 
 const ROLE_CONSTANTS = Object.freeze({
-OBJ_PERM_ANY:'any',
+OBJ_PERM_ANY: undefined,
 OP_PERM_ANY:'any',
 });
 

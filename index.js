@@ -9,6 +9,7 @@ const reviewRouter = require('./routes/review-router');
 const userRouter = require('./routes/user-router');
 const authRouter = require('./routes/auth-router');
 const mediaRouter = require('./routes/media-router');
+const init_func = require('./boot');
 
 const app = express();
 const apiPort = 3000;
@@ -18,6 +19,7 @@ app.use(cors({origin:'http://localhost:8000', credentials:true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+init_func(); // initialize server
 mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.get('/', (req,res) => {

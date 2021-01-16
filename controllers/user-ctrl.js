@@ -104,6 +104,7 @@ function processUserData(userData) {
     return {
         _id: userData._id,
         email: userData.email,
+        roles: userData.roles,
         // any other fields you want go here, thumbnail image, etc.
     };
 }

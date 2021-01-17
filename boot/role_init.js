@@ -1,14 +1,10 @@
 const UserRoleModel = require('../models/role-model');
 
-global.USER_ROLE_ID = '';
-global.ADMIN_ROLE_ID = '';
-
 const role_init = async () => {
     await UserRoleModel.find({name: 'admin'}, (err, res) => {
         if (!err) {
             if (res.length > 0) {
                 console.log("NOTIFICATION: admin role exists");
-                global.ADMIN_ROLE_ID = res[0]._id;
             } else {
                 console.log("NOTIFICATION: admin role doesn't exist");
                 console.log("NOTIFICATION: creating default admin role");
@@ -19,7 +15,6 @@ const role_init = async () => {
                     }],
                 });
                 default_admin_role.save().then((doc) => {
-                    global.ADMIN_ROLE_ID = doc._id;
                 });
                 
             }
@@ -52,7 +47,6 @@ const role_init = async () => {
                 });
 
                 default_user_role.save().then((doc) => {
-                    global.USER_ROLE_ID = doc._id;
                 })
 
             }

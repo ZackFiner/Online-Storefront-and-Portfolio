@@ -20,7 +20,8 @@ export const insertItem = payload => {
     const config = {
         headers: {
             'content-type': 'multipart/form-data',
-        }
+        },
+        withCredentials: true
     }
     return api.post(`/item`, formData, config);
 }
@@ -38,17 +39,18 @@ export const updateItemById = (id, payload) => {
     const config = {
         headers: {
             'content-type': 'multipart/form-data',
-        }
+        },
+        withCredentials: true
     }
 
     return api.put(`/item/${id}`, formData, config);
 }
-export const deleteItemById = id => api.delete(`/item/${id}`);
+export const deleteItemById = id => api.delete(`/item/${id}`, {withCredentials: true});
 export const getItemById = id => api.get(`/item/${id}`);
 
 export const getReviewById = id => api.get(`/review/${id}`);
-export const insertReview = payload => api.post(`/review`, payload);
-export const deleteReviewById = id => api.delete(`/review/${id}`);
+export const insertReview = payload => api.post(`/review`, payload, {withCredentials: true});
+export const deleteReviewById = id => api.delete(`/review/${id}`, {withCredentials: true});
 
 export const createUserAccount = payload => api.post(`/users`, payload);
 export const getUserData = (/*userID and Email should be attached during authentication*/) => api.get(`/users`, {withCredentials: true});

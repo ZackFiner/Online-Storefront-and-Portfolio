@@ -11,7 +11,7 @@ const PermissionSchema = new Schema({
 )
 
 const UserRoleSchema = new Schema({
-    name: {type: String, required: true},
+    name: {type: String, required: true, unique: true},
     permissions: {type: [PermissionSchema], required: true},
 },
 {timestamps: true},

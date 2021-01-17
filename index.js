@@ -34,6 +34,5 @@ app.use('/api/media', mediaRouter);
 
 init_func().then(()=>{
     app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
-    // don't open the server until the initialization is complete
-}); // initialize server
+});
 

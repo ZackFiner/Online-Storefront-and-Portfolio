@@ -100,7 +100,7 @@ class StoreItemAccessor extends RoleAccessor {
     }
 
     static async deleteItem(role_data, id) {
-        if (hasPermission(role_data, ITEM_DELETE, '')) {
+        if (hasPermission(role_data, ITEM_DELETE, id)) {
             try {
                 const item = await StoreItem.findOneAndDelete({_id: req.params.id});
                 if (!item) {

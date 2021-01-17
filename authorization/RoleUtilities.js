@@ -8,7 +8,7 @@ OP_PERM_ANY:'any',
 });
 
 async function unpackUserRoles(user_roles) {
-    role_data = await UserRoleModel.find({_id: { $in: user_roles }});
+    role_data = await UserRoleModel.find({name: { $in: user_roles }});
     return role_data;
 }
 // We should probably also ACL, that way we can allow users to post/edit comments

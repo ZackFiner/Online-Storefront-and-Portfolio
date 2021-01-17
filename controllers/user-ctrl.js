@@ -11,7 +11,7 @@ createUser = (req, res) => {
         })
     }
     const userAccount = new UserModel(body);
-
+    userAccount.roles.push(global.USER_ROLE_ID);
     if (!userAccount) {
         return res.status(400).json({
             success: false,

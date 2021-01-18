@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import {connect} from 'react-redux';
+import {isMemberofRole} from '../authorization';
 
 // Spelling error bellow with 'collpase?
 const Collapse = styled.div.attrs({
@@ -17,33 +19,49 @@ const Item = styled.div.attrs({
 
 class Links extends Component {
     render() {
+        const {userdata, loggedin} = this.props;
+        let link_items = null;
+        if (isMemberofRole(userdata, 'admin')) {
+            link_items = (<List>
+                <Item>
+                    <Link to="/items/list" className="nav-link">
+                        List Items
+                    </Link>
+                </Item>
+                <Item>
+                    <Link to="/items/create" className="nav-link">
+                        Post Item
+                    </Link>
+                </Item>
+                <Item>
+                    <Link to="/items/update/:id" className="nav-link">
+                        Update Item
+                    </Link>
+                </Item>
+            </List>);
+        }
         return (
             <React.Fragment>
                 <Link to="/" className="navbar-brand">
                     Boilerplate MERN App
                 </Link>
                 <Collapse>
-                    <List>
-                        <Item>
-                            <Link to="/items/list" className="nav-link">
-                                List Items
-                            </Link>
-                        </Item>
-                        <Item>
-                            <Link to="/items/create" className="nav-link">
-                                Post Item
-                            </Link>
-                        </Item>
-                        <Item>
-                            <Link to="/items/update/:id" className="nav-link">
-                                Update Item
-                            </Link>
-                        </Item>
-                    </List>
+                    {link_items}
                 </Collapse>
             </React.Fragment>
         );
     }
 }
 
-export default Links
+const mapStateToProps = state => {
+    const payload = state.accountRedu;
+    return {
+        userdata: payload.userdata,
+        loggedin: payload.loggedin,
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(Links)

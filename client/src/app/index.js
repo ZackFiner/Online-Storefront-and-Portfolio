@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 
 import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
@@ -14,11 +14,11 @@ function App() {
       <Switch>
         <Route path="/login" exact component={LoginPage} />
         <Route path="/createAccount" exact component={CreateAccountPage} />
-        <Route path="/items/list" exact component={ItemList} />
-        <Route path="/items/create" exact component={ItemInsert} />
-        <Route path="/items/update/:id" exact component={ItemUpdate} />
+        <AuthorizedRoute path="/items/list" exact component={ItemList} roles={['admin']} />
+        <AuthorizedRoute path="/items/create" exact component={ItemInsert} roles={['admin']} />
+        <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['admin']} />
         <Route path="/items/view/:id" exact component={ItemView} />
-        <Route path="/items/view/:id/review" exact component={CreateReview} />
+        <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['user']} />
         <Route path="/" exact component={StoreFront} />
       </Switch>
     </Router>

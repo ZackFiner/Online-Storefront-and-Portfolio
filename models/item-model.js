@@ -11,5 +11,7 @@ const StoreItemSchema = new Schema(
     },
     {timestamps: true},
 )
+
+
 const StoreItem = mongoose.model('store_items', StoreItemSchema);
 module.exports = StoreItem;

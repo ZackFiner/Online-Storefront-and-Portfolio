@@ -15,6 +15,9 @@ const Title = styled.h1.attrs({
 `
 const DescriptionArea = styled.div``
 const DescriptionText = styled.p``
+const Button = styled.button.attrs({
+    className: `btn btn-danger`
+})``;
 
 class ItemView extends Component {
     constructor(props) {
@@ -53,7 +56,7 @@ class ItemView extends Component {
     }
 
     render() {
-        const {name, description, reviews, thumbnail_img, gallery_images} = this.state;
+        const {id, name, description, reviews, thumbnail_img, gallery_images} = this.state;
         const reviewsSection = reviews ? reviews.map( reviewId => {
             return <ReviewView id={reviewId}/>
         }) : [];
@@ -64,6 +67,7 @@ class ItemView extends Component {
                 <DescriptionArea>
                     <DescriptionText>{description}</DescriptionText>
                 </DescriptionArea>
+                <Button><a href={`/items/view/${id}/review`}>Post Review</a></Button>
                 {reviewsSection}
             </Wrapper>
         )

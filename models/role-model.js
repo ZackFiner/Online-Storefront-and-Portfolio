@@ -3,18 +3,26 @@ const Schema = mongoose.Schema;
 
 
 
-const RolePermissionModel = new Schema({
+const PermissionSchema = new Schema({
     op_perm: {type: String, required: true},
-    obj_perm: {type: [mongoose.Types.ObjectId], required: true},
+    obj_perm: {type: [mongoose.Types.ObjectId]},
 },
 {timestamps: true},
 )
 
-const UserRoleModel = new Schema({
-    name: {type: String, required: true},
-    permissions: {type: [RolePermissionModel], required: true},
+const UserRoleSchema = new Schema({
+    name: {type: String, required: true, unique: true},
+    permissions: {type: [PermissionSchema], required: true},
 },
 {timestamps: true},
 )
 
-module.exports = mongoose.model('user_roles', UserRoleModel);
+const ItemAccessList = new Schema({
+    collection_type: {type: String, required: true},
+    obj_id: {type: mongoose.Types.ObjectId, required: true},
+    user_id: {type: mongoose.Types.ObjectId, required: true},
+    permissions: {type: [PermissionSchema], required: true}
+})
+
+const UserRoleModel = mongoose.model('user_roles', UserRoleSchema);
+module.exports = UserRoleModel;

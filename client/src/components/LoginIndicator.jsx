@@ -29,7 +29,6 @@ class LoginIndicator extends Component {
 
     render() {
         const {loggedin, userdata} = this.props;
-        console.log(this.props);
         if (!loggedin) {
             return (
                 <Wrapper>

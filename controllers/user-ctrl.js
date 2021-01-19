@@ -11,7 +11,7 @@ createUser = (req, res) => {
         })
     }
     const userAccount = new UserModel(body);
-
+    userAccount.roles.push(global.USER_ROLE_ID);
     if (!userAccount) {
         return res.status(400).json({
             success: false,
@@ -86,9 +86,11 @@ authUser = (req, res) => {
                         }
                     };
                     const token = jwt.sign(payload, secret, {
-                        expiresIn: '1h'
-                    });
-                    return res.cookie('token', token, {httpOnly: true}).sendStatus(200);
+                        expiresIn: '6m'
+                    }); // cookies will expire 6 minutes from when they are set, we will need
+                    // to implement an auto refresh feature on the front end or users will be logged out after 6 minutes
+
+                    return res.cookie('token', token, {expire: 360000+Date.now(), httpOnly: true}).sendStatus(200);
                 }
             })
         }
@@ -104,11 +106,14 @@ function processUserData(userData) {
     return {
         _id: userData._id,
         email: userData.email,
+        roles: userData.roles,
         // any other fields you want go here, thumbnail image, etc.
     };
 }
 
-getUserData = async (req, res) => {
+getUserData = async (req, res) => { // this should not use req.userdata: this could be modified by the user
+    // instead, it should use the encrypted jwt token which (in theory) cannot be modified by the user.
+    // otherwise, someone could access other user's user data.
     const body = req.body;
     if (!body) {
         return res.status(400).json({

@@ -1,21 +1,23 @@
 const jwt = require('jsonwebtoken');
+require('../../boot');
+const { restart } = require('nodemon');
 const {secret} = require('../../data/server-config');
 
-RoleCheckMiddleware = (role_id) => (req, res, next) => {
+const RoleCheckMiddleware = (role_id) => (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
-        return req.status(401).send('Unauthorized: No token was provided')
+        return res.status(401).send('Unauthorized: No token was provided')
     } else {
         jwt.verify(token, secret, (err, decoded) => {
             if (err) {
-                return req.status(401).send('Unauthorized: invalid token');
+                return res.status(401).send('Unauthorized: invalid token');
             } else {
-                const roles = decoded.roles;
+                const roles = decoded.userdata.roles;
                 if (roles && roles.length > 0) {
-                    if (role_id in roles) {
+                    if (roles.includes(role_id)) {
                         next();
                     } else {
-                        return req.status(403).send('Unauthorized: access denied')
+                        return res.status(403).send('Unauthorized: access denied')
                     }
                 }
             }

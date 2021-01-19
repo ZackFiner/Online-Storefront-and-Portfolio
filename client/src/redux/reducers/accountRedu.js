@@ -23,7 +23,7 @@ const accounts = (state = defaultState, action) => {
             };
         case ERROR_ACCOUNT:
         default:
-            return state
+            return { ...state }
     }
 }
 

@@ -1,5 +1,4 @@
-import api from '../../api'
-
+import api from '../../api';
 export const LOAD_ACCOUNT = 'LOAD_ACCOUNT';
 export const FREE_ACCOUNT = 'FREE_ACCOUNT';
 export const ERROR_ACCOUNT = 'ERROR_ACCOUNT';
@@ -24,6 +23,22 @@ export const loadAccount = userdata => { return {
     payload: userdata
 }}*/
 
+export const refreshAccount = () => dispatch => {
+    console.log("called");
+    api.refreshUserToken() // this will only work if our token is still valid
+    .then( res => {
+        if (res.status === 200) {
+            dispatch({type: REFRESH_ACCOUNT,}); // notify our store that the account was refreshed
+        } else {
+            const error = new Error(res.error);
+            throw error;// throw the error to our handler below
+        }
+    })
+    .catch( err => {
+        dispatch({type: ERROR_ACCOUNT, payload: err});
+    });
+}
+
 export const loadAccount = (payload, history) => dispatch => {
     api.authUser(payload)
     .then( res => {
@@ -32,7 +47,8 @@ export const loadAccount = (payload, history) => dispatch => {
             api.getUserData().then(res => {
                 if (res.status === 200) {
                     const store_payload = res.data;
-                    dispatch({ type: LOAD_ACCOUNT, payload: store_payload});
+                    const timerId = setInterval(()=>{dispatch(refreshAccount())}, 5*60*1000); // refresh the token every 5 mins
+                    dispatch({ type: LOAD_ACCOUNT, payload: store_payload, timerId});
                     history.push('/');
                 } else {
                     const error = new Error(res.error);
@@ -49,10 +65,11 @@ export const loadAccount = (payload, history) => dispatch => {
     })
 }
 
-export const freeAccount = (history) => dispatch => {
+export const freeAccount = (history) => (dispatch, getState) => {
     api.logUserOut() // this should delete the authentication cookie
     .then( res => {
         if (res.status === 200) {
+            clearInterval(getState().accountRedu.refresh_timer); // clear the refresh timer
             dispatch({type: FREE_ACCOUNT,}); // remove the retrieved client info from the store
             history.push('/');
         } else {
@@ -64,22 +81,6 @@ export const freeAccount = (history) => dispatch => {
         dispatch({type: ERROR_ACCOUNT, payload: err});
     })
 }
-
-export const refreshAccount = () => dispatch => {
-    api.refreshUserToken() // this will only work if our token is still valid
-    .then( res => {
-        if (res.status === 200) {
-            dispatch({type: REFRESH_ACCOUNT,}); // notify our store that the account was refreshed
-        } else {
-            const error = new Error(res.error);
-            throw error;// throw the error to our handler below
-        }
-    })
-    .catch( err => {
-        dispatch({type: ERROR_ACCOUNT, payload: err});
-    });
-}
-
 
 // actions are where you collect and package information for reducers, reducers are what actually manage
 // the data thats in the store

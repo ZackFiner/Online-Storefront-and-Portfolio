@@ -5,7 +5,8 @@ import {LOAD_ACCOUNT, FREE_ACCOUNT, ERROR_ACCOUNT, REFRESH_ACCOUNT} from '../act
 const defaultState = {
     userdata: {},
     loggedin: false,
-    last_refresh: 0
+    last_refresh: 0,
+    refresh_timer: -1,
 };
 
 const accounts = (state = defaultState, action) => {
@@ -16,13 +17,15 @@ const accounts = (state = defaultState, action) => {
                 userdata: {... action.payload},
                 loggedin: true,
                 last_refresh: Date.now(),
+                refresh_timer: action.timerId,
             };
         case FREE_ACCOUNT:
             return {
                 ... state,
                 userdata: {},
                 loggedin: false,
-                last_refresh: 0
+                last_refresh: 0,
+                refresh_timer: -1
             };
         case REFRESH_ACCOUNT:
             return {

@@ -3,6 +3,7 @@ import api from '../../api'
 export const LOAD_ACCOUNT = 'LOAD_ACCOUNT';
 export const FREE_ACCOUNT = 'FREE_ACCOUNT';
 export const ERROR_ACCOUNT = 'ERROR_ACCOUNT';
+export const REFRESH_ACCOUNT = 'REFRESH_ACCOUNT';
 
 // so apparently redux requires higher level functions
 // loadAccount is a higher level function, as it accepts an account_id and returns a function
@@ -62,6 +63,21 @@ export const freeAccount = (history) => dispatch => {
     .catch( err => {
         dispatch({type: ERROR_ACCOUNT, payload: err});
     })
+}
+
+export const refreshAccount = () => dispatch => {
+    api.refreshUserToken() // this will only work if our token is still valid
+    .then( res => {
+        if (res.status === 200) {
+            dispatch({type: REFRESH_ACCOUNT,}); // notify our store that the account was refreshed
+        } else {
+            const error = new Error(res.error);
+            throw error;// throw the error to our handler below
+        }
+    })
+    .catch( err => {
+        dispatch({type: ERROR_ACCOUNT, payload: err});
+    });
 }
 
 

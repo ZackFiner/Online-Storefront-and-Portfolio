@@ -257,7 +257,7 @@ getItems = async (req, res) => {
 }
 
 searchItems = async (req, res) => {
-    const body = JSON.parse(req.body.body);
+    const body = req.body;
     if (!body) {
         return res.status(400).json({success: false, error: "No body provided"});
     }
@@ -271,11 +271,7 @@ searchItems = async (req, res) => {
         {$text: {$search: searchtext}}, // search our text index
         {score: {$meta: "textScore"}}) // project the $meta text score field  
         .sort({score: { $meta: "textScore"}})
-    .then((err, items) => {
-        if (err) {
-            return res.status(500).json({ success: false, error: err });
-        }
-
+    .then((items) => {
         Promise.all(items.map(item => packageMedia(item)))
         .then( packagedItems => {
             return res.status(200).json({ success: true, data: packagedItems});

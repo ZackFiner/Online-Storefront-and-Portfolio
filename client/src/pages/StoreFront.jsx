@@ -14,7 +14,7 @@ class StoreFront extends Component {
     }
 
     render() {
-        return <ItemGrid />
+        return <Wrapper><ItemGrid /></Wrapper>
     }
 }
 

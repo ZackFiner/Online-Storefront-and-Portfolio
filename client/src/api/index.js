@@ -67,6 +67,7 @@ const apis = {
     updateItemById,
     deleteItemById,
     getItemById,
+    searchItems,
 
     getReviewById,
     insertReview,

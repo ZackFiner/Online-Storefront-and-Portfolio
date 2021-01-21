@@ -7,5 +7,6 @@ import ReviewView from './ReviewView';
 import MultiImageInput from './MultiImageInput';
 import ImageSelector from './ImageSelector';
 import AuthorizedRoute from './AuthorizedRoute';
+import ItemSearchBar from './ItemSearchBar'
 
-export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute };
+export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar };

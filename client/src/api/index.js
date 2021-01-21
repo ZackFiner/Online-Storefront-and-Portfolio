@@ -26,6 +26,7 @@ export const insertItem = payload => {
     return api.post(`/item`, formData, config);
 }
 export const getAllItems = () => api.get(`/items`);
+export const searchItems = payload => api.post(`/items/search`, payload);
 export const updateItemById = (id, payload) => {
     const {thumbnailImg, galleryImages, body} = payload;
     const formData = new FormData();
@@ -67,6 +68,7 @@ const apis = {
     updateItemById,
     deleteItemById,
     getItemById,
+    searchItems,
 
     getReviewById,
     insertReview,

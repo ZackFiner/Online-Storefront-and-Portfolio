@@ -109,8 +109,7 @@ do not both write to the same record at teh same time.
 */
 updateItem = async (req, res) => {
     const body = JSON.parse(req.body.body);
-    console.log(body);
-    console.log(req.params.id);
+
     /*******************************************************************************
      * Special Considerations:
      * 
@@ -241,7 +240,7 @@ getItemById = async (req, res) => {
 getItems = async (req, res) => {
     await StoreItem.find({}, (err, items) => {
         if (err) {
-            return res.status(400).json({ success: false, error: err});
+            return res.status(500).json({ success: false, error: err});
         }
 
         if (!items.length) {
@@ -257,12 +256,34 @@ getItems = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
+searchItems = async (req, res) => {
+    const body = req.body;
+    if (!body) {
+        return res.status(400).json({success: false, error: "No body provided"});
+    }
+    const searchtext = body.searchtext;
 
+    if (!searchtext) {
+        return res.status(400).json({success: false, error: "No search text provided"});
+    }
+
+    await StoreItem.find(
+        {$text: {$search: searchtext}}, // search our text index
+        {score: {$meta: "textScore"}}) // project the $meta text score field  
+        .sort({score: { $meta: "textScore"}})
+    .then((items) => {
+        Promise.all(items.map(item => packageMedia(item)))
+        .then( packagedItems => {
+            return res.status(200).json({ success: true, data: packagedItems});
+        });
+    }).catch(err => console.log(err));
+}
 
 module.exports = {
     createItem,
     updateItem,
     deleteItem,
     getItemById,
-    getItems
+    getItems,
+    searchItems
 }

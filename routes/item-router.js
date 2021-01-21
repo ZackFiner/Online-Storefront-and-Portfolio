@@ -2,6 +2,7 @@ const express = require('express');
 const {RoleCheckMiddleware} = require('../authorization')
 const ItemCtrl = require('../controllers/item-ctrl');
 const { imageParser } = require('../db');
+const { route } = require('./user-router');
 const router = express.Router();
 
 const itemImageCollector = imageParser.fields([
@@ -16,5 +17,6 @@ router.put('/item/:id', AdminRoleAuth, itemImageCollector, ItemCtrl.updateItem);
 router.delete('/item/:id', AdminRoleAuth, ItemCtrl.deleteItem);
 router.get('/item/:id', ItemCtrl.getItemById);
 router.get('/items', ItemCtrl.getItems);
+router.post('/items/search', ItemCtrl.searchItems);
 
 module.exports = router;

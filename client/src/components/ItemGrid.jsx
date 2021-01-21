@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import styled from 'styled-components';
 import ItemFrame from './ItemFrame';
+import ItemSearchBar from './ItemSearchBar';
 import api from '../api';
 
 const Wrapper = styled.div.attrs({
@@ -34,6 +35,14 @@ class ItemGrid extends Component {
         })
     }
 
+    displayItems = (items) => {
+        this.setState({ isLoading: true });
+        this.setState({
+            items: items,
+            isLoading: false,
+        })
+    }
+
     render() {
         const { items } = this.state;
         const itemFrames = items.map(itemData => {
@@ -41,7 +50,12 @@ class ItemGrid extends Component {
         })
         return(
             <Wrapper>
-                {itemFrames}
+                <Wrapper>
+                    <ItemSearchBar onSearch={this.displayItems}/>
+                </Wrapper>
+                <Wrapper>
+                    {itemFrames}
+                </Wrapper>
             </Wrapper>
         );
     }

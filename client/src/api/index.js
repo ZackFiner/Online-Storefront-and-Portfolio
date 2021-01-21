@@ -56,6 +56,7 @@ export const createUserAccount = payload => api.post(`/users`, payload);
 export const getUserData = (/*userID and Email should be attached during authentication*/) => api.get(`/users`, {withCredentials: true});
 export const authUser = payload => api.post(`/authenticate`, payload, {withCredentials: true});
 export const logUserOut = () => api.delete(`/authenticate`, {withCredentials: true});
+export const refreshUserToken = () => api.put(`/authenticate`, {/*The payload is the credentials*/}, {withCredentials: true});
 
 export const getMediaById = id => api.get(`/media/${id}`);
 
@@ -75,6 +76,7 @@ const apis = {
     getUserData,
     authUser,
     logUserOut,
+    refreshUserToken,
 
     getMediaById,
 }

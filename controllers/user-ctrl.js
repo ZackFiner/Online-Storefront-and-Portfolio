@@ -90,7 +90,7 @@ authUser = (req, res) => {
                     }); // cookies will expire 6 minutes from when they are set, we will need
                     // to implement an auto refresh feature on the front end or users will be logged out after 6 minutes
 
-                    return res.cookie('token', token, {expire: 360000+Date.now(), httpOnly: true}).sendStatus(200);
+                    return res.cookie('token', token, {httpOnly: true}).sendStatus(200);
                 }
             })
         }
@@ -148,4 +148,18 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
     })
 }
 
-module.exports = {createUser, getUserData, authUser, userLogOut}
+refreshUserToken = (req, res) => {
+    if (req.userdata) {// if the user has been authenticated and currently posesses a valid token
+        const token = jwt.sign(req.userdata, secret, { // create a new session token with more time
+            expiresIn: '6m' // refresh the expiration time to give the user another 6 minutes
+        });
+        // we keep the cookie as a session cookie so that it is delete when the browser is closed.
+        return res.cookie('token', token, {httpOnly: true}).sendStatus(200);
+    } else {
+        res.status(403).json({success: false, error:"No user data provided."})
+    }
+
+}
+
+
+module.exports = {createUser, getUserData, authUser, userLogOut, refreshUserToken};

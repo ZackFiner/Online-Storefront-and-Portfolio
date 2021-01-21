@@ -2,12 +2,23 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
-
+import {ActivitySensor, LogoutUser} from '../authentication';
 import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import store from '../redux/store';
+import freeAccount from '../redux/actions/accountAct';
+
 function App() {
+  
+  const session_manager = new ActivitySensor();
+  session_manager.addInactivityTrigger(LogoutUser, 1000*60*5) // logout after 5 minutes of inactivity
+  React.useEffect(()=>{
+    session_manager.attachListeners(window);
+    return () => session_manager.detachListeners(window);
+  });
+
   return (
     <Router>
       <NavBar />
@@ -22,7 +33,7 @@ function App() {
         <Route path="/" exact component={StoreFront} />
       </Switch>
     </Router>
-  );//note the :id tells react to await for a param called id when making the requenst.
+  );//note the :id tells react to await for a param called id when making the request.
   // this id can be configured using something like this.props.match.params.id
 }
 

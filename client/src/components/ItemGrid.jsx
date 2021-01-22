@@ -5,13 +5,17 @@ import ItemFrame from './ItemFrame';
 import ItemSearchBar from './ItemSearchBar';
 import api from '../api';
 
-const Wrapper = styled.div.attrs({
-    className: 'frame-group'
+const Wrapper = styled.div`
+`
+
+const ItemGridSquare = styled.div.attrs({
+    className: 'col-sm-4'
 })`
-    padding: 15px 15px 15px 15px;
-    display: inline-grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 20px;
+`
+
+const ItemFrames = styled.div.attrs({
+    className: 'frame-group row'
+})`
 `
 
 class ItemGrid extends Component {
@@ -46,16 +50,16 @@ class ItemGrid extends Component {
     render() {
         const { items } = this.state;
         const itemFrames = items.map(itemData => {
-            return <ItemFrame key={itemData._id} itemDataFromParent={itemData} />
+            return (<ItemGridSquare><ItemFrame key={itemData._id} itemDataFromParent={itemData} /></ItemGridSquare>)
         })
         return(
             <Wrapper>
                 <Wrapper>
                     <ItemSearchBar onSearch={this.displayItems}/>
                 </Wrapper>
-                <Wrapper>
+                <ItemFrames>
                     {itemFrames}
-                </Wrapper>
+                </ItemFrames>
             </Wrapper>
         );
     }

@@ -5,18 +5,31 @@ import ItemFrame from './ItemFrame';
 import ItemSearchBar from './ItemSearchBar';
 import api from '../api';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div.attrs({
+    className: 'modified-row row'
+})`
+    margin-left: 0px;
+    margin-right: 0px;
 `
 
 const ItemGridSquare = styled.div.attrs({
-    className: 'col-sm-4'
+    className: 'item-square col-4'
 })`
 `
 
 const ItemFrames = styled.div.attrs({
-    className: 'frame-group row'
+    className: 'frame-group row col-sm-9'
 })`
+    margin-left: 0px;
+    margin-right: 0px;
 `
+
+const SearchSideBar = styled.div.attrs({
+    className: "search-sidebar col col-sm-3"
+})`
+    padding: 20px;
+    background-color: #cfcfcf;
+`;
 
 class ItemGrid extends Component {
     constructor(props) {
@@ -54,9 +67,9 @@ class ItemGrid extends Component {
         })
         return(
             <Wrapper>
-                <Wrapper>
+                <SearchSideBar>
                     <ItemSearchBar onSearch={this.displayItems}/>
-                </Wrapper>
+                </SearchSideBar>
                 <ItemFrames>
                     {itemFrames}
                 </ItemFrames>

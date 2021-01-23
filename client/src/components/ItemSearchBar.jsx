@@ -7,10 +7,30 @@ import api from '../api';
 const SearchArea = styled.input.attrs({
     type: 'text'
 })`
+    border-style: none;
+    border-style: solid;
+    border-radius: 5px 0px 0px 5px;
+    border-right: none;
+    width: auto;
+    min-width: 0px;
+    background-color: #ffffff;
+    overflow: hidden;
+    &:active,&:focus {
+        outline:none;
+    }
 `
 const SearchButton = styled.button.attrs({
     
 })`
+    border-style: none;
+    border-style: solid;
+    border-radius: 0px 5px 5px 0px;
+    border-left: none;
+    background-color: #f1f1f1;
+
+    &:hover {
+        background-color: #e7e7e7;
+    }
 `
 const BarContainer = styled.div.attrs({
 

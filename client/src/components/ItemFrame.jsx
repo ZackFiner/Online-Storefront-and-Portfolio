@@ -19,7 +19,7 @@ const FrameBody = styled.div.attrs({
     cursor: pointer;
 
 `
-const CardTitle = styled.h3.attrs({
+const CardTitle = styled.h5.attrs({
     className: 'item-card-title card-title',
 })`
     margin-left: 10px;
@@ -32,7 +32,7 @@ const CardDetails = styled.p.attrs({
     font-color: gray;
     text-style: none;
 `
-const CardPrice = styled.h4.attrs({
+const CardPrice = styled.h6.attrs({
     className: 'item-card-bottomtext card-text',
 })`
     margin-left: 10px;
@@ -48,9 +48,6 @@ const CardLink =  styled.a.attrs({
         color: inherit;
     }
 `
-
-
-
 
 class ItemFrame extends Component {
     constructor(props) {

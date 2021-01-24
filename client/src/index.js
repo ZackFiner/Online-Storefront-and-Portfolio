@@ -4,8 +4,12 @@ import App from './app'
 
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import {refreshAccount} from './redux/actions/accountAct'
 
 const rootElement = document.getElementById('root');
+window.onload = event => { // ugly why to force token refresh on page load
+  store.dispatch(refreshAccount());
+}
 ReactDOM.render(
   <Provider store={store}>
     <App />

@@ -30,6 +30,7 @@ const accounts = (state = defaultState, action) => {
         case REFRESH_ACCOUNT:
             return {
                 ...state,
+                refresh_timer: action.timerId,
                 last_refresh: Date.now(),
             }
         case ERROR_ACCOUNT:

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ImageGallery from 'react-image-gallery';
 import '../../node_modules/react-image-gallery/styles/css/image-gallery.css' // AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-import {ReviewView} from '../components'
+import {ReviewView, ImageSlide} from '../components'
 
 import api from '../api';
 
@@ -63,7 +63,7 @@ class ItemView extends Component {
         return (
             <Wrapper>
                 <Title>{name}</Title>
-                <ImageGallery items={gallery_images} />
+                <ImageSlide items={gallery_images} />
                 <DescriptionArea>
                     <DescriptionText>{description}</DescriptionText>
                 </DescriptionArea>

@@ -8,5 +8,6 @@ import MultiImageInput from './MultiImageInput';
 import ImageSelector from './ImageSelector';
 import AuthorizedRoute from './AuthorizedRoute';
 import ItemSearchBar from './ItemSearchBar'
+import ImageSlide from './ImageSlide';
 
-export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar };
+export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

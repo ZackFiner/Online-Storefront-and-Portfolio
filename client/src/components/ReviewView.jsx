@@ -5,7 +5,26 @@ import api from '../api';
 const Wrapper = styled.div.attrs({
     className: `reviewbody-wrapper`
 })`
+    border-style: solid;
+    border-color: #cfcfcf;
+    border-width: 2px;
+    border-radius: 3px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    & * {
+        padding: 15px;
+        padding-bottom: 0px;
+        padding-right: 0px;
+    }
 `
+
+const ReviewHeader = styled.p.attrs({
+
+})`
+    border-bottom-style:solid;
+    border-bottom-width: 2px;
+    border-color: #cfcfcf;
+`;
 
 class ReviewView extends Component {
     constructor(props) {
@@ -34,8 +53,7 @@ class ReviewView extends Component {
         const {author, reviewText, rating} = this.state;
         return (
             <Wrapper>
-                <p>Written By: {author}</p>
-                <p>Rating: {rating}</p>
+                <ReviewHeader>Written By: {author} | Rating: {rating}</ReviewHeader>
                 <p>{reviewText}</p>
             </Wrapper>
         )

@@ -150,7 +150,8 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
 
 refreshUserToken = (req, res) => {
     if (req.userdata) {// if the user has been authenticated and currently posesses a valid token
-        const token = jwt.sign(req.userdata, secret, { // create a new session token with more time
+        const payload = {userdata: { ... req.userdata } }
+        const token = jwt.sign(payload, secret, { // create a new session token with more time
             expiresIn: '6m' // refresh the expiration time to give the user another 6 minutes
         });
         // we keep the cookie as a session cookie so that it is delete when the browser is closed.

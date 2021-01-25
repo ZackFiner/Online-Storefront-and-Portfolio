@@ -5,12 +5,9 @@ import api from '../api';
 const Wrapper = styled.div.attrs({
     className: `reviewbody-wrapper`
 })`
-    border-style: solid;
-    border-color: #cfcfcf;
-    border-width: 2px;
-    border-radius: 3px;
     margin-top: 2rem;
     margin-bottom: 1rem;
+    max-width: 50rem;
     & * {
         padding: 15px;
         padding-bottom: 0px;
@@ -18,13 +15,22 @@ const Wrapper = styled.div.attrs({
     }
 `
 
-const ReviewHeader = styled.p.attrs({
+const ReviewHeader = styled.div.attrs({
 
 })`
-    border-bottom-style:solid;
-    border-bottom-width: 2px;
-    border-color: #cfcfcf;
+    background-color: #cfcfcf;
+    border-radius: 3px 3px 0px 0px;
 `;
+
+const ReviewBody = styled.div.attrs({
+
+})`
+    border-radius: 0px 0px 3px 3px;
+    border-color: #cfcfcf;
+    border-width: 2px;
+    border-style: solid;
+    border-style-top: none;
+`
 
 class ReviewView extends Component {
     constructor(props) {
@@ -54,7 +60,7 @@ class ReviewView extends Component {
         return (
             <Wrapper>
                 <ReviewHeader>Written By: {author} | Rating: {rating}</ReviewHeader>
-                <p>{reviewText}</p>
+                <ReviewBody><p>{reviewText}</p></ReviewBody>
             </Wrapper>
         )
     }

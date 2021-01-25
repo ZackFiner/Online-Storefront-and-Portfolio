@@ -75,8 +75,14 @@ class ItemView extends Component {
         const {id, name, description, reviews, thumbnail_img, gallery_images, price, keywords} = this.state;
         const price_text = price ? `$${price}` : 'Not For Sale';
         const reviewsSection = reviews ? reviews.map( reviewId => {
-            return <ReviewView id={reviewId}/>
+            return <ReviewView key={reviewId} id={reviewId}/>
         }) : [];
+        let reviewArea = [];
+        if (reviews && reviews.length)
+            reviewArea = [
+            <h2>Reviews</h2>,
+            reviewsSection
+        ];
         return (
             <Wrapper>
                 <Title>{name}</Title>
@@ -90,9 +96,7 @@ class ItemView extends Component {
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
                 </ItemDetailsArea>
                 </RowWrapper>
-                
-                <h2>Reviews</h2>
-                {reviewsSection}
+                {reviewArea}
                 <Button><a href={`/items/view/${id}/review`}>Post Review</a></Button>
             </Wrapper>
         )

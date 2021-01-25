@@ -64,6 +64,7 @@ const SlideButtonArea = styled.div.attrs({
     className: 'img-btn-area'
 })`
     overflow-x: auto;
+    text-align: center;
     max-width: 50rem;
 `
 

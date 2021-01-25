@@ -30,11 +30,13 @@ export const refreshAccount = () => dispatch => {
             const timerId = setTimeout(()=>{dispatch(refreshAccount())}, 5*60*1000);
             dispatch({type: REFRESH_ACCOUNT, timerId}); // notify our store that the account was refreshed
         } else {
-            dispatch({type: FREE_ACCOUNT,}); // if the token couldn't be refreshed, notify the user that their session has ended
+           const error = new Error(res.error);
+            throw error;
         }
     })
     .catch( err => {
         dispatch({type: ERROR_ACCOUNT, payload: err});
+        dispatch(freeAccount()); // if the token couldn't be refreshed, notify the user that their session has ended
     });
 }
 

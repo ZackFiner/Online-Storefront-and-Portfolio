@@ -18,17 +18,23 @@ const ItemGridSquare = styled.div.attrs({
 `
 
 const ItemFrames = styled.div.attrs({
-    className: 'frame-group row col-sm-9'
+    className: 'frame-group row'
 })`
     margin-left: 0px;
     margin-right: 0px;
 `
 
-const SearchSideBar = styled.div.attrs({
-    className: "search-sidebar col col-sm-3"
+const TopSearchBar = styled.div.attrs({
+    className: "search-topbar row"
 })`
     padding: 20px;
     background-color: #cfcfcf;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    &>* {
+        margin-left: auto;
+    }
 `;
 
 class ItemGrid extends Component {
@@ -67,9 +73,7 @@ class ItemGrid extends Component {
         })
         return(
             <Wrapper>
-                <SearchSideBar>
-                    <ItemSearchBar onSearch={this.displayItems}/>
-                </SearchSideBar>
+                <TopSearchBar><ItemSearchBar onSearch={this.displayItems}/></TopSearchBar>
                 <ItemFrames>
                     {itemFrames}
                 </ItemFrames>

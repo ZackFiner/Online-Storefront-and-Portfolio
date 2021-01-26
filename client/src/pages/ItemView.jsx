@@ -33,7 +33,12 @@ const DescriptionArea = styled.div``
 const DescriptionText = styled.p``
 const Button = styled.button.attrs({
     className: `btn btn-danger`
-})``;
+})`
+    & a,& a:hover,& a:visited{
+        color: white;
+        text-decoration: none;
+    }
+`;
 
 class ItemView extends Component {
     constructor(props) {

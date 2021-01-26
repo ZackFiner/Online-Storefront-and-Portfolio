@@ -151,7 +151,7 @@ class ItemUpdate extends Component {
         const {name, description, thumbnail_img, gallery_images, keywords, price, dataLoaded} = this.state;
         return(
         <Wrapper>
-                <Title>Create Item</Title>
+                <Title>Edit Item</Title>
                 <FormWrapper onSubmit={this.handelIncludeItem}>
                     <StyledComponents.TextInputSection>
                         <Label>Name</Label>
@@ -167,7 +167,8 @@ class ItemUpdate extends Component {
                         <StyledComponents.BigTextArea
                             name={`description`}
                             onChange={this.handleUpdateState}
-                        >{description}</StyledComponents.BigTextArea>
+                            value={description}
+                        ></StyledComponents.BigTextArea>
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
                         <Label>Keywords</Label>
@@ -184,6 +185,7 @@ class ItemUpdate extends Component {
                         <StyledComponents.CashInput
                             name={`price`}
                             onChange={this.handleUpdateState}
+                            value={price}
                         />
                     </StyledComponents.TextInputSection>
                     <Label>Thumbnail</Label>

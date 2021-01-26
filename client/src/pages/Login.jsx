@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import api from '../api';
-
+import {StyledComponents} from '../components'
 import {loadAccount} from '../redux/actions/accountAct'
 import {connect} from 'react-redux';
 
 const Wrapper = styled.div.attrs({
 })`
     padding-top: 5rem;
-`
-const InputWrapper = styled.div.attrs({
-    className: 'form-group',
-})`
 `
 
 const FormWrapper = styled.form.attrs({
@@ -29,7 +25,6 @@ const FormWrapper = styled.form.attrs({
 `
 
 const Label = styled.label`
-    margin: 5px;
 `
 
 const InputText = styled.input.attrs({
@@ -43,20 +38,6 @@ const PasswordInput = styled.input.attrs({
     type: 'password',
     placeholder: 'Password'
 })`
-`
-
-const SubmitButton = styled.input.attrs({
-    className: `btn btn-primary`,
-    type: 'submit',
-    value: 'Login',
-})`
-    margin: 15px 15px 15px 15px;
-`
-
-const CancelButton = styled.button.attrs({
-    className: `btn btn-danger`,
-})`
-    margin: 15px 15px 15px 15px;
 `
 
 class LoginPage extends Component {
@@ -91,15 +72,15 @@ class LoginPage extends Component {
                 
                 <FormWrapper onSubmit={this.handleSubmit}>
                     <h2>Login</h2>
-                    <InputWrapper>
+                    <StyledComponents.TextInputSection>
                         <Label>Email</Label>
                         <InputText onChange={this.handleChangeEmailText} />
-                    </InputWrapper>
-                    <InputWrapper>
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
                         <Label>Password</Label>
                         <PasswordInput onChange={this.handleChangePasswordText} />
-                    </InputWrapper>
-                    <SubmitButton />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.Submit value="Login" />
                 </FormWrapper>
             </Wrapper>
         )

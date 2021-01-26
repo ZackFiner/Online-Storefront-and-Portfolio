@@ -9,5 +9,6 @@ import ImageSelector from './ImageSelector';
 import AuthorizedRoute from './AuthorizedRoute';
 import ItemSearchBar from './ItemSearchBar'
 import ImageSlide from './ImageSlide';
+import StyledComponents from './StyledComponents'
 
-export { Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export { StyledComponents, Links, Logo, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

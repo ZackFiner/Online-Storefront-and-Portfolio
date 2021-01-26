@@ -3,12 +3,17 @@ import {Link} from 'react-router-dom';
 import api from '../api';
 
 import styled from 'styled-components';
-import { MultiImageInput, ImageSelector } from '../components';
+import { MultiImageInput, ImageSelector, StyledComponents } from '../components';
 import { connect } from 'mongoose';
 
 const Title = styled.h1.attrs({
     className: 'h1',
 })``
+
+const FormWrapper = styled.form.attrs({
+
+})`
+`
 
 const Wrapper = styled.div.attrs({
     className: 'form-group',
@@ -46,6 +51,8 @@ class ItemUpdate extends Component {
             name: '',
             reviews: [],
             description: '',
+            keywords: '',
+            price: null,
             thumbnail_img: '',
             gallery_images: [],
             dataLoaded: false,
@@ -92,6 +99,15 @@ class ItemUpdate extends Component {
         this.updatePacket[event.target.name] = event.target.value;
     }
 
+    handleUpdateKeywords = async (event) => {
+        const keywords = event.target.value;
+        this.setState({
+            keywords,
+        });
+        const valid_keyword_list = keywords.split(',').filter(x => x).map(x => x.trim());
+        this.updatePacket.keywords = valid_keyword_list;
+    }
+
     handleUpdateItem = async () => {
         console.log('sending packet')
         const {id} = this.state;
@@ -109,6 +125,8 @@ class ItemUpdate extends Component {
                 name: '',
                 reviews: [],
                 description: '',
+                keywords: '',
+                price: null,
                 thumbnail_img: '',
                 gallery_images: [],
                 dataLoaded: true,
@@ -130,38 +148,56 @@ class ItemUpdate extends Component {
     }
 
     render() {
-        const {name, description, thumbnail_img, gallery_images, dataLoaded} = this.state;
+        const {name, description, thumbnail_img, gallery_images, keywords, price, dataLoaded} = this.state;
         return(
-            <Wrapper>
-                <Title>Update Item</Title>
-                <Label>Name: </Label>
-                <InputText 
-                    type = "text"
-                    value={name}
-                    name={`name`}
-                    onChange={this.handleUpdateState}
-                />
-                <Label>Description: </Label>
-                <InputText 
-                    type = "text"
-                    value={description}
-                    name={`description`}
-                    onChange={this.handleUpdateState}
-                />
-                <Label>Thumbnail: </Label>
-                {/*<input
+        <Wrapper>
+                <Title>Create Item</Title>
+                <FormWrapper onSubmit={this.handelIncludeItem}>
+                    <StyledComponents.TextInputSection>
+                        <Label>Name</Label>
+                        <InputText 
+                            type = "text"
+                            value={name}
+                            name={`name`}
+                            onChange={this.handleUpdateKeywords}
+                        />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Description</Label>
+                        <StyledComponents.BigTextArea
+                            name={`description`}
+                            onChange={this.handleUpdateState}
+                        >{description}</StyledComponents.BigTextArea>
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Keywords</Label>
+                        <InputText
+                            type="text"
+                            value={keywords}
+                            name={`keywords`}
+                            placeholder="Keyword1, Keyword2, ..."
+                            onChange={this.handleUpdateState}
+                        />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Price</Label>
+                        <StyledComponents.CashInput
+                            name={`price`}
+                            onChange={this.handleUpdateState}
+                        />
+                    </StyledComponents.TextInputSection>
+                    <Label>Thumbnail</Label>
+                    {/*<InputImage 
                     type="file"
-                    name={`thumbnail_img`}
-                    onChange={this.handleChangeThumbnail}
+                    onChange = {this.handleFileUpload}
+                    ref={this.fileInput}
                 />*/}
-                <ImageSelector prevUrl={thumbnail_img ? thumbnail_img.path : ''} onChange={this.handleChangeThumbnail}/>
-                <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
-                <Button onClick={this.handleUpdateItem}>Update</Button>
-                <Link to="/items/list">
-                <CancelButton>Cancel</CancelButton>
-                </Link>
-            </Wrapper>
-        );
+                    <ImageSelector prevUrl={thumbnail_img ? thumbnail_img.path : ''} onChange={this.handleChangeThumbnail}/>
+                    <Label>Gallery Input</Label>
+                    <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
+                    <StyledComponents.Submit value='Insert Item' />
+                </FormWrapper>
+            </Wrapper>);
     }
 }
 

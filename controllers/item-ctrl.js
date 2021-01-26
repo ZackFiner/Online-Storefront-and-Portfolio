@@ -59,7 +59,7 @@ createItem = async (req, res) => {
         return res.status(400).json({success: false, error: 'Issue parsing item'});
     }
 
-    if (req.files['selectedThumbnail'][0]) { //if the user specified a file
+    if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
         const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
         if (image_media) {
             try {

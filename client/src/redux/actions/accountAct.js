@@ -24,18 +24,19 @@ export const loadAccount = userdata => { return {
 }}*/
 
 export const refreshAccount = () => dispatch => {
-    console.log("called");
     api.refreshUserToken() // this will only work if our token is still valid
     .then( res => {
         if (res.status === 200) {
-            dispatch({type: REFRESH_ACCOUNT,}); // notify our store that the account was refreshed
+            const timerId = setTimeout(()=>{dispatch(refreshAccount())}, 5*60*1000);
+            dispatch({type: REFRESH_ACCOUNT, timerId}); // notify our store that the account was refreshed
         } else {
-            const error = new Error(res.error);
-            throw error;// throw the error to our handler below
+           const error = new Error(res.error);
+            throw error;
         }
     })
     .catch( err => {
         dispatch({type: ERROR_ACCOUNT, payload: err});
+        dispatch(freeAccount()); // if the token couldn't be refreshed, notify the user that their session has ended
     });
 }
 
@@ -47,7 +48,7 @@ export const loadAccount = (payload, history) => dispatch => {
             api.getUserData().then(res => {
                 if (res.status === 200) {
                     const store_payload = res.data;
-                    const timerId = setInterval(()=>{dispatch(refreshAccount())}, 5*60*1000); // refresh the token every 5 mins
+                    const timerId = setTimeout(()=>{dispatch(refreshAccount())}, 5*60*1000); // refresh the token every 5 mins
                     dispatch({ type: LOAD_ACCOUNT, payload: store_payload, timerId});
                     history.push('/');
                 } else {
@@ -69,7 +70,7 @@ export const freeAccount = (history) => (dispatch, getState) => {
     api.logUserOut() // this should delete the authentication cookie
     .then( res => {
         if (res.status === 200) {
-            clearInterval(getState().accountRedu.refresh_timer); // clear the refresh timer
+            clearTimeout(getState().accountRedu.refresh_timer); // clear the refresh timer
             dispatch({type: FREE_ACCOUNT,}); // remove the retrieved client info from the store
             history.push('/');
         } else {

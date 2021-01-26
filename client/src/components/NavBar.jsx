@@ -5,16 +5,20 @@ import Logo from './Logo';
 import Links from './Links';
 import LoginIndicator from './LoginIndicator';
 
-const Container = styled.div.attrs({
+const Container = styled.div.attrs({ // make the navbar occupy all the space at the top
     className: 'container',
 })`
-    height: 150px;
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 `
 
 const Nav = styled.nav.attrs({
     className: 'navbar navbar-expand-lg navbar-dark bg-dark',
 })`
-    margin-bottom: 20px;
 `
 
 class NavBar extends Component {

@@ -1,31 +1,24 @@
 import React, {Component} from 'react'
 import styled from 'styled-components'
+import {StyledComponents} from '../components'
 import api from '../api'
 
 const Wrapper = styled.div.attrs({
-    className: 'form-group',
+    
 })`
-`
-
-const TextInputSection = styled.div.attrs({
-    className: 'form-text-input-area'
-})`
-    display: grid-inline;
-    grid-template-columns: auto auto;
 `
 const Label = styled.label`
-    margin: 5px;
 `
 
 const InputText = styled.input.attrs({
     className: 'form-control',
 })`
-    margin: 5px;
 `
-const Button = styled.button.attrs({
-    className: `btn btn-primary`,
+
+const FormWrapper = styled.form.attrs({
+
 })`
-    margin: 15px 15px 15px 15px;
+    padding: 1rem;
 `
 
 const CancelButton = styled.button.attrs({
@@ -78,13 +71,21 @@ class CreateAccountPage extends Component {
     render() {
         return (
             <Wrapper>
-                <TextInputSection>
-                    <Label>Account Email</Label><InputText onChange={this.handleChangeEmailText} />
-                    <Label>Password</Label><InputText onChange={this.handleChangePasswordText} />
-                    <Label>Repeat Password</Label><InputText onChange={this.handleChangePasswordVerifyText} />
-                </TextInputSection>
-                <Button onClick = {this.handleSubmit}>Submit</Button>
-                <CancelButton>Cancel</CancelButton>
+                <FormWrapper onSubmit={this.handleSubmit}>
+                    <StyledComponents.TextInputSection>
+                        <Label>Account Email</Label>
+                        <InputText placeholder="example@mail.com" onChange={this.handleChangeEmailText} />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Password</Label>
+                        <InputText type="password" placeholder="Password" onChange={this.handleChangePasswordText} />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Repeat Password</Label>
+                        <InputText type="password" placeholder="Re-type Password" onChange={this.handleChangePasswordVerifyText} />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.Submit value="Create Account"/>
+                </FormWrapper>      
             </Wrapper>
         )
     }

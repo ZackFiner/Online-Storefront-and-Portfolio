@@ -6,13 +6,36 @@ import ItemSearchBar from './ItemSearchBar';
 import api from '../api';
 
 const Wrapper = styled.div.attrs({
-    className: 'frame-group'
+    className: 'modified-row row'
 })`
-    padding: 15px 15px 15px 15px;
-    display: inline-grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
 `
+
+const ItemGridSquare = styled.div.attrs({
+    className: 'item-square col-4'
+})`
+`
+
+const ItemFrames = styled.div.attrs({
+    className: 'frame-group row'
+})`
+    margin-left: 0px;
+    margin-right: 0px;
+`
+
+const TopSearchBar = styled.div.attrs({
+    className: "search-topbar row"
+})`
+    padding: 20px;
+    background-color: #cfcfcf;
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+    &>* {
+        margin-left: auto;
+    }
+`;
 
 class ItemGrid extends Component {
     constructor(props) {
@@ -46,16 +69,14 @@ class ItemGrid extends Component {
     render() {
         const { items } = this.state;
         const itemFrames = items.map(itemData => {
-            return <ItemFrame key={itemData._id} itemDataFromParent={itemData} />
+            return (<ItemGridSquare><ItemFrame key={itemData._id} itemDataFromParent={itemData} /></ItemGridSquare>)
         })
         return(
             <Wrapper>
-                <Wrapper>
-                    <ItemSearchBar onSearch={this.displayItems}/>
-                </Wrapper>
-                <Wrapper>
+                <TopSearchBar><ItemSearchBar onSearch={this.displayItems}/></TopSearchBar>
+                <ItemFrames>
                     {itemFrames}
-                </Wrapper>
+                </ItemFrames>
             </Wrapper>
         );
     }

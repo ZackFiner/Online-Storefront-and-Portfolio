@@ -21,29 +21,10 @@ class Links extends Component {
     render() {
         const {userdata, loggedin} = this.props;
         let link_items = null;
-        if (isMemberofRole(userdata, 'admin')) {
-            link_items = (<List>
-                <Item>
-                    <Link to="/items/list" className="nav-link">
-                        List Items
-                    </Link>
-                </Item>
-                <Item>
-                    <Link to="/items/create" className="nav-link">
-                        Post Item
-                    </Link>
-                </Item>
-                <Item>
-                    <Link to="/items/update/:id" className="nav-link">
-                        Update Item
-                    </Link>
-                </Item>
-            </List>);
-        }
         return (
             <React.Fragment>
                 <Link to="/" className="navbar-brand">
-                    Boilerplate MERN App
+                    Storefront
                 </Link>
                 <Collapse>
                     {link_items}

@@ -2,22 +2,43 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import ImageGallery from 'react-image-gallery';
 import '../../node_modules/react-image-gallery/styles/css/image-gallery.css' // AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-import {ReviewView} from '../components'
+import {ReviewView, ImageSlide} from '../components'
 
 import api from '../api';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div.attrs({
+})`
+    margin: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 0;
 `;
 
 const Title = styled.h1.attrs({
     className: `Item-View-Title`,
 })`
 `
+const ItemDetailsArea = styled.div.attrs({
+    className: 'col col-sm-4'
+})`
+    border-radius: 5px 0px 0px 5px;
+    background-color: #cfcfcf;
+    padding: 2rem;
+`
+const RowWrapper = styled.div.attrs({
+    className: 'row'
+})`
+`
+
 const DescriptionArea = styled.div``
 const DescriptionText = styled.p``
 const Button = styled.button.attrs({
     className: `btn btn-danger`
-})``;
+})`
+    & a,& a:hover,& a:visited{
+        color: white;
+        text-decoration: none;
+    }
+`;
 
 class ItemView extends Component {
     constructor(props) {
@@ -56,19 +77,32 @@ class ItemView extends Component {
     }
 
     render() {
-        const {id, name, description, reviews, thumbnail_img, gallery_images} = this.state;
+        const {id, name, description, reviews, thumbnail_img, gallery_images, price, keywords} = this.state;
+        const price_text = price ? `$${price}` : 'Not For Sale';
         const reviewsSection = reviews ? reviews.map( reviewId => {
-            return <ReviewView id={reviewId}/>
+            return <ReviewView key={reviewId} id={reviewId}/>
         }) : [];
+        let reviewArea = [];
+        if (reviews && reviews.length)
+            reviewArea = [
+            <h2>Reviews</h2>,
+            reviewsSection
+        ];
         return (
             <Wrapper>
                 <Title>{name}</Title>
-                <ImageGallery items={gallery_images} />
-                <DescriptionArea>
+                <RowWrapper>
+                    <div class="col col-sm-8"><ImageSlide items={gallery_images} />
+                    <DescriptionArea>
                     <DescriptionText>{description}</DescriptionText>
-                </DescriptionArea>
+                </DescriptionArea></div>
+                <ItemDetailsArea>
+                    <h3>Price: {price_text}</h3>
+                    <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
+                </ItemDetailsArea>
+                </RowWrapper>
+                {reviewArea}
                 <Button><a href={`/items/view/${id}/review`}>Post Review</a></Button>
-                {reviewsSection}
             </Wrapper>
         )
     }

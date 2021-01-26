@@ -12,12 +12,13 @@ import freeAccount from '../redux/actions/accountAct';
 
 function App() {
   
-  const session_manager = new ActivitySensor();
+  /*const session_manager = new ActivitySensor();
+  // this only works for 1 tab a different approach will be needed for multiple tabs
   session_manager.addInactivityTrigger(LogoutUser, 1000*60*5) // logout after 5 minutes of inactivity
   React.useEffect(()=>{
     session_manager.attachListeners(window);
     return () => session_manager.detachListeners(window);
-  });
+  });*/
 
   return (
     <Router>

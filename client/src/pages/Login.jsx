@@ -1,40 +1,43 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
 import api from '../api';
-
+import {StyledComponents} from '../components'
 import {loadAccount} from '../redux/actions/accountAct'
 import {connect} from 'react-redux';
 
 const Wrapper = styled.div.attrs({
-    className: 'form-group',
 })`
+    padding-top: 5rem;
 `
 
-const TextInputSection = styled.div.attrs({
-    className: 'form-text-input-area'
+const FormWrapper = styled.form.attrs({
 })`
-    display: grid-inline;
-    grid-template-columns: auto auto;
+    background-color: #f0f0f0;
+    max-width: 20rem;
+    max-height: 70rem;
+    padding: 1rem;
+    margin: auto;
+    border-radius: 10px;
+    border-color: #efefef;
+    border-style: solid;
+    border-width: 2px;
+
 `
+
 const Label = styled.label`
-    margin: 5px;
 `
 
 const InputText = styled.input.attrs({
     className: 'form-control',
+    placeholder: 'example@email.com',
 })`
-    margin: 5px;
-`
-const Button = styled.button.attrs({
-    className: `btn btn-primary`,
-})`
-    margin: 15px 15px 15px 15px;
 `
 
-const CancelButton = styled.button.attrs({
-    className: `btn btn-danger`,
+const PasswordInput = styled.input.attrs({
+    className: 'form-control',
+    type: 'password',
+    placeholder: 'Password'
 })`
-    margin: 15px 15px 15px 15px;
 `
 
 class LoginPage extends Component {
@@ -66,12 +69,19 @@ class LoginPage extends Component {
     render() {
         return (
             <Wrapper>
-                <TextInputSection>
-                    <Label>Email</Label><InputText onChange={this.handleChangeEmailText} />
-                    <Label>Password</Label><InputText onChange={this.handleChangePasswordText} />
-                </TextInputSection>
-                <Button onClick = {this.handleSubmit}>Submit</Button>
-                <CancelButton>Cancel</CancelButton>
+                
+                <FormWrapper onSubmit={this.handleSubmit}>
+                    <h2>Login</h2>
+                    <StyledComponents.TextInputSection>
+                        <Label>Email</Label>
+                        <InputText onChange={this.handleChangeEmailText} />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.TextInputSection>
+                        <Label>Password</Label>
+                        <PasswordInput onChange={this.handleChangePasswordText} />
+                    </StyledComponents.TextInputSection>
+                    <StyledComponents.Submit value="Login" />
+                </FormWrapper>
             </Wrapper>
         )
     }

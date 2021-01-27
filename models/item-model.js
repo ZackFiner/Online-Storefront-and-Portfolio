@@ -9,6 +9,8 @@ const StoreItemSchema = new Schema(
         description: {type: String, required: true},
         keywords: {type: [String], required: false},
         thumbnail_img: {type: mongoose.Types.ObjectId, required: false},
+        price: {type: mongoose.Types.Decimal128, required: false},
+        categories: {type: [String], required: true, default:['misc']}
     },
     {timestamps: true},
 )

@@ -53,18 +53,20 @@ class ItemFrame extends Component {
     constructor(props) {
         super(props);
 
-        const {_id, name, description, thumbnail_img} = this.props.itemDataFromParent;//this can be specified in the tag
+        const {_id, name, description, thumbnail_img, keywords, price} = this.props.itemDataFromParent;//this can be specified in the tag
         this.state = {
             id: _id,
             name: name,
             description: description,
             thumbnail_img: thumbnail_img,
+            keywords,
+            price,
         }
     }
 
     render() {
         const {id, name, description, thumbnail_img, keywords, price} = this.state;
-        const price_text = price ? `$${price}`: "Not for Sale" 
+        const price_text = price ? `$${price.$numberDecimal}`: "Not for Sale" 
         const keyword_text = keywords && keywords.length ? keywords.join(', '): 'none'; 
         return(
             

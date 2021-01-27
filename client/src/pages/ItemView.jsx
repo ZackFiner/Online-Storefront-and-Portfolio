@@ -70,6 +70,8 @@ class ItemView extends Component {
                 description: item.data.data.description,
                 reviews: item.data.data.reviews,
                 thumbnail_img: item.data.data.thumbnail_img,
+                price: item.data.data.price,
+                keywords: item.data.data.keywords,
                 gallery_images: gallery_images,
                 isLoading: false,
             })
@@ -78,7 +80,7 @@ class ItemView extends Component {
 
     render() {
         const {id, name, description, reviews, thumbnail_img, gallery_images, price, keywords} = this.state;
-        const price_text = price ? `$${price}` : 'Not For Sale';
+        const price_text = price ? `$${price.$numberDecimal}` : 'Not For Sale';
         const reviewsSection = reviews ? reviews.map( reviewId => {
             return <ReviewView key={reviewId} id={reviewId}/>
         }) : [];

@@ -23,8 +23,11 @@ class Links extends Component {
         let link_items = null;
         return (
             <React.Fragment>
-                <Link to="/" className="navbar-brand">
+                <Link to="/storefront" className="navbar-brand">
                     Storefront
+                </Link>
+                <Link to="/" className="navbar-brand">
+                    FrontPage
                 </Link>
                 <Collapse>
                     {link_items}

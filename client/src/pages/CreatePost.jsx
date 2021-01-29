@@ -4,6 +4,7 @@ import api, { createPost } from '../api';
 import styled from 'styled-components';
 import {StyledComponents} from '../components'
 import RichTextEditor from 'react-rte'
+import {withRouter} from 'react-router-dom'
 
 const Wrapper = styled.div.attrs({
     className:'form-group'
@@ -69,20 +70,23 @@ class PostEditor extends Component {
         });
     }
     
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
+        event.preventDefault();
         const {header, content} = this.state;
         const payload = {header, content: content.toString('html')};
         if (this.state.edit) {
             api.editPost(this.state.id, payload).then(res => {
-                console.log(res);
                 const id = res.data.id;
                 this.props.history.push(`/frontpage/post/${id}`);
             });
         } else {
             api.createPost(payload).then(res => {
-                console.log(res);
                 const id = res.data.id;
                 this.props.history.push(`/frontpage/post/${id}`);
+                this.setState({
+                    id: id,
+                    edit:true,
+                });
             });
         }
     }

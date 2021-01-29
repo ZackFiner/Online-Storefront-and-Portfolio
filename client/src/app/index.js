@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 import {ActivitySensor, LogoutUser} from '../authentication';
-import {PostEditor, ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
+import {FrontPage, PostEditor, ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,7 +19,7 @@ function App() {
     session_manager.attachListeners(window);
     return () => session_manager.detachListeners(window);
   });*/
-
+  
   return (
     <Router>
       <NavBar />
@@ -31,9 +31,10 @@ function App() {
         <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['admin']} />
         <Route path="/items/view/:id" exact component={ItemView} />
         <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['user']} />
-        <Route path="/" exact component={StoreFront} />
+        <Route path="/storefront" exact component={StoreFront} />
         <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['admin']} />
         <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['admin']} />
+        <Route path="/" exact component={FrontPage}/>
       </Switch>
     </Router>
   );//note the :id tells react to await for a param called id when making the request.

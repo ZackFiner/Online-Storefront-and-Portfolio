@@ -1,28 +1,39 @@
 import React, {Component} from 'react';
-import api from '../api';
+import api, { createPost } from '../api';
 
 import styled from 'styled-components';
 import {StyledComponents} from '../components'
+import RichTextEditor from 'react-rte'
 
 const Wrapper = styled.div.attrs({
-
+    className:'form-group'
 })`
+    margin: 0 30px;
 `
 
 const FormWrapper = styled.form.attrs({
 
 })`
 `
+const Label = styled.label`
+    margin: 5px;
+`
 
+const InputText = styled.input.attrs({
+    className: 'form-control',
+})`
+    margin: 5px;
+`
 class PostEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: props?.match?.params?.id,
             header: '',
-            content: '',
+            content: RichTextEditor.createEmptyValue(),
             index: null,
             isLoading: false,
+            edit: false,
         };
     }
 
@@ -33,10 +44,12 @@ class PostEditor extends Component {
         if (this.state.id) {
             api.getPostById(this.state.id).then(value => {
                 this.setState({
+                    id: value.data.data._id,
                     header: value.data.data.header,
-                    content: value.data.data.content,
+                    content: RichTextEditor.createValueFromString(value.data.data.content, 'html'),
                     index: value.data.data.index,
                     isLoading: false,
+                    edit: true,
                 });
             });
         }
@@ -50,25 +63,46 @@ class PostEditor extends Component {
         })
     }
 
-    handleSubmit = () => {
-        const {header, content} = this.state;
-        const payload = {header, content};
-
-        api.insertItem(payload).then(res => {
-            console.log(res);
-            // re-route to
-            //this.props.history.push();
+    handleEditorChange = value => {
+        this.setState({
+            content: value,
         });
+    }
+    
+    handleSubmit = (event) => {
+        const {header, content} = this.state;
+        const payload = {header, content: content.toString('html')};
+        if (this.state.edit) {
+            api.editPost(this.state.id, payload).then(res => {
+                console.log(res);
+                const id = res.data.id;
+                this.props.history.push(`/frontpage/post/${id}`);
+            });
+        } else {
+            api.createPost(payload).then(res => {
+                console.log(res);
+                const id = res.data.id;
+                this.props.history.push(`/frontpage/post/${id}`);
+            });
+        }
     }
 
     render() {
         return (<Wrapper>
             <FormWrapper onSubmit={this.handleSubmit}>
                 <StyledComponents.TextInputSection>
-                    
+                    <Label>Header</Label>
+                    <InputText name='header' onChange={this.handleValueChange} value={this.state.header}/>
                 </StyledComponents.TextInputSection>
-                <StyledComponents.Submit value='Post'/>
+                <RichTextEditor
+                    name='content'
+                    value={this.state.content}
+                    onChange={this.handleEditorChange}
+                />
+                <StyledComponents.Submit value='Save'/>
             </FormWrapper>
         </Wrapper>);
     }
 }
+
+export default PostEditor;

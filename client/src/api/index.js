@@ -61,11 +61,11 @@ export const refreshUserToken = () => api.put(`/authenticate`, {/*The payload is
 
 export const getMediaById = id => api.get(`/media/${id}`);
 
-export const createPost = payload => api.post(`/posts`, payload, {withCredentials: true});
-export const editPost = (id, payload) => api.put(`/posts/${id}`, payload, {withCredentials: true});
-export const deletePost = id => api.delete(`/posts/${id}`, {withCredentials: true});
-export const getPostById = id => api.get(`/posts/${id}`);
-export const getPosts = () => api.get(`/posts`);
+export const createPost = payload => api.post(`/frontpage`, payload, {withCredentials: true});
+export const editPost = (id, payload) => api.put(`/frontpage/${id}`, payload, {withCredentials: true});
+export const deletePost = id => api.delete(`/frontpage/${id}`, {withCredentials: true});
+export const getPostById = id => api.get(`/frontpage/${id}`);
+export const getPosts = () => api.get(`/frontpage`);
 
 const apis = {
     insertItem,

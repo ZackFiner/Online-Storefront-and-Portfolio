@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 import {ActivitySensor, LogoutUser} from '../authentication';
-import {ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
+import {PostEditor, ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -32,6 +32,8 @@ function App() {
         <Route path="/items/view/:id" exact component={ItemView} />
         <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['user']} />
         <Route path="/" exact component={StoreFront} />
+        <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['admin']} />
+        <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['admin']} />
       </Switch>
     </Router>
   );//note the :id tells react to await for a param called id when making the request.

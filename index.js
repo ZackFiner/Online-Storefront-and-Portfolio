@@ -32,7 +32,7 @@ app.use('/api', reviewRouter);
 app.use('/api/users', userRouter);
 app.use('/api/authenticate', authRouter);
 app.use('/api/media', mediaRouter);
-app.use('/api/posts', postRouter);
+app.use('/api/frontpage', postRouter);
 
 init_func().then(()=>{
     app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

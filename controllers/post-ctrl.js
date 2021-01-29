@@ -13,7 +13,8 @@ const createPost = (req, res) => {
         });
     }
 
-    const {raw_header, raw_content} = body;
+    const raw_header = body.header;
+    const raw_content = body.content;
     if (!raw_header || !raw_content) {
         return res.status(400).json({
             success: false,
@@ -58,14 +59,15 @@ const editPost = (req, res) => {
         });
     }
 
-    const {raw_header, raw_content} = body;
+    const raw_header = body.header;
+    const raw_content = body.content;
 
     // sanitize
     const header = raw_header ? sanitize(sanitizeHtml(raw_header)) : undefined;
     const content = raw_content ? sanitize(sanitizeHtml(raw_content)) : undefined;
     const id = sanitize(raw_id);
 
-    PostModel.findOne({_id: id}, (err, res)=>{
+    PostModel.findOne({_id: id}, (err, value)=>{
         if (err) {
             console.log(err);
             return res.status(500).json({
@@ -73,22 +75,22 @@ const editPost = (req, res) => {
                 error: `An error occured while processing request`
             });
         }
-        if (!res) {
+        if (!value) {
             return res.status(404).json({
                 success: false,
                 error: `No document with that id exists`
             });
         }
         if (header)
-            res.header = header;
+            value.header = header;
         if (content)
-            res.content = content;
+            value.content = content;
         
-        res.save().then(value => {
-            if (value) {
+        value.save().then(doc => {
+            if (doc) {
                 return res.status(200).json({
                     success: true,
-                    id: value._id
+                    id: doc._id
                 });
             } else {
                 return res.status(500).json({
@@ -116,7 +118,7 @@ const deletePost = (req, res) => {
     }
     id = sanitize(raw_id);
 
-    PostModel.findOneAndDelete({_id: id}, (err, res) => {
+    PostModel.findOneAndDelete({_id: id}, (err, value) => {
         if (err) {
             console.log(err);
             return res.status(500).json({
@@ -125,7 +127,7 @@ const deletePost = (req, res) => {
             });
         }
 
-        if (!res) {
+        if (!value) {
             return res.status(404).json({
                 success: false,
                 error: `No document with that id exists`
@@ -134,7 +136,7 @@ const deletePost = (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: res,
+            data: value,
         })
     }).catch(error => {
         console.log(error);
@@ -155,7 +157,7 @@ const getPost = (req, res) => {
     }
     const id = sanitize(raw_id);
 
-    PostModel.findOne({_id: id}, (err, res)=>{
+    PostModel.findOne({_id: id}, (err, value)=>{
         if (err) {
             console.log(err);
             return res.status(500).json({
@@ -164,7 +166,7 @@ const getPost = (req, res) => {
             });
         }
 
-        if (!res) {
+        if (!value) {
             return res.status(404).json({
                 success: false,
                 error: `No document with that id exists`
@@ -173,7 +175,7 @@ const getPost = (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: res,
+            data: value,
         });
     }).catch(error => {
         console.log(error);
@@ -185,7 +187,7 @@ const getPost = (req, res) => {
 }
 
 const getPosts = (req, res) => {
-    PostModel.find({}, (err, res)=>{
+    PostModel.find({}, (err, value)=>{
         if (err) {
             console.log(err);
             return res.status(500).json({
@@ -196,7 +198,7 @@ const getPosts = (req, res) => {
 
         return res.status(200).json({
             success: true,
-            data: res ? res : [],
+            data: value ? value : [],
         })
     }).catch(error => {
         console.log(error);

@@ -6,5 +6,6 @@ import ItemView from './ItemView';
 import CreateReview from './CreateReview';
 import CreateAccountPage from './CreateAccount';
 import LoginPage from './Login';
+import PostEditor from './CreatePost';
 
-export {ItemList, ItemInsert, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};
+export {PostEditor, ItemList, ItemInsert, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};

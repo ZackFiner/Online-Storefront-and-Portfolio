@@ -152,7 +152,7 @@ class ItemUpdate extends Component {
         return(
         <Wrapper>
                 <Title>Edit Item</Title>
-                <FormWrapper onSubmit={this.handelIncludeItem}>
+                <FormWrapper onSubmit={this.handleUpdateItem}>
                     <StyledComponents.TextInputSection>
                         <Label>Name</Label>
                         <InputText 

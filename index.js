@@ -9,6 +9,7 @@ const reviewRouter = require('./routes/review-router');
 const userRouter = require('./routes/user-router');
 const authRouter = require('./routes/auth-router');
 const mediaRouter = require('./routes/media-router');
+const postRouter = require('./routes/post-router');
 const init_func = require('./boot');
 const {USER_ROLE_ID, ADMIN_ROLE_ID} = require('./boot/role_init');
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api', reviewRouter);
 app.use('/api/users', userRouter);
 app.use('/api/authenticate', authRouter);
 app.use('/api/media', mediaRouter);
+app.use('/api/posts', postRouter);
 
 init_func().then(()=>{
     app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import ImageGallery from 'react-image-gallery';
-import '../../node_modules/react-image-gallery/styles/css/image-gallery.css' // AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 import {ReviewView, ImageSlide} from '../components'
 
 import api from '../api';

@@ -16,6 +16,9 @@ const PostWrapper = styled.div.attrs({
 const PostContainer = styled.div.attrs({
     className: 'container'
 })`
+    & p {
+        width: 100%;
+    }
 `
 
 const PostHeader = styled.h1.attrs({

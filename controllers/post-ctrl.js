@@ -1,6 +1,5 @@
 const PostModel = require('../models/frontpage-post-model');
-const sanitizeHtml = require('sanitize-html');
-const sanitize = require('mongo-sanitize')
+const {sanitizeForTinyMCE, sanitizeForMongo} = require('./sanitization');
 
 const createPost = (req, res) => {
     // TODO: these are gunna need image upload support, since
@@ -23,8 +22,8 @@ const createPost = (req, res) => {
     }
 
     // sanitize both inputs below
-    const header = sanitize(sanitizeHtml(raw_header));
-    const content = sanitize(sanitizeHtml(raw_content));
+    const header = sanitizeForMongo(sanitizeForTinyMCE(raw_header));
+    const content = sanitizeForMongo(sanitizeForTinyMCE(raw_content));
     
 
     const post = new PostModel({header, content});
@@ -63,9 +62,9 @@ const editPost = (req, res) => {
     const raw_content = body.content;
 
     // sanitize
-    const header = raw_header ? sanitize(sanitizeHtml(raw_header)) : undefined;
-    const content = raw_content ? sanitize(sanitizeHtml(raw_content)) : undefined;
-    const id = sanitize(raw_id);
+    const header = raw_header ? sanitizeForMongo(sanitizeForTinyMCE(raw_header)) : undefined;
+    const content = raw_content ? sanitizeForMongo(sanitizeForTinyMCE(raw_content)) : undefined;
+    const id = sanitizeForMongo(raw_id);
 
     PostModel.findOne({_id: id}, (err, value)=>{
         if (err) {
@@ -116,7 +115,7 @@ const deletePost = (req, res) => {
             error: 'No post ID specified',
         })
     }
-    id = sanitize(raw_id);
+    id = sanitizeForMongo(raw_id);
 
     PostModel.findOneAndDelete({_id: id}, (err, value) => {
         if (err) {
@@ -155,7 +154,7 @@ const getPost = (req, res) => {
             error: 'Id not specified'
         });
     }
-    const id = sanitize(raw_id);
+    const id = sanitizeForMongo(raw_id);
 
     PostModel.findOne({_id: id}, (err, value)=>{
         if (err) {

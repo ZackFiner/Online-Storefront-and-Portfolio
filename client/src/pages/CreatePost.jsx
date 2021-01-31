@@ -3,7 +3,7 @@ import api, { createPost } from '../api';
 
 import styled from 'styled-components';
 import {StyledComponents} from '../components'
-import RichTextEditor from 'react-rte'
+import {Editor} from '@tinymce/tinymce-react';
 import {withRouter} from 'react-router-dom'
 
 const Wrapper = styled.div.attrs({
@@ -31,7 +31,7 @@ class PostEditor extends Component {
         this.state = {
             id: props?.match?.params?.id,
             header: '',
-            content: RichTextEditor.createEmptyValue(),
+            content: '',
             index: null,
             isLoading: false,
             edit: false,
@@ -47,7 +47,7 @@ class PostEditor extends Component {
                 this.setState({
                     id: value.data.data._id,
                     header: value.data.data.header,
-                    content: RichTextEditor.createValueFromString(value.data.data.content, 'html'),
+                    content: value.data.data.content,
                     index: value.data.data.index,
                     isLoading: false,
                     edit: true,
@@ -64,7 +64,7 @@ class PostEditor extends Component {
         })
     }
 
-    handleEditorChange = value => {
+    handleEditorChange = (value, editor) => {
         this.setState({
             content: value,
         });
@@ -98,10 +98,9 @@ class PostEditor extends Component {
                     <Label>Header</Label>
                     <InputText name='header' onChange={this.handleValueChange} value={this.state.header}/>
                 </StyledComponents.TextInputSection>
-                <RichTextEditor
-                    name='content'
+                <Editor
                     value={this.state.content}
-                    onChange={this.handleEditorChange}
+                    onEditorChange={this.handleEditorChange}
                 />
                 <StyledComponents.Submit value='Save'/>
             </FormWrapper>

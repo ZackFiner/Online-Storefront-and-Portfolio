@@ -6,6 +6,7 @@ import {ActivitySensor, LogoutUser} from '../authentication';
 import {FrontPage, PostEditor, ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import store from '../redux/store';
 import freeAccount from '../redux/actions/accountAct';

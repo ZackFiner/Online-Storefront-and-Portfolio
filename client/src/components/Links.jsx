@@ -4,11 +4,6 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import {isMemberofRole} from '../authorization';
 
-// Spelling error bellow with 'collpase?
-const Collapse = styled.div.attrs({
-    className: 'collapse navbar-collapse',
-})``
-
 const List = styled.div.attrs({
     className:  'navbar-nav mr-auto',
 })``
@@ -29,9 +24,6 @@ class Links extends Component {
                 <Link to="/" className="navbar-brand">
                     FrontPage
                 </Link>
-                <Collapse>
-                    {link_items}
-                </Collapse>
             </React.Fragment>
         );
     }

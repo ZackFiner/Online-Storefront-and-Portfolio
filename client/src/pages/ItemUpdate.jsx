@@ -141,6 +141,8 @@ class ItemUpdate extends Component {
             name: item.data.data.name,
             reviews: item.data.data.reviews,
             description: item.data.data.description,
+            price: item.data.data.price,
+            keywords: item.data.data.keywords.join(', '),
             thumbnail_img: item.data.data.thumbnail_img,
             gallery_images: item.data.data.gallery_images
         });
@@ -152,7 +154,7 @@ class ItemUpdate extends Component {
         return(
         <Wrapper>
                 <Title>Edit Item</Title>
-                <FormWrapper onSubmit={this.handelIncludeItem}>
+                <FormWrapper onSubmit={this.handleUpdateItem}>
                     <StyledComponents.TextInputSection>
                         <Label>Name</Label>
                         <InputText 
@@ -185,7 +187,7 @@ class ItemUpdate extends Component {
                         <StyledComponents.CashInput
                             name={`price`}
                             onChange={this.handleUpdateState}
-                            value={price}
+                            value={price ? price.$numberDecimal : ''}
                         />
                     </StyledComponents.TextInputSection>
                     <Label>Thumbnail</Label>
@@ -197,7 +199,7 @@ class ItemUpdate extends Component {
                     <ImageSelector prevUrl={thumbnail_img ? thumbnail_img.path : ''} onChange={this.handleChangeThumbnail}/>
                     <Label>Gallery Input</Label>
                     <MultiImageInput images={gallery_images} handleAppendFile={this.handleAddGalleryImage} handleRemoveFile={this.handleRemoveGallary} />
-                    <StyledComponents.Submit value='Insert Item' />
+                    <StyledComponents.Submit value='Save Changes' />
                 </FormWrapper>
             </Wrapper>);
     }

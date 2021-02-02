@@ -1,6 +1,18 @@
 const StoreItem = require('../models/item-model');
 const ImageModel = require('../models/img-model');
 
+const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
+
+const ItemSanitizer = new ObjectSanitizer({
+    name: (name) => {return sanitizeForMongo(sanitizeForTinyMCE(name))},
+    reviews: (reviews) => {return reviews.map((r)=>sanitizeForMongo(sanitizeForTinyMCE(r)));},
+    gallery_images: (id) => {return id},
+    description: (desc) => {return sanitizeForMongo(sanitizeForTinyMCE(desc));},
+    keywords: (keywords) => {return keywords.map(k => sanitizeForMongo(sanitizeForTinyMCE(k)));},
+    thumbnail_img: id => {return id},
+    price: (price) => {return sanitizeForMongo(sanitizeForTinyMCE(price));},
+    categories: (cata) => {return cata.map(c => sanitizeForMongo(sanitizeForTinyMCE(c)));}
+})
 
 async function packageMedia(storeItem) {
     let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents
@@ -45,14 +57,17 @@ createItem = async (req, res) => {
     TODO: add input sanitization here
     TODO: add support for thumbnail image settings
     */
-    const body = JSON.parse(req.body.body); // because this is packaged as a multipart form, the body is strinfied
+    const raw_body = JSON.parse(req.body.body); // because this is packaged as a multipart form, the body is strinfied
 
-    if (!body) {
+    if (!raw_body) {
         return res.status(400).json({
             success: false,
             error: 'Request body missing',
         });
     }
+
+
+    const body = ItemSanitizer.sanitizeObject(raw_body);
 
     const store_item = new StoreItem(body);
     if (!store_item) {
@@ -108,7 +123,7 @@ Update calls should be executed asynchonusly so that two entries
 do not both write to the same record at teh same time.
 */
 updateItem = async (req, res) => {
-    const body = JSON.parse(req.body.body);
+    const raw_body = JSON.parse(req.body.body);
 
     /*******************************************************************************
      * Special Considerations:
@@ -124,15 +139,18 @@ updateItem = async (req, res) => {
      *   simply send back a set of modifications which can be handled on this end?
      * 
      *******************************************************************************/
-    if (!body) {
+    if (!raw_body) {
         return res.status(400).json({
             success: false,
             error: 'Request body missing',
         });
     }
+
+    const body = ItemSanitizer.sanitizeObject(raw_body);
+    const id = sanitizeForMongo(req.params.id);
     let item;
     try {
-        item = await StoreItem.findOne({_id: req.params.id }).exec();
+        item = await StoreItem.findOne({_id: id }).exec();
         if (!item) {
             return res.status(404).json({
                 err,
@@ -204,7 +222,9 @@ updateItem = async (req, res) => {
 
 //DeleteItems should be executed asynchronusly
 deleteItem = async (req, res) => {
-    await StoreItem.findOneAndDelete({_id: req.params.id}, (err, item) => {
+    const id = sanitizeForMongo(req.params.id);
+
+    await StoreItem.findOneAndDelete({_id: id}, (err, item) => {
         if (err) {
             return res.status(400).json({success: false, error: err});
         }
@@ -220,7 +240,9 @@ deleteItem = async (req, res) => {
 }
 
 getItemById = async (req, res) => {
-    await StoreItem.findOne({ _id: req.params.id }, (err, item) => {
+    const id = sanitizeForMongo(req.params.id);
+
+    await StoreItem.findOne({ _id: id }, (err, item) => {
         if (err) {
             return res.status(400).json({success: false, error: err});
         }
@@ -257,11 +279,11 @@ getItems = async (req, res) => {
 }
 
 searchItems = async (req, res) => {
-    const body = req.body;
-    if (!body) {
+    const raw_body = req.body;
+    if (!raw_body) {
         return res.status(400).json({success: false, error: "No body provided"});
     }
-    const searchtext = body.searchtext;
+    const searchtext = sanitizeForMongo(sanitizeForTinyMCE( raw_body.searchtext ));
 
     if (!searchtext) {
         return res.status(400).json({success: false, error: "No search text provided"});

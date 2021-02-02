@@ -161,7 +161,7 @@ class ItemUpdate extends Component {
                             type = "text"
                             value={name}
                             name={`name`}
-                            onChange={this.handleUpdateKeywords}
+                            onChange={this.handleUpdateState}
                         />
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
@@ -179,7 +179,7 @@ class ItemUpdate extends Component {
                             value={keywords}
                             name={`keywords`}
                             placeholder="Keyword1, Keyword2, ..."
-                            onChange={this.handleUpdateState}
+                            onChange={this.handleUpdateKeywords}
                         />
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>

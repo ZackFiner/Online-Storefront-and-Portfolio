@@ -1,1 +1,0 @@
-New project to create a personal website using express.js and react w/ mongodb.

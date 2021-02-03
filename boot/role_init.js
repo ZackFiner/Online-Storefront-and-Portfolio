@@ -40,9 +40,6 @@ const role_init = async () => {
                     {
                         op_perm: 'REVIEW_READ',
                     },
-                    {
-                        op_perm: 'REVIEW_CREATE',
-                    }
                 ],
                 });
 

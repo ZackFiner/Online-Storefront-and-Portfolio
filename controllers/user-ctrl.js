@@ -2,14 +2,22 @@ const UserModel = require("../models/user-model");
 const jwt = require('jsonwebtoken');
 const {secret} = require('../data/server-config');
 
+const {sanitizeForMongo, ObjectSanitizer, sanitizeHtml} = require('./sanitization');
+const AccountSanitizer = new ObjectSanitizer({
+    email: (email) => {return sanitizeForMongo(sanitizeHtml(email))},
+    password: (pw) => {return sanitizeForMongo(sanitizeHtml(pw))}
+});
+
 createUser = (req, res) => {
-    const body = req.body
-    if (!body) {
+    const raw_body = req.body
+    if (!raw_body) {
         return res.status(400).json({
             success: false,
             error: 'Request body missing'
         })
     }
+    const body = AccountSanitizer.sanitizeObject(raw_body);
+
     const userAccount = new UserModel(body);
     userAccount.roles.push(global.USER_ROLE_ID);
     if (!userAccount) {
@@ -36,15 +44,16 @@ createUser = (req, res) => {
 }
 
 authUser = (req, res) => {
-    const body = req.body;
-    if (!body) {
+    const raw_body = req.body;
+    if (!raw_body) {
         return res.status(400).json({
             success: false,
             error: 'Request body missing',
         })
     }
-
-    const {email, password} = req.body;
+    const body = AccountSanitizer.sanitizeObject(raw_body);
+    
+    const {email, password} = body;
 
     if (!email || !password) {
         return res.status(400).json({
@@ -114,15 +123,8 @@ function processUserData(userData) {
 getUserData = async (req, res) => { // this should not use req.userdata: this could be modified by the user
     // instead, it should use the encrypted jwt token which (in theory) cannot be modified by the user.
     // otherwise, someone could access other user's user data.
-    const body = req.body;
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: 'Request body missing'
-        })
-    }
 
-    const userdata = req.userdata;
+    const userdata = req.userdata; // extract from a jwt token
     if (!userdata) {
         return res.status(400).json({
             success: false,

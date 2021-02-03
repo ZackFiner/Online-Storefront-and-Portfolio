@@ -31,7 +31,7 @@ function App() {
         <AuthorizedRoute path="/items/create" exact component={ItemInsert} roles={['admin']} />
         <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['admin']} />
         <Route path="/items/view/:id" exact component={ItemView} />
-        <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['user']} />
+        <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['admin']} />
         <Route path="/storefront" exact component={StoreFront} />
         <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['admin']} />
         <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['admin']} />

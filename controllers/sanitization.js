@@ -32,8 +32,31 @@ function sanitizeForMongo(content) {
     return sanitize(content);
 }
 
+class ObjectSanitizer {
+    constructor(santizerDict) {
+        if (santizerDict)
+            this.sanitizers = santizerDict;
+        else
+            this.sanitizers = {};
+    }
+
+    attachSanitizer(property, santizerFunc) {
+        this.sanitizers[property] = santizerFunc;
+    }
+
+    sanitizeObject(obj) {
+        let sanitized_obj = {};
+        for(const [prop, val] of Object.entries(this.sanitizers)) {
+            if(obj.hasOwnProperty(prop))
+                sanitized_obj[prop] = val(obj[prop]);
+        }
+        return sanitized_obj;
+    }
+}
+
 module.exports = {
     sanitizeForTinyMCE,
     sanitizeForMongo,
+    ObjectSanitizer,
     sanitizeHtml
 }

@@ -28,7 +28,7 @@ const RowWrapper = styled.div.attrs({
 `
 
 const DescriptionArea = styled.div``
-const DescriptionText = styled.p``
+const DescriptionText = styled.div``
 const Button = styled.button.attrs({
     className: `btn btn-danger`
 })`
@@ -94,8 +94,8 @@ class ItemView extends Component {
                 <RowWrapper>
                     <div class="col col-sm-8"><ImageSlide items={gallery_images} />
                     <DescriptionArea>
-                    <DescriptionText>{description}</DescriptionText>
-                </DescriptionArea></div>
+                        <DescriptionText dangerouslySetInnerHTML={{__html: description}} />
+                    </DescriptionArea></div>
                 <ItemDetailsArea>
                     <h3>Price: {price_text}</h3>
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>

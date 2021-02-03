@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import api, { createPost } from '../api';
 
 import styled from 'styled-components';
-import {StyledComponents} from '../components'
+import {StyledComponents} from '../components';
 import {Editor} from '@tinymce/tinymce-react';
 import {withRouter} from 'react-router-dom'
 

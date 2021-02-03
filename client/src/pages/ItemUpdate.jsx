@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import { MultiImageInput, ImageSelector, StyledComponents } from '../components';
 import { connect } from 'mongoose';
 
+import {Editor} from '@tinymce/tinymce-react';
+
 const Title = styled.h1.attrs({
     className: 'h1',
 })``
@@ -108,6 +110,14 @@ class ItemUpdate extends Component {
         this.updatePacket.keywords = valid_keyword_list;
     }
 
+    handleEditorChange = (value, editor) => {
+        this.setState({
+            description: value,
+        });
+        this.updatePacket.description = value;
+    }
+
+
     handleUpdateItem = async () => {
         console.log('sending packet')
         const {id} = this.state;
@@ -166,11 +176,11 @@ class ItemUpdate extends Component {
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
                         <Label>Description</Label>
-                        <StyledComponents.BigTextArea
+                        <Editor
                             name={`description`}
-                            onChange={this.handleUpdateState}
+                            onEditorChange={this.handleEditorChange}
                             value={description}
-                        ></StyledComponents.BigTextArea>
+                        />
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
                         <Label>Keywords</Label>

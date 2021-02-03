@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import api from '../api';
 import { Link } from 'react-router-dom';
-import { MultiImageInput, ImageSelector, StyledComponents } from '../components'
+import { MultiImageInput, ImageSelector, StyledComponents } from '../components';
+import {Editor} from '@tinymce/tinymce-react';
 import styled from 'styled-components';
 
 const Title = styled.h1.attrs({
@@ -110,6 +111,13 @@ class ItemInsert extends Component {
         this.setState({ price: price });
     }
 
+    handleEditorChange = (value, editor) => {
+        this.setState({
+            description: value,
+        });
+        this.updatePacket.description = value;
+    }
+
     render() {
         const { name, reviews, description, keywords, price, thumbnail_img } = this.state;
         return (
@@ -126,9 +134,10 @@ class ItemInsert extends Component {
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
                         <Label>Description</Label>
-                        <StyledComponents.BigTextArea
-                            onChange={this.handleChangeInputDescription}
-                        >{description}</StyledComponents.BigTextArea>
+                        <Editor
+                            onEditorChange={this.handleEditorChange}
+                            value={description}
+                        />
                     </StyledComponents.TextInputSection>
                     <StyledComponents.TextInputSection>
                         <Label>Keywords</Label>

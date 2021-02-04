@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PostModel = new Schema({
-    header: {type: String, required: true},
+    header: {type: String, required: false},
     content: {type: String, required: true},
     index: {type: Number, required: false}
 },

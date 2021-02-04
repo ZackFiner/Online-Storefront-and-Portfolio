@@ -19,6 +19,11 @@ const PostContainer = styled.div.attrs({
     & p {
         width: 100%;
     }
+
+    & img {
+        width: 100%;
+        object-fit: contain;
+    }
 `
 
 const PostHeader = styled.h1.attrs({

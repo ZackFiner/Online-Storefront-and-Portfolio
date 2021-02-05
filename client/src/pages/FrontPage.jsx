@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
-import styled from 'styled-components'
-import {StyledComponents} from '../components'
-
+import React, {Component} from 'react';
+import styled from 'styled-components';
+import {StyledComponents} from '../components';
+import {connect} from 'react-redux';
+import {isMemberofRole} from '../authorization';
 import api from '../api';
 
 const Wrapper = styled.div.attrs({
@@ -25,6 +26,21 @@ const PostContainer = styled.div.attrs({
         object-fit: contain;
     }
 `
+
+const EditBtn = styled.a.attrs(props => ({
+    ...props,
+    className: 'btn btn-primary',
+    role: 'button',
+    href: `frontpage/post/${props.id}`
+}))`
+`
+
+const DeleteButton = styled.button.attrs(props => ({
+    ...props,
+    className: 'btn btn-danger',
+}))`
+`
+
 
 const PostHeader = styled.h1.attrs({
     className: 'row'
@@ -56,17 +72,30 @@ class FrontPage extends Component {
                 posts: res.data.data,
             });
         })
-        // api calls here
     }
 
     render() {
+        const {userdata, loggedin} = this.props;
+        const component_this = this;
         const posts = this.state.posts.map((p) => {
+            let edit_panel = null;
+
+            function delete_post(event) {
+                api.deletePost(p._id).then( () => {
+                    component_this.setState({
+                        posts: component_this.state.posts.filter(entry => entry._id != p._id),
+                    });
+                });
+            }
+            if (loggedin && isMemberofRole(userdata, 'admin'))
+                edit_panel = [<EditBtn id={p._id}>Edit</EditBtn>,<DeleteButton onClick={delete_post}>Delete</DeleteButton>];
             return (
             <PostWrapper key={p._id}>
                 <PostContainer>
                     <PostHeader>{p.header}</PostHeader>
                     <PostInfo>{new Date(p.createdAt).toLocaleString()}</PostInfo>
                     <PostContent dangerouslySetInnerHTML={{__html: p.content}}/>
+                    {edit_panel}
                 </PostContainer>
             </PostWrapper>);
         })
@@ -76,5 +105,15 @@ class FrontPage extends Component {
         </Wrapper>)
     }
 }
+const mapStateToProps = state => {
+    const payload = state.accountRedu;
+    return {
+        userdata: payload.userdata,
+        loggedin: payload.loggedin,
+    };
+}
 
-export default FrontPage;
+export default connect(
+    mapStateToProps,
+    null
+)(FrontPage);

@@ -171,7 +171,7 @@ const deletePost = (req, res) => {
                 error: 'An error occured while processing request'
             });
         }
-
+        
         if (!value) {
             return res.status(404).json({
                 success: false,
@@ -232,15 +232,10 @@ const getPost = (req, res) => {
 }
 
 const getPosts = (req, res) => {
-    PostModel.find({}, (err, value)=>{
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: false,
-                error: 'An error occured while processing request'
-            });
-        }
-
+    PostModel.find({})
+    .sort({createdAt: -1})
+    .exec()
+    .then((value)=>{
         return res.status(200).json({
             success: true,
             data: value ? value : [],

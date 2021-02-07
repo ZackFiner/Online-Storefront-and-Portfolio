@@ -233,7 +233,7 @@ const getPost = (req, res) => {
 
 const getPosts = (req, res) => {
     PostModel.find({})
-    .sort({createdAt: -1})
+    .sort({index: -1})
     .exec()
     .then((value)=>{
         return res.status(200).json({

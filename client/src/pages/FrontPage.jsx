@@ -16,7 +16,6 @@ const PostWrapper = styled.div.attrs({
     margin-left:0;
     margin-right:0;
     width: 100%;
-
 `
 
 const PostPos = styled.div.attrs({
@@ -46,9 +45,18 @@ const EditBtn = styled.a.attrs(props => ({
     ...props,
     className: 'btn btn-primary',
     role: 'button',
-    href: `frontpage/post/${props.id}`
+    href: `frontpage/post${props.id ?`/${props.id}`:''}`
 }))`
     possition: absolute;
+    z-index: 251;
+`
+
+const ImagePostBtn = styled.a.attrs({
+    className: 'btn btn-primary',
+    role: 'button',
+    href: `frontpage/media/post`
+})`
+    position: absolute;
     z-index: 251;
 `
 
@@ -70,13 +78,16 @@ const DragNDropHanlder = styled.div.attrs({
     left:0;
     z-index: 250;
 
-    &.expanded ~ div.expander {
+    &.expanded.top ~ div.expander.top {
         height:  300px;
     }
+    &.expanded.bottom ~ div.expander.bottom {
+        height: 300px;
+    }
 `
-const Expander = styled.div.attrs({
-    className: 'expander'
-})`
+const Expander = styled.div.attrs(props => ({
+    className: `expander ${props.dir}`
+}))`
     width: 100%;
     height: 0;
     
@@ -106,6 +117,7 @@ class FrontPage extends Component {
         }
         this.dragedIndex = -1;
         this.draggedId = null;
+        this.index_update_list = [];
     }
 
     componentDidMount = () => {
@@ -137,6 +149,10 @@ class FrontPage extends Component {
 
         if (post_index != id) 
             event.target.classList.add('expanded');
+            if (post_index < id)
+                event.target.classList.add('top');
+            else
+                event.target.classList.add('bottom');
     }
 
     handleDragLeave = (event) => {
@@ -145,31 +161,59 @@ class FrontPage extends Component {
 
         if (post_index != id) 
             event.target.classList.remove('expanded');
+            if (post_index < id)
+                event.target.classList.remove('top');
+            else
+                event.target.classList.remove('bottom');
     }
 
     handleDragStop = (event) => {
         event.target.classList.remove("dragging");
     }
 
+    updatePostIndexing = () => {
+        let promise_list = [];
+        for(let i = 0; i < this.index_update_list.length; i++) {
+            const {_id, index}  = this.index_update_list[i];
+            promise_list.push(api.editPost(_id, {index}));
+        }
+        Promise.all(promise_list).then((values) => {
+            this.index_update_list = [];
+        });
+    }
+
     handleDrop = (event) => {
         event.preventDefault();
-        event.target.classList.remove("dragging");
+
         event.target.classList.remove('expanded');
+
         const post_id = this.draggedId;
         const id = parseInt(event.target.id.substr(9));
         let {posts} = this.state;
+
         const source_indx = posts.findIndex(p => p._id==post_id);
         const target_indx = posts.findIndex(p => p.index==id);
+
         if (source_indx != target_indx && source_indx > -1  && target_indx > -1) {
             const old_idx = posts[source_indx].index;
             posts[source_indx].index = posts[target_indx].index;
-            posts[target_indx].index = old_idx;
-            // save changes to ordering
+            this.index_update_list.push({_id: posts[source_indx]._id, index: posts[source_indx].index}); // queue this post for an update request
+            
+            const bottom_idx = Math.min(source_indx, target_indx);
+            const top_idx = Math.max(source_indx, target_indx);
+            const iter = source_indx > target_indx ? -1 : 1;
+            const off = source_indx == bottom_idx;
+            for(let i = bottom_idx; i < top_idx; i++) 
+            {
+                posts[i+off].index += iter;
+                this.index_update_list.push({_id: posts[i+off]._id, index: posts[i+off].index}); // queue this post for an update request
+            }
+
             this.setState({posts:posts});
         }
         this.dragedIndex = -1;
         this.draggedId = null;
-        
+        this.updatePostIndexing();
     }
 
     render() {
@@ -201,10 +245,11 @@ class FrontPage extends Component {
                     <PostWrapper id={p._id} name={p.index} key={p._id} draggable={edit} onDragEnd={this.handleDragStop} onDragStart={this.handleDrag}>
                         <PostContainer>
                             {drag_pane}
-                            <Expander></Expander>
+                            <Expander dir="top"></Expander>
                             <PostHeader>{p.header}</PostHeader>
                             <PostInfo>{new Date(p.createdAt).toLocaleString()}</PostInfo>
                             <PostContent dangerouslySetInnerHTML={{__html: p.content}}/>
+                            <Expander dir="bottom"></Expander>
                         </PostContainer>
                     </PostWrapper>
                     {edit_panel}
@@ -212,6 +257,8 @@ class FrontPage extends Component {
         })
 
         return (<Wrapper>
+            <EditBtn>Write Post</EditBtn>
+            <ImagePostBtn>Post Image</ImagePostBtn>
             {posts}
         </Wrapper>)
     }

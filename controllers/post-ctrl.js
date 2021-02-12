@@ -106,10 +106,13 @@ const editPost = (req, res) => {
 
     const raw_header = body.header;
     const raw_content = body.content;
+    const raw_index = body.index;
 
     // sanitize
     const header = raw_header ? sanitizeForMongo(sanitizeForTinyMCE(raw_header)) : undefined;
     const content = raw_content ? sanitizeForMongo(sanitizeForTinyMCE(raw_content)) : undefined;
+    const index = isNaN(parseInt(raw_index)) ? undefined : parseInt(raw_index); // type coercion sanitzation
+
     const id = sanitizeForMongo(raw_id);
 
     PostModel.findOne({_id: id}, (err, value)=>{
@@ -130,6 +133,8 @@ const editPost = (req, res) => {
             value.header = header;
         if (content)
             value.content = content;
+        if (index)
+            value.index = index;
         
         value.save().then(doc => {
             if (doc) {

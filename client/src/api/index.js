@@ -66,6 +66,19 @@ export const editPost = (id, payload) => api.put(`/frontpage/${id}`, payload, {w
 export const deletePost = id => api.delete(`/frontpage/${id}`, {withCredentials: true});
 export const getPostById = id => api.get(`/frontpage/${id}`);
 export const getPosts = () => api.get(`/frontpage`);
+export const createPostImage = payload => {
+    const {selectedFile} = payload;
+    const formData = new FormData();
+    formData.append('selectedImage', selectedFile);
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data',
+        },
+        withCredentials: true,
+    }
+
+    return api.post(`/frontpage/media`, formData, config);
+}
 
 const apis = {
     insertItem,
@@ -93,6 +106,7 @@ const apis = {
     deletePost,
     getPostById,
     getPosts,
+    createPostImage,
 }
 
 export default apis;

@@ -25,6 +25,9 @@ UserSchema.methods.isCorrectPassword = function( password, callback ) {
 UserSchema.pre('save', function(next) { // use a hook to hash the plain text password being sent from the front end
     if (this.isNew || this.isModeified('password')) {
         const document = this; // we need to save parent function state (the document itself)
+        if (!document.roles) { // if the user is not assigned to any role, add them to the default role
+            document.roles = ['user'];
+        }
         bcrypt.hash(document.password, password_saltRounds,
             function(err, hashedPassword) {
                 if (err) {
@@ -34,9 +37,6 @@ UserSchema.pre('save', function(next) { // use a hook to hash the plain text pas
                     next();
                 }
             });
-        if (!document.roles) { // if the user is not assigned to any role, add them to the default role
-            document.roles = ['user'];
-        }
     } else {
         next();
     }

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import api, { createPost } from '../api';
 
 import styled from 'styled-components';
-import {StyledComponents} from '../components';
+import {StyledComponents, ImageSelector} from '../components';
 import {Editor} from '@tinymce/tinymce-react';
 import {withRouter} from 'react-router-dom'
 
@@ -108,4 +108,40 @@ class PostEditor extends Component {
     }
 }
 
-export default PostEditor;
+class ImagePost extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selectedFile: null,
+        };
+    }
+
+    handleFileUpload = (event) => {
+        const file = event.target.files[0]
+        this.setState({
+            selectedFile: file,
+        })
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const payload = this.state;
+        if (payload.selectedFile)
+            api.createPostImage(payload);
+            window.alert("Image posted");
+    }
+
+    render() {
+        return (<Wrapper>
+            <FormWrapper onSubmit={this.handleSubmit}>
+                <Label>Select Image To Upload</Label>
+                <ImageSelector onChange={this.handleFileUpload}/>
+                <StyledComponents.Submit value='Save' />
+            </FormWrapper>
+        </Wrapper>);
+    }
+
+}
+
+
+export {PostEditor, ImagePost};

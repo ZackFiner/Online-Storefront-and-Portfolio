@@ -1,4 +1,5 @@
 const PostModel = require('../models/frontpage-post-model');
+const ImageModel = require('../models/img-model');
 const {sanitizeForTinyMCE, sanitizeForMongo} = require('./sanitization');
 
 const createPost = (req, res) => {
@@ -48,6 +49,51 @@ const createPost = (req, res) => {
     });
 }
 
+const uploadImage = (req, res) => {
+    if (req.files['selectedImage'] && req.files['selectedImage'][0]) {
+        const raw_image = req.files['selectedImage'][0];
+        const image = new ImageModel(raw_image);
+        
+        image.save()
+        .then(value => {
+            if (value) {
+                const new_post = new PostModel({
+                    header: '',
+                    content: `<img src='${value.path}' \\>`
+                });
+                new_post.save()
+                .then(value => {
+                    if (value)
+                        return res.status(200).json({
+                            success: true,
+                            id: value._id,
+                        })
+                    else
+                        throw new Error("Couldn't create post");
+                }).catch(error => {
+                    console.log(error);
+                    return res.status(500).json({
+                        success: false,
+                        error: `An error occured while processing request`
+                    });
+                });
+            } else {
+                return res.status(500).json({
+                    success: false,
+                    error: `An error occured while processing request`
+                });
+            }
+        }).catch(error => {
+            console.log(error);
+            return res.status(500).json({
+                success: false,
+                error: `An error occured while processing request`
+            });
+        });
+    }
+    return res.status();
+}
+
 const editPost = (req, res) => {
     const body = req.body;
     const raw_id = req.params.id;
@@ -60,10 +106,13 @@ const editPost = (req, res) => {
 
     const raw_header = body.header;
     const raw_content = body.content;
+    const raw_index = body.index;
 
     // sanitize
     const header = raw_header ? sanitizeForMongo(sanitizeForTinyMCE(raw_header)) : undefined;
     const content = raw_content ? sanitizeForMongo(sanitizeForTinyMCE(raw_content)) : undefined;
+    const index = isNaN(parseInt(raw_index)) ? undefined : parseInt(raw_index); // type coercion sanitzation
+
     const id = sanitizeForMongo(raw_id);
 
     PostModel.findOne({_id: id}, (err, value)=>{
@@ -84,6 +133,8 @@ const editPost = (req, res) => {
             value.header = header;
         if (content)
             value.content = content;
+        if (index)
+            value.index = index;
         
         value.save().then(doc => {
             if (doc) {
@@ -125,7 +176,7 @@ const deletePost = (req, res) => {
                 error: 'An error occured while processing request'
             });
         }
-
+        
         if (!value) {
             return res.status(404).json({
                 success: false,
@@ -186,15 +237,10 @@ const getPost = (req, res) => {
 }
 
 const getPosts = (req, res) => {
-    PostModel.find({}, (err, value)=>{
-        if (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: false,
-                error: 'An error occured while processing request'
-            });
-        }
-
+    PostModel.find({})
+    .sort({index: -1})
+    .exec()
+    .then((value)=>{
         return res.status(200).json({
             success: true,
             data: value ? value : [],
@@ -210,6 +256,7 @@ const getPosts = (req, res) => {
 
 module.exports = {
     createPost,
+    uploadImage,
     editPost,
     deletePost,
     getPost,

@@ -115,7 +115,6 @@ class ItemInsert extends Component {
         this.setState({
             description: value,
         });
-        this.updatePacket.description = value;
     }
 
     render() {

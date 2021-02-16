@@ -1,5 +1,4 @@
 const PostModel = require('../models/frontpage-post-model');
-const ImageModel = require('../models/img-model');
 const {sanitizeForTinyMCE, sanitizeForMongo} = require('./sanitization');
 
 const createPost = (req, res) => {
@@ -51,45 +50,37 @@ const createPost = (req, res) => {
 
 const uploadImage = (req, res) => {
     if (req.files['selectedImage'] && req.files['selectedImage'][0]) {
-        const raw_image = req.files['selectedImage'][0];
-        const image = new ImageModel(raw_image);
+        const value = req.files['selectedImage'][0];
         
-        image.save()
-        .then(value => {
-            if (value) {
-                const new_post = new PostModel({
-                    header: '',
-                    content: `<img src='${value.path}' \\>`
-                });
-                new_post.save()
-                .then(value => {
-                    if (value)
-                        return res.status(200).json({
-                            success: true,
-                            id: value._id,
-                        })
-                    else
-                        throw new Error("Couldn't create post");
-                }).catch(error => {
-                    console.log(error);
-                    return res.status(500).json({
-                        success: false,
-                        error: `An error occured while processing request`
-                    });
-                });
-            } else {
+        if (value) {
+            const new_post = new PostModel({
+                header: '',
+                content: `<img src='${value.path}' \\>`,
+                images: [value]
+            });
+            new_post.save()
+            .then(value => {
+                if (value)
+                    return res.status(200).json({
+                        success: true,
+                        id: value._id,
+                    })
+                else
+                    throw new Error("Couldn't create post");
+            }).catch(error => {
+                console.log(error);
                 return res.status(500).json({
                     success: false,
                     error: `An error occured while processing request`
                 });
-            }
-        }).catch(error => {
-            console.log(error);
+            });
+        } else {
             return res.status(500).json({
                 success: false,
                 error: `An error occured while processing request`
             });
-        });
+        }
+
     }
     return res.status();
 }

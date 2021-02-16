@@ -59,8 +59,6 @@ export const authUser = payload => api.post(`/authenticate`, payload, {withCrede
 export const logUserOut = () => api.delete(`/authenticate`, {withCredentials: true});
 export const refreshUserToken = () => api.put(`/authenticate`, {/*The payload is the credentials*/}, {withCredentials: true});
 
-export const getMediaById = id => api.get(`/media/${id}`);
-
 export const createPost = payload => api.post(`/frontpage`, payload, {withCredentials: true});
 export const editPost = (id, payload) => api.put(`/frontpage/${id}`, payload, {withCredentials: true});
 export const deletePost = id => api.delete(`/frontpage/${id}`, {withCredentials: true});
@@ -98,8 +96,6 @@ const apis = {
     authUser,
     logUserOut,
     refreshUserToken,
-
-    getMediaById,
 
     createPost,
     editPost,

@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const ImageModel = require('./img-model');
+
 const StoreItemSchema = new Schema(
     {
         name: {type: String, required: true},
         reviews: {type: [mongoose.Types.ObjectId], required: true},
-        gallery_images: {type: [mongoose.Types.ObjectId], required: false},
+        gallery_images: {type: [ImageModel], required: false},
         description: {type: String, required: true},
         keywords: {type: [String], required: false},
-        thumbnail_img: {type: mongoose.Types.ObjectId, required: false},
+        thumbnail_img: {type: ImageModel, required: false},
         price: {type: mongoose.Types.Decimal128, required: false},
         categories: {type: [String], required: true, default:['misc']}
     },

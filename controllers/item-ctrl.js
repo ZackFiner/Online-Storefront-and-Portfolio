@@ -1,5 +1,4 @@
 const StoreItem = require('../models/item-model');
-const ImageModel = require('../models/img-model');
 
 const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
 
@@ -13,44 +12,6 @@ const ItemSanitizer = new ObjectSanitizer({
     price: (price) => {return sanitizeForMongo(sanitizeForTinyMCE(price));},
     categories: (cata) => {return cata.map(c => sanitizeForMongo(sanitizeForTinyMCE(c)));}
 })
-
-async function packageMedia(storeItem) {
-    let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents
-    try {
-        if (storeItem.gallery_images) {
-            // so Mongoose queries are NOT promises, but they do have then() methods for convenience
-            // to get a query promise, you need to use the .exec() function
-            // The wiki states that awaiting the promise via exec() yields a nicer stack trace on errors
-            const unpackedItems = await ImageModel.find({ _id:{ $in: storeItem.gallery_images }}).exec();
-            packagedItem.gallery_images = unpackedItems;
-        }
-        if (storeItem.thumbnail_img) {
-            
-            const unpackedThumbnail = await ImageModel.findOne({_id: storeItem.thumbnail_img}).exec();
-            packagedItem.thumbnail_img = unpackedThumbnail;
-        }
-    } catch (error) {
-        console.error(`Failed to package media for item ${storeItem._id}: ${error.message}`);
-    }
-    return packagedItem;
-}
-
-async function grabAndPackItem(id) {
-    retrieved_item = await StoreItem.findOne({_id:id});
-    if (retrieved_item) {
-        return packageMedia(retrieved_item);
-    }
-}3
-
-async function grabAndPackItems(ids = null) {
-    if (ids) {
-        let retrievedItems = await StoreItem.find({ _id: {$in: ids} })
-        return Promise.all(retrievedItems.map( (item) => packageMedia(item)));
-    } else {
-        let retrievedItems = await StoreItem.find({});
-        return Promise.all(retrievedItems.map( (item) => packageMedia(item)));
-    }
-}
 
 createItem = async (req, res) => {
     /*
@@ -75,28 +36,19 @@ createItem = async (req, res) => {
     }
 
     if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
-        const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
-        if (image_media) {
-            try {
-                const saved_image = await image_media.save();
-                store_item.thumbnail_img = saved_image._id;
-            } catch (error) {
-                console.error(error);
-            }
+        try {
+            store_item.thumbnail_img = req.files['selectedThumbnail'][0];
+        } catch (error) {
+            console.error(error);
         }
     }
 
     if (req.files['galleryImages']) {
-        const outer = this;
         for(let file of req.files['galleryImages']) {
-            const image_media = ImageModel(file);
-            if (image_media) {
-                try {
-                    const saved_image = await image_media.save();
-                    store_item.gallery_images.push(saved_image._id);
-                } catch (error) {
-                    console.error(error);
-                }
+            try {
+                store_item.gallery_images.push(file);
+            } catch (error) {
+                console.error(error);
             }
         }
     }
@@ -125,20 +77,6 @@ do not both write to the same record at teh same time.
 updateItem = async (req, res) => {
     const raw_body = JSON.parse(req.body.body);
 
-    /*******************************************************************************
-     * Special Considerations:
-     * 
-     * > How do we handle media changes (adding/removing images for example)?
-     *      > If an image is removed, should we simply de-couple the image object
-     *        or actually delete the image and the image object from our DB?
-     *      > If an image is added, how do we limit the number of gallary images
-     *        someone can upload without forcing them to completly re-send all
-     *        all images, or using a modified middleware instead of multer.
-     * 
-     * > Should the front end send the full copy of the item document back? Why not
-     *   simply send back a set of modifications which can be handled on this end?
-     * 
-     *******************************************************************************/
     if (!raw_body) {
         return res.status(400).json({
             success: false,
@@ -177,28 +115,19 @@ updateItem = async (req, res) => {
 
     // following this logic, the client should only send files when they are changing/adding them
     if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
-        const image_media = new ImageModel(req.files['selectedThumbnail'][0]);
-        if (image_media) {
-            try {
-                const saved_image = await image_media.save();
-                item.thumbnail_img = saved_image._id;
-            } catch (error) {
-                console.error(error);
-            }
+        try {
+            item.thumbnail_img = req.files['selectedThumbnail'][0];
+        } catch (error) {
+            console.error(error);
         }
     }
 
     if (req.files['galleryImages']) {
-        const outer = this;
         for(let file of req.files['galleryImages']) {
-            const image_media = ImageModel(file);
-            if (image_media) {
-                try {
-                    const saved_image = await image_media.save();
-                    item.gallery_images.push(saved_image._id);
-                } catch (error) {
-                    console.error(error);
-                }
+            try {
+                item.gallery_images.push(file);
+            } catch (error) {
+                console.error(error);
             }
         }
     }
@@ -252,10 +181,9 @@ getItemById = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `Item not found`});
         }
-        packageMedia(item)
-        .then((value) => {
-            return res.status(200).json({ success: true, data: value });
-        });
+
+        return res.status(200).json({ success: true, data: item });
+
     }).catch(err => console.log(err));
 }
 
@@ -271,10 +199,8 @@ getItems = async (req, res) => {
                 .json({ success: false, error: `Item not found`});
         }
 
-        Promise.all(items.map(item => packageMedia(item)))
-        .then( packagedItems => {
-            return res.status(200).json({ success: true, data: packagedItems});
-        });
+        return res.status(200).json({ success: true, data: items});
+
     }).catch(err => console.log(err));
 }
 
@@ -294,10 +220,8 @@ searchItems = async (req, res) => {
         {score: {$meta: "textScore"}}) // project the $meta text score field  
         .sort({score: { $meta: "textScore"}})
     .then((items) => {
-        Promise.all(items.map(item => packageMedia(item)))
-        .then( packagedItems => {
-            return res.status(200).json({ success: true, data: packagedItems});
-        });
+        return res.status(200).json({ success: true, data: items});
+
     }).catch(err => console.log(err));
 }
 

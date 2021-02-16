@@ -13,4 +13,4 @@ const ImageModel = new Schema(
     {timestamps: true},
 );
 
-module.exports = mongoose.model('media_images', ImageModel);
+module.exports = ImageModel;

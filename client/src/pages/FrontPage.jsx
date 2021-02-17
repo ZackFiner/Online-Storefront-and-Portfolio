@@ -195,7 +195,6 @@ class FrontPage extends Component {
         const target_indx = posts.findIndex(p => p.index==id);
 
         if (source_indx != target_indx && source_indx > -1  && target_indx > -1) {
-            const old_idx = posts[source_indx].index;
             posts[source_indx].index = posts[target_indx].index;
             this.index_update_list.push({_id: posts[source_indx]._id, index: posts[source_indx].index}); // queue this post for an update request
             
@@ -219,6 +218,7 @@ class FrontPage extends Component {
     render() {
         const {userdata, loggedin} = this.props;
         const component_this = this;
+        const edit = loggedin && isMemberofRole(userdata, 'admin');
         // should probably be more effient
         // i don't want to sort this every render
         const posts = this.state.posts.sort((a,b) => b.index-a.index).map((p) => { 
@@ -231,9 +231,7 @@ class FrontPage extends Component {
                     });
                 });
             }
-            let edit = false;
-            if (loggedin && isMemberofRole(userdata, 'admin')) {
-                edit = true;
+            if (edit) {
                 edit_panel = [
                     <EditBtn id={p._id}>Edit</EditBtn>,
                     <DeleteButton onClick={delete_post}>Delete</DeleteButton>
@@ -255,10 +253,12 @@ class FrontPage extends Component {
                     {edit_panel}
                 </PostPos>);
         })
-
+        let post_buttons = null;
+        if (edit)
+            post_buttons = [<EditBtn>Write Post</EditBtn>,
+                            <ImagePostBtn>Post Image</ImagePostBtn>];
         return (<Wrapper>
-            <EditBtn>Write Post</EditBtn>
-            <ImagePostBtn>Post Image</ImagePostBtn>
+            {post_buttons}
             {posts}
         </Wrapper>)
     }

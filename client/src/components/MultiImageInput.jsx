@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
 import styled from 'styled-components';
+import StyledComponents from './StyledComponents';
+const {ImageSelectorButton} = StyledComponents;
 
 
 const DeleteButton = styled.button.attrs({
@@ -37,11 +39,6 @@ const Wrapper = styled.div.attrs({
 
 const DragableImageListElement = styled.li.attrs({
     className: `multiimageinput-element`
-})`
-`
-
-const AddImageButton = styled.input.attrs({
-    className: `image-input-frame`
 })`
 `
 
@@ -179,7 +176,7 @@ class MultiImageInput extends Component {
             <Wrapper>
             <DragableImageList>
                 {imageElements}
-                <DragableImageListElement><AddImageButton type='file' multiple='multiple' onChange={this.handleAddImage} /></DragableImageListElement>
+                <DragableImageListElement><ImageSelectorButton type='file' multiple='multiple' onChange={this.handleAddImage} /></DragableImageListElement>
             </DragableImageList>
             </Wrapper>
         );

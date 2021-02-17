@@ -1,23 +1,7 @@
 import React, {Component} from 'react';
 import styled from 'styled-components';
-
-
-const ImageSelectorFrame = styled.div.attrs({
-    className: `image-selector-frame`
-})`
-`
-const ImageSelectorInput = styled.input.attrs(({key, name, onChange}) => ({
-    className: `image-selector-input`,
-    type: 'file',
-    onChange: onChange,
-    key: key,
-    name: name,
-}))`
-`
-const ImageSelectorPreview = styled.img.attrs({
-    className: `image-selector-preview`
-})`
-`
+import StyledComponents from './StyledComponents';
+const {ImageSelectorPreview, ImageSelectorButton} = StyledComponents;
 
 class ImageSelector extends Component {
     constructor(props) {
@@ -62,11 +46,9 @@ class ImageSelector extends Component {
         } else {
             previewFiller = <span/>;
         }
-        return (
-        <ImageSelectorFrame>
+        return (<div>
             {previewFiller}
-            <ImageSelectorInput onChange={this.handleImageSelect} />
-        </ImageSelectorFrame>)
+            <ImageSelectorButton onChange={this.handleImageSelect} /></div>)
     }
 }
 

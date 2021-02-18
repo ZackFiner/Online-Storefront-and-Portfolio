@@ -8,19 +8,28 @@ const {ImageSelectorButton} = StyledComponents;
 const DeleteButton = styled.button.attrs({
     className: `close`
 })`
+    position: absolute;
+    color: gray;
+    z-index: 50;
+    opacity: 0.7;
+    &:hover {
+        color: white;
+    }
 `
 
 const PreviewWrapper = styled.div.attrs({
     className: `draggable-image-preview-wrapper`
 })`
-    max-width: 200px;
+    max-width: 225px;
     
 `
 
 const ImagePreview = styled.img.attrs({
     className: `draggable-image-preview`
 })`
-    max-width: 100%;
+    width: 225px;
+    height: 150px;
+    object-fit: contain;
 `
 const DraggableImageFrame = styled.div.attrs({
     className: `draggable-image-frame`
@@ -62,7 +71,7 @@ class DragableImage extends Component {
                     <DeleteButton name={name} onClick={this.state.onDelete}>
                         <span name={name} aria-hidden="true">&times;</span>
                     </DeleteButton>
-                    <PreviewWrapper><ImagePreview src={prev_url} /></PreviewWrapper>
+                    <PreviewWrapper><StyledComponents.ImageSelectorPreview src={prev_url} /></PreviewWrapper>
                 </DraggableImageFrame>
         )
     }
@@ -168,7 +177,9 @@ class MultiImageInput extends Component {
                 id: value.id,
             };
             return (
-                <DragableImageListElement><DragableImage key={value.id} name={value.id} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/></DragableImageListElement>
+                <DragableImageListElement>
+                    <DragableImage key={value.id} name={value.id} imageInfo={imageInfo} onDelete={outer_this.handleRemoveImage}/>
+                </DragableImageListElement>
             );
         });
 
@@ -176,7 +187,9 @@ class MultiImageInput extends Component {
             <Wrapper>
             <DragableImageList>
                 {imageElements}
-                <DragableImageListElement><ImageSelectorButton type='file' multiple='multiple' onChange={this.handleAddImage} /></DragableImageListElement>
+                <DragableImageListElement>
+                    <ImageSelectorButton type='file' multiple='multiple' onChange={this.handleAddImage} />
+                </DragableImageListElement>
             </DragableImageList>
             </Wrapper>
         );

@@ -36,19 +36,24 @@ const ImageSelectorInput = styled.input.attrs(({key, name, onChange}) => ({
 const ImageSelectorPreview = styled.img.attrs({
     className: `image-selector-preview`
 })`
+    width: 225px;
+    height: 150px;
+    object-fit: contain;
+    background-color: black;
 `
 const ImageSelectorLabel = styled.label.attrs({
 
 })`
-    display: inline-block;
+    display: block;
     cursor: pointer;
     border-style: dashed;
     border-radius: 5px;
     border-width: 1px;
-    min-width: 225px;
-    min-height:150px;
+    width: 225px;
+    height: 150px;
     text-align: center;
     font-family: "segoe ui symbol";
+    margin-bottom: 0;
 `
 
 const ImageSelectorButton = (props) => (<ImageSelectorLabel><ImageSelectorInput {...props}></ImageSelectorInput><font size="+4">&#128247;</font><br/>Choose an Image</ImageSelectorLabel>);

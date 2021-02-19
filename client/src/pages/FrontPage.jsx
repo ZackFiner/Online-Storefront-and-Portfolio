@@ -143,7 +143,6 @@ function FrontPagePost(edit, p, handleDrag, handleDragStop, handleDragOver, hand
                 </PostContainer>
             </PostWrapper>
             {edit_panel}
-            <FrontPagePost></FrontPagePost>
         </PostPos>);
 }
 
@@ -284,28 +283,16 @@ class FrontPage extends Component {
                     });
                 });
             }
-
-            if (edit) {
-                edit_panel = [
-                    <EditBtn id={p._id}>Edit</EditBtn>,
-                    <DeleteButton onClick={delete_post}>Delete</DeleteButton>
-                ];
-                drag_pane = <DragNDropHanlder id={`dropzone_${p.index}`} onDragLeave={this.handleDragLeave} onDragEnter={this.handleDragEnter} onDragOver={this.handleDragOver} onDrop={this.handleDrop}></DragNDropHanlder>;
-            }
-            return (
-                <PostPos id={`postc_${p.index}`} key={p.index}>
-                    <PostWrapper id={p._id} name={p.index} key={p._id} draggable={edit} onDragEnd={this.handleDragStop} onDragStart={this.handleDrag}>
-                        <PostContainer>
-                            {drag_pane}
-                            <Expander dir="top"></Expander>
-                            <PostHeader>{p.header}</PostHeader>
-                            <PostInfo>{new Date(p.createdAt).toLocaleString()}</PostInfo>
-                            <PostContent dangerouslySetInnerHTML={{__html: p.content}}/>
-                            <Expander dir="bottom"></Expander>
-                        </PostContainer>
-                    </PostWrapper>
-                    {edit_panel}
-                </PostPos>);
+            return FrontPagePost(
+                edit, 
+                p, 
+                component_this.handleDrag, 
+                component_this.handleDragStop, 
+                component_this.handleDragOver, 
+                component_this.handleDragLeave, 
+                component_this.handleDragEnter, 
+                component_this.handleDrop, 
+                delete_post);
         })
         let post_buttons = null;
         if (edit)

@@ -108,12 +108,53 @@ const PostContent = styled.div.attrs({
 })`
 `
 
+function FrontPagePost(edit, p, handleDrag, handleDragStop, handleDragOver, handleDragLeave, handleDragEnter, handleDrop, deletePost) {
+    let edit_panel = null;
+    let drag_pane = null;
+    if (edit) {
+        edit_panel = [
+            <EditBtn id={p._id}>Edit</EditBtn>,
+            <DeleteButton onClick={deletePost}>Delete</DeleteButton>
+        ];
+        drag_pane = <DragNDropHanlder 
+        id={`dropzone_${p.index}`} 
+        onDragLeave={handleDragLeave} 
+        onDragEnter={handleDragEnter} 
+        onDragOver={handleDragOver} 
+        onDrop={handleDrop}>
+        </DragNDropHanlder>;
+    }
+    return (
+        <PostPos id={`postc_${p.index}`} key={p.index}>
+            <PostWrapper 
+            id={p._id} 
+            name={p.index} 
+            key={p._id} 
+            draggable={edit} 
+            onDragEnd={handleDragStop} 
+            onDragStart={handleDrag}>
+                <PostContainer>
+                    {drag_pane}
+                    <Expander dir="top"></Expander>
+                    <PostHeader>{p.header}</PostHeader>
+                    <PostInfo>{new Date(p.createdAt).toLocaleString()}</PostInfo>
+                    <PostContent dangerouslySetInnerHTML={{__html: p.content}}/>
+                    <Expander dir="bottom"></Expander>
+                </PostContainer>
+            </PostWrapper>
+            {edit_panel}
+            <FrontPagePost></FrontPagePost>
+        </PostPos>);
+}
+
+
 class FrontPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             posts: [],
+            post_list: null,
         }
         this.dragedIndex = -1;
         this.draggedId = null;
@@ -122,18 +163,29 @@ class FrontPage extends Component {
 
     componentDidMount = () => {
         api.getPosts().then(res => {
+            const posts = res.data.data;
+            let post_list_head = {prev:null, id: 0, index: posts[0].index, next: null};
+            let post_cur = post_list_head;
+
+            for(let i = 1; i < posts.length; i++) {
+                post_cur.next = {prev: post_cur, id: i, index: posts[i].index, next: null};
+                post_cur = post_cur.next;
+            }
+            
             this.setState({
                 posts: res.data.data,
+                post_list: post_list_head,
             });
         })
     }
 
     handleDrag = (event) => {
         const id = event.target.id;
-        event.target.classList.add("dragging");
         const index = event.target.getAttribute('name');
-        console.log(index);
+        
+        event.target.classList.add("dragging");
         event.dataTransfer.setData('post_index', index);
+        
         this.draggedId = id;
         this.dragedIndex = index;
     }
@@ -224,6 +276,7 @@ class FrontPage extends Component {
         const posts = this.state.posts.sort((a,b) => b.index-a.index).map((p) => { 
             let edit_panel = null;
             let drag_pane = null;
+
             function delete_post(event) {
                 api.deletePost(p._id).then( () => {
                     component_this.setState({
@@ -231,6 +284,7 @@ class FrontPage extends Component {
                     });
                 });
             }
+
             if (edit) {
                 edit_panel = [
                     <EditBtn id={p._id}>Edit</EditBtn>,

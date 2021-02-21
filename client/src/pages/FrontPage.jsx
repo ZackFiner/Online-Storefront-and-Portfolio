@@ -108,7 +108,15 @@ const PostContent = styled.div.attrs({
 })`
 `
 
-function FrontPagePost(edit, p, handleDrag, handleDragStop, handleDragOver, handleDragLeave, handleDragEnter, handleDrop, deletePost) {
+function FrontPagePost(edit, 
+                        p, 
+                        handleDrag, 
+                        handleDragStop, 
+                        handleDragOver, 
+                        handleDragLeave, 
+                        handleDragEnter, 
+                        handleDrop, 
+                        deletePost) {
     let edit_panel = null;
     let drag_pane = null;
     if (edit) {

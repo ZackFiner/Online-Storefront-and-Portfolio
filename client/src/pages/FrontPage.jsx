@@ -68,21 +68,29 @@ const DeleteButton = styled.button.attrs(props => ({
     z-index: 251;
 `
 
-const DragNDropHanlder = styled.div.attrs({
+const DragNDropHanlder = styled.div.attrs(props => ({
+    ...props,
+    className: `${props.top ? 'insert_up' : 'insert_down'}`
 
-})`
+}))`
     width: 100%;
-    height: 100%;
+    height: 50%;
     position: absolute;
-    top:0;
     left:0;
     z-index: 250;
 
+    &.insert_up {
+        top: 0;
+    }
+    &.insert_down {
+        top: 50%;
+    }
+
     &.expanded.top ~ div.expander.top {
-        height:  300px;
+        //height:  300px;
     }
     &.expanded.bottom ~ div.expander.bottom {
-        height: 300px;
+        //height: 300px;
     }
 `
 const Expander = styled.div.attrs(props => ({
@@ -125,13 +133,21 @@ function FrontPagePost(edit,
             <EditBtn id={p._id}>Edit</EditBtn>,
             <DeleteButton onClick={deletePost}>Delete</DeleteButton>
         ];
-        drag_pane = <DragNDropHanlder
-        id={`dropzone_${p.index}`} 
+        drag_pane = [
+        <DragNDropHanlder top={true}
+        id={`${key}`} 
         onDragLeave={handleDragLeave} 
         onDragEnter={handleDragEnter} 
         onDragOver={handleDragOver} 
-        onDrop={handleDrop}>
-        </DragNDropHanlder>;
+        onDrop={handleDrop(true)}>
+        </DragNDropHanlder>,
+        <DragNDropHanlder
+        id={`${key}`} 
+        onDragLeave={handleDragLeave} 
+        onDragEnter={handleDragEnter} 
+        onDragOver={handleDragOver} 
+        onDrop={handleDrop(false)}>
+        </DragNDropHanlder>];
     }
     return (
         <PostPos id={`postc_${p.index}`} key={key}>
@@ -155,9 +171,10 @@ function FrontPagePost(edit,
 }
 
 class ListNode {
-    constructor(id, index) {
+    constructor(id, index, _id) {
         this.index = index;
         this.id = id;
+        this._id = _id;
         this.prev = null;
         this.next = null;
     }
@@ -177,6 +194,46 @@ class ListNode {
     getPrev() {
         return this.prev;
     }
+
+    insertBefore(target) {
+        if (target != this.getPrev()) {
+            const prev = this.getPrev();
+            this.setPrev(target);
+            target.setNext(this);
+            target.setPrev(prev);
+            if (prev) {
+                prev.setNext(target);
+            }
+        }
+        return target;
+    }
+
+    insertAfter(target) {
+        if (target != this.getNext()) {
+            const next = this.getNext();
+            this.setNext(target);
+            target.setPrev(this);
+            target.setNext(next);
+            if (next) {
+                next.setPrev(target);
+            }
+        }
+        return target;
+    }
+
+    removeAndMend() {
+        const prev = this.getPrev();
+        const next = this.getNext();
+
+        if (prev) {
+            prev.setNext(next);
+        }
+        if (next) {
+            next.setPrev(prev);
+        }
+
+        return next ? next : prev;
+    }
 }
 
 class FrontPage extends Component {
@@ -186,6 +243,7 @@ class FrontPage extends Component {
         this.state = {
             posts: [],
             post_list: null,
+            posts_length: null,
         }
         this.dragedIndex = -1;
         this.draggedId = null;
@@ -196,11 +254,11 @@ class FrontPage extends Component {
     componentDidMount = () => {
         api.getPosts().then(res => {
             const posts = res.data.data;
-            let post_list_head = new ListNode(0, posts[0].index);
+            let post_list_head = new ListNode(0, posts[0].index, posts[0]._id);
             let post_cur = post_list_head;
 
             for(let i = 1; i < posts.length; i++) {
-                const new_node = new ListNode(i, posts[i].index);
+                const new_node = new ListNode(i, posts[i].index, posts[i]._id);
                 new_node.setPrev(post_cur);
                 post_cur.setNext(new_node);
                 post_cur = post_cur.getNext();
@@ -209,6 +267,7 @@ class FrontPage extends Component {
             this.setState({
                 posts: res.data.data,
                 post_list: post_list_head,
+                posts_length: res.data.data.length,
             });
         })
     }
@@ -258,11 +317,25 @@ class FrontPage extends Component {
         event.target.classList.remove("dragging");
     }
 
-    updatePostIndexing = (start_node, end_node) => {
+    updatePostIndexing = (start_node, end_node, direction) => {
         let promise_list = [];
-        for(let i = 0; i < this.index_update_list.length; i++) {
-            const {_id, index}  = this.index_update_list[i];
-            promise_list.push(api.editPost(_id, {index}));
+        let curr = start_node;
+        // if direction is negative, then the start node is above the end node,
+        // otherwise, the start node is below the end node
+        let index;
+        if (direction < 0) {
+            index = start_node.getPrev() ? start_node.getPrev().index+1 : 1;
+
+        } else {
+            index = start_node.getNext() ? start_node.getNext().index - 1 : this.state.posts_length;
+        }
+        let stop_point = direction < 0 ? end_node.getNext() : end_node.getPrev();
+
+        while (curr != stop_point) {
+            curr.index = index;
+            promise_list.push(api.editPost(curr._id, {index: curr.index}));
+            index = index + (direction < 0 ? 1 : -1);
+            curr = direction < 0 ? curr.getNext() : curr.getPrev();
         }
         Promise.all(promise_list).then((values) => {
             this.index_update_list = [];
@@ -279,61 +352,33 @@ class FrontPage extends Component {
         console.log(a);
     }
 
-    handleDrop = (linked_list_node=null) => (event) => {
+    handleDrop = (linked_list_node=null) => (top) => (event) => {
         event.preventDefault();
         event.target.classList.remove('expanded');
         let {posts, post_list} = this.state;
-
+        
         if (this.dragNode != linked_list_node) {
             let current_head = post_list;
-            
-            if (this.dragNode.getPrev()) { // if this node isn't the head
-                this.dragNode.getPrev().setNext(this.dragNode.getNext());// take the current drag node out of it's array
-            } else { // we're looking at the head of the list
+            if (!this.dragNode.getPrev()) {
                 current_head = this.dragNode.getNext();
             }
-            if (this.dragNode.getNext()) {
-                this.dragNode.getNext().setPrev(this.dragNode.getPrev());
+
+            this.dragNode.removeAndMend();
+            let direction = 0; // TODO: fix this
+            if (top) {// insert above
+                if (!linked_list_node.getPrev()) {
+                    // replace the head with the next node
+                    current_head = this.dragNode;
+                }
+                linked_list_node.insertBefore(this.dragNode);
+
+            } else {
+                linked_list_node.insertAfter(this.dragNode);
             }
             
-            // put the node where th target node used to be
-            if (!linked_list_node.getPrev()) {// if this is the head
-
-                current_head = this.dragNode;
-                current_head.setPrev(null);
-                linked_list_node.setPrev(current_head);
-                current_head.setNext(linked_list_node);
-                
-            } else if(!linked_list_node.getNext()) { // if this is the end of the list
-                
-                this.dragNode.setPrev(linked_list_node);
-                linked_list_node.setNext(this.dragNode);
-                this.dragNode.setNext(null);
-
-            } else { // if the linked list node is somewhere in the body
-                if (linked_list_node.getNext() == this.dragNode) { // neighbor case #1
-                    const old_prev = linked_list_node.getPrev();
-                    this.dragNode.setNext(linked_list_node);
-                    this.dragNode.setPrev(old_prev);
-                    old_prev.setNext(this.dragNode);
-                    linked_list_node.setNext(this.dragNode);
-
-                } else if (linked_list_node.getPrev() == this.dragNode) { // neighbor case #2
-                    const old_next = linked_list_node.getNext();
-                    linked_list_node.setNext(this.dragNode);
-                    this.dragNode.setPrev(linked_list_node);
-                    this.dragNode.setNext(old_next);
-                    old_next.setPrev(this.dragNode);
-                } else { // general case
-                    this.dragNode.setPrev(linked_list_node);
-                    this.dragNode.setNext(linked_list_node.getNext());
-                    this.dragNode.getNext().setPrev(this.dragNode);
-                    this.dragNode.getPrev().setNext(this.dragNode);
-                }
-            }
             this.setState({posts:posts, post_list: current_head});
-            ///const start_node = this.dragNode;
-            //this.updatePostIndexing(start_node, linked_list_node);
+            const start_node = this.dragNode;
+            this.updatePostIndexing(start_node, linked_list_node, direction);
         }
         this.dragedIndex = -1;
         this.draggedId = null;
@@ -377,12 +422,9 @@ class FrontPage extends Component {
     }
 
     render() {
-        console.log("called");
         const {userdata, loggedin} = this.props;
         const component_this = this;
         const edit = loggedin && isMemberofRole(userdata, 'admin');
-        // should probably be more effient
-        // i don't want to sort this every render
         const posts = component_this.getPostsFromList(edit);
 
         let post_buttons = null;

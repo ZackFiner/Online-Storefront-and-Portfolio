@@ -323,6 +323,7 @@ class FrontPage extends Component {
         // if direction is negative, then the start node is above the end node,
         // otherwise, the start node is below the end node
         let index;
+        console.log(direction);
         if (direction < 0) {
             index = start_node.getPrev() ? start_node.getPrev().index+1 : 1;
 
@@ -331,7 +332,7 @@ class FrontPage extends Component {
         }
         let stop_point = direction < 0 ? end_node.getNext() : end_node.getPrev();
 
-        while (curr != stop_point) {
+        while (curr && curr != stop_point) {
             curr.index = index;
             promise_list.push(api.editPost(curr._id, {index: curr.index}));
             index = index + (direction < 0 ? 1 : -1);
@@ -346,7 +347,7 @@ class FrontPage extends Component {
         let curr = list_head;
         let a = '';
         while (curr) {
-            a += `${curr.id}->`;
+            a += `${curr.index}->`;
             curr = curr.next;
         }
         console.log(a);
@@ -363,8 +364,7 @@ class FrontPage extends Component {
                 current_head = this.dragNode.getNext();
             }
 
-            this.dragNode.removeAndMend();
-            let direction = 0; // TODO: fix this
+            let start_node = this.dragNode.removeAndMend();
             if (top) {// insert above
                 if (!linked_list_node.getPrev()) {
                     // replace the head with the next node
@@ -376,13 +376,17 @@ class FrontPage extends Component {
                 linked_list_node.insertAfter(this.dragNode);
             }
             
-            this.setState({posts:posts, post_list: current_head});
-            const start_node = this.dragNode;
-            this.updatePostIndexing(start_node, linked_list_node, direction);
+            this.setState({posts:posts, post_list: current_head}, () => {
+                
+                let direction = this.dragNode.index - linked_list_node.index;
+                this.updatePostIndexing(start_node, this.dragNode, direction);
+
+                this.dragedIndex = -1;
+                this.draggedId = null;
+                this.dragNode = null;
+            });
         }
-        this.dragedIndex = -1;
-        this.draggedId = null;
-        this.dragNode = null;
+
         //
     }
 

@@ -49,7 +49,7 @@ class ItemUpdate extends Component {
         super(props);
 
         this.state = {
-            id: this.props.match.params.id, //see, thats why we needed the :id for the page path in app/index.js
+            id: props?.match?.params?.id, //see, thats why we needed the :id for the page path in app/index.js
             name: '',
             reviews: [],
             description: '',
@@ -58,10 +58,29 @@ class ItemUpdate extends Component {
             thumbnail_img: '',
             gallery_images: [],
             dataLoaded: false,
+            edit: false,
         };
         this.thumbnailImg = null;
         this.galleryImages = [];
         this.updatePacket = {};
+    }
+
+    componentDidMount = async () => {
+        const { id } = this.state;
+        if (id) {
+            const item = await api.getItemById(id);
+            this.setState({
+                name: item.data.data.name,
+                reviews: item.data.data.reviews,
+                description: item.data.data.description,
+                price: item.data.data.price,
+                keywords: item.data.data.keywords.join(', '),
+                thumbnail_img: item.data.data.thumbnail_img,
+                gallery_images: item.data.data.gallery_images,
+                edit: true,
+            });
+            this.dataLoaded = true;
+        }
     }
 
     handleChangeThumbnail = async event => {
@@ -118,45 +137,44 @@ class ItemUpdate extends Component {
     }
 
 
-    handleUpdateItem = async () => {
-        console.log('sending packet')
-        const {id} = this.state;
-        const payload = {
-            body: {... this.updatePacket},
-            galleryImages: {files: this.galleryImages},
-            thumbnailImg: {file: this.thumbnailImg},
-        };
-        
+    handleUpdateItem = async (event) => {
+        event.preventDefault();
+        const {id, edit} = this.state;
+        if (edit) {
+            const payload = {
+                body: {... this.updatePacket},
+                galleryImages: {files: this.galleryImages},
+                thumbnailImg: {file: this.thumbnailImg},
+            };
+            
 
-        await api.updateItemById(id, payload).then( res => {
-            window.alert(`Item Successfully Updated`);
-            this.setState({
-                id: this.props.match.params.id,
-                name: '',
-                reviews: [],
-                description: '',
-                keywords: '',
-                price: null,
-                thumbnail_img: '',
-                gallery_images: [],
-                dataLoaded: true,
+            await api.updateItemById(id, payload).then( res => {
+                const id = res.data.id;
+                this.props.history.push(`/items/update/${id}`);
+            })
+        } else {
+            const {name, reviews, description, keywords, price} = this.state;
+            const payload = {
+                body: {
+                    name,
+                    reviews,
+                    description: description.toString('html'),
+                    keywords: this.updatePacket.keywords,
+                    price
+                },
+                galleryImages: {files: this.galleryImages},
+                thumbnailImg: {file: this.thumbnailImg},
+            }
+            await api.insertItem(payload).then(res => {
+                const id = res.data.id;
+                this.setState({
+                    id: id,
+                    edit: true,
+                }, () => {
+                    this.props.history.push(`/items/update/${id}`);
+                })
             });
-        })
-    }
-
-    componentDidMount = async () => {
-        const { id } = this.state;
-        const item = await api.getItemById(id);
-        this.setState({
-            name: item.data.data.name,
-            reviews: item.data.data.reviews,
-            description: item.data.data.description,
-            price: item.data.data.price,
-            keywords: item.data.data.keywords.join(', '),
-            thumbnail_img: item.data.data.thumbnail_img,
-            gallery_images: item.data.data.gallery_images
-        });
-        this.dataLoaded = true;
+        }
     }
 
     render() {

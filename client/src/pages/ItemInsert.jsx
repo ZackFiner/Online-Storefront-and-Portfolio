@@ -77,7 +77,6 @@ class ItemInsert extends Component {
             thumbnail: { file: selectedFile, },
             galleryImages: { files: this.galleryImages },
         };
-        console.log(payload);
         await api.insertItem(payload).then(res => {
             window.alert(`Item Inserted Successfully`);
             this.setState({

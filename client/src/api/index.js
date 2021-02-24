@@ -8,9 +8,9 @@ export const insertItem = payload => {
     /* Because this request is handled using the multer middleware
      * we need to repackage the contents into a multipart form
      */
-    const {thumbnail, galleryImages, body} = payload;
+    const {thumbnailImg, galleryImages, body} = payload;
     const formData = new FormData();
-    formData.append('selectedThumbnail', thumbnail.file);
+    formData.append('selectedThumbnail', thumbnailImg.file);
     
     galleryImages.files.forEach(file => {
         formData.append('galleryImages', file);

@@ -8,7 +8,9 @@ const {ImageSelectorButton} = StyledComponents;
 const DeleteButton = styled.button.attrs({
     className: `close`
 })`
-    position: absolute;
+    position: relative;
+    bottom: -20px;
+    left: 0px;
     color: gray;
     z-index: 50;
     opacity: 0.7;
@@ -21,6 +23,8 @@ const PreviewWrapper = styled.div.attrs({
     className: `draggable-image-preview-wrapper`
 })`
     max-width: 225px;
+    height: 150px;
+    margin-top: -25px;
     
 `
 

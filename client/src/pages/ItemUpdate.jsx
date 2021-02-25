@@ -106,7 +106,7 @@ class ItemUpdate extends Component {
             this.galleryImages.splice(this.galleryImages.indexOf(file), 1);
         } else {
             if (!(this.updatePacket['gallery_images'])) {
-                this.updatePacket['gallery_images'] = this.state.gallery_images.map( val => { return val._id });
+                this.updatePacket['gallery_images'] = this.state.gallery_images;
             }
             const id_of_removed = this.state.gallery_images.find(val => { return val.path == fileObject.prev_url; })._id;
             this.updatePacket['gallery_images'] = this.updatePacket['gallery_images'].filter(val => {return val != id_of_removed});
@@ -149,6 +149,8 @@ class ItemUpdate extends Component {
             
 
             await api.updateItemById(id, payload).then( res => {
+                this.galleryImages = []; // clear the files
+                this.thumbnailImg = null; // clear the file
                 const id = res.data.id;
                 this.props.history.push(`/items/update/${id}`);
             })
@@ -167,6 +169,8 @@ class ItemUpdate extends Component {
             }
             await api.insertItem(payload).then(res => {
                 const id = res.data.id;
+                this.galleryImages = []; // clear the files
+                this.thumbnailImg = null; // clear the file
                 this.setState({
                     id: id,
                     edit: true,

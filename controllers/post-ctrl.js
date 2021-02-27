@@ -1,5 +1,10 @@
 const PostModel = require('../models/frontpage-post-model');
-const {sanitizeForTinyMCE, sanitizeForMongo} = require('./sanitization');
+const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
+
+const PostSanitizer = new ObjectSanitizer({
+    header: (h) => {return sanitizeForMongo(sanitizeForTinyMCE(h));},
+    content: (c) => {return sanitizeForMongo(sanitizeForTinyMCE(c));}
+})
 
 const createPost = (req, res) => {
     // TODO: these are gunna need image upload support, since

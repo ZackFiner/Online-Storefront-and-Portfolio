@@ -3,7 +3,8 @@ const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanit
 
 const PostSanitizer = new ObjectSanitizer({
     header: (h) => {return sanitizeForMongo(sanitizeForTinyMCE(h));},
-    content: (c) => {return sanitizeForMongo(sanitizeForTinyMCE(c));}
+    content: (c) => {return sanitizeForMongo(sanitizeForTinyMCE(c));},
+    index: (i) => {return !isNaN(parseInt(i)) ? parseInt(i) : undefined}
 });
 
 const createPost = (req, res) => {

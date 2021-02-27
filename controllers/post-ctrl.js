@@ -4,7 +4,7 @@ const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanit
 const PostSanitizer = new ObjectSanitizer({
     header: (h) => {return sanitizeForMongo(sanitizeForTinyMCE(h));},
     content: (c) => {return sanitizeForMongo(sanitizeForTinyMCE(c));}
-})
+});
 
 const createPost = (req, res) => {
     // TODO: these are gunna need image upload support, since

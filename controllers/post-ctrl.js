@@ -1,5 +1,11 @@
 const PostModel = require('../models/frontpage-post-model');
-const {sanitizeForTinyMCE, sanitizeForMongo} = require('./sanitization');
+const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
+
+const PostSanitizer = new ObjectSanitizer({
+    header: (h) => {return sanitizeForMongo(sanitizeForTinyMCE(h));},
+    content: (c) => {return sanitizeForMongo(sanitizeForTinyMCE(c));},
+    index: (i) => {return !isNaN(parseInt(i)) ? parseInt(i) : undefined}
+});
 
 const createPost = (req, res) => {
     // TODO: these are gunna need image upload support, since
@@ -229,7 +235,7 @@ const getPost = (req, res) => {
 
 const getPosts = (req, res) => {
     PostModel.find({})
-    .sort({index: -1})
+    .sort({index: 1})
     .exec()
     .then((value)=>{
         return res.status(200).json({

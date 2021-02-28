@@ -6,7 +6,7 @@ const PostModel = new Schema({
     header: {type: String, required: false},
     content: {type: String, required: true},
     index: {type: Number, required: true, default:0},
-    images: {type: [ImageModel], required: false}
+    images: {type: [ImageModel], required: false},
 },
 {timestamps: true});
 

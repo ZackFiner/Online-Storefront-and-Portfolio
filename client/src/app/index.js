@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 import {ActivitySensor, LogoutUser} from '../authentication';
-import {FrontPage, PostEditor, ImagePost, ItemInsert, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
+import {FrontPage, PostEditor, ImagePost, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -28,7 +28,7 @@ function App() {
         <Route path="/login" exact component={LoginPage} />
         <Route path="/createAccount" exact component={CreateAccountPage} />
         <AuthorizedRoute path="/items/list" exact component={ItemList} roles={['admin']} />
-        <AuthorizedRoute path="/items/create" exact component={ItemInsert} roles={['admin']} />
+        <AuthorizedRoute path="/items/create" exact component={ItemUpdate} roles={['admin']} />
         <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['admin']} />
         <Route path="/items/view/:id" exact component={ItemView} />
         <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['admin']} />

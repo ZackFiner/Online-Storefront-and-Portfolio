@@ -104,7 +104,7 @@ const editPost = (req, res) => {
     const raw_header = body.header;
     const raw_content = body.content;
     const raw_index = body.index;
-
+    const sanitized_body = PostSanitizer.sanitizeObject(body);
     // sanitize
     const header = raw_header ? sanitizeForMongo(sanitizeForTinyMCE(raw_header)) : undefined;
     const content = raw_content ? sanitizeForMongo(sanitizeForTinyMCE(raw_content)) : undefined;

@@ -17,7 +17,7 @@ const createPost = (req, res) => {
             error: `No body was provided`
         });
     }
-
+    const sanitized_body = PostSanitizer.sanitizeObject(body);
     const raw_header = body.header;
     const raw_content = body.content;
     if (!raw_header || !raw_content) {

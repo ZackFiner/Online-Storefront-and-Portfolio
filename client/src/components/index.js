@@ -8,6 +8,7 @@ import ImageSelector from './ImageSelector';
 import AuthorizedRoute from './AuthorizedRoute';
 import ItemSearchBar from './ItemSearchBar'
 import ImageSlide from './ImageSlide';
-import StyledComponents from './StyledComponents'
+import StyledComponents from './StyledComponents';
+import ListNode from './SlidePane';
 
-export { StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export {ListNode, StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

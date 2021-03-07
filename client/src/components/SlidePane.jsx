@@ -69,6 +69,44 @@ class ListNode {
 
 export default ListNode;
 
+const DropZone = styled.div.attrs({
+
+})`
+`
+
+const DragHandle = styled.div.attrs({
+
+})`
+`
+
+const DragContainer = styled.div.attrs({
+
+})`
+`
+
+
+class DragContainer extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            parent_container: null,
+        }
+        this.parent_container = props.parent_container;
+        this.verticle = props.verticle ? props.verticle : false;
+    }
+
+    render() {
+        return (
+        <DragContainer>
+            <DragHandle>
+                {this.props.children}
+            </DragHandle>
+        </DragContainer>
+        );
+    }
+}
+
 class DragGrid extends Component {
     
 }

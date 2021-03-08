@@ -68,11 +68,38 @@ class ListNode {
 }
 
 export default ListNode;
+const zone_types = ['left', 'right', 'up', 'down'];
 
-const DropZone = styled.div.attrs({
+const DropZone = styled.div.attrs(props => ({
+    ...props,
+    className: props.zone >= 0 && props.zone < 4 ? zone_types[props.zone] : '',
+}))`
+    position: absolute;
+    z-index: 250;
 
-})`
+    &.left {
+        height: 100%;
+        width: 50%;
+        left: 0;
+    }
+    &.right {
+        height: 100%;
+        width:50%;
+        left: 50%;
+    }
+    &.up {
+        height: 50%;
+        width: 100%;
+        top: 0;
+    }
+    &.down {
+        height: 50%;
+        width: 100%;
+        top: 50%;
+    }
 `
+
+
 
 const DragHandle = styled.div.attrs({
 
@@ -108,5 +135,33 @@ class DragContainer extends Component {
 }
 
 class DragGrid extends Component {
-    
+    constructor(props) {
+        super(prrops);
+
+        this.dragged_item = null;
+    }
+
+    itemStartDragging = (item_info) => (event) => {
+        this.dragged_item = item_info;
+    }
+
+    itemStopDragging = (item_info) => (event) => {
+
+    }
+
+    itemDragging = (item_info) => (event) => {
+
+    }
+
+    dragEnter = (item_info) => (event) => {
+
+    }
+
+    dragExit = (item_info) => (event) => {
+
+    }
+
+    drop = (item_info, orientation) => (event) => {
+        // use the orientation to either insert the item before or after another item
+    }
 }

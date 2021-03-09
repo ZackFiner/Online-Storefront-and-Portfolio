@@ -2,10 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 
 class ListNode {
-    constructor(id, index, _id) {
+    constructor(index, data) {
         this.index = index;
-        this.id = id;
-        this._id = _id;
+        this.data = data;
         this.prev = null;
         this.next = null;
     }
@@ -67,8 +66,52 @@ class ListNode {
     }
 }
 
+class LinkedList {
+    constructor(data) {
+        this.list_head = null;
+
+        if (data.length) {
+            this.list_head = new ListNode(0, data[0]);
+            let current = this.list_head;
+            this.length = data.length;
+        
+            for (let i = 1; i < this.length; i++) {
+                current.setNext(new ListNode(i, data[i]));
+                current = current.getNext();
+            }
+        }
+    }
+
+    insertAfter(location, node) {
+        if (!node || !location || location.getNext() == node )
+            return;
+        node.removeAndMend();
+        location.insertAfter(node);
+    }
+
+    insertBefore(location, node) {
+        if (!node || !location || location.getPrev() == node)
+            return;
+        node.removeAndMend();
+        location.insertBefore(node);
+        if (location==this.list_head) {
+            this.list_head = node;
+            this.list_head.setPrev(null);
+        }
+    }
+
+    arr_map(fn) { 
+        let return_arr = [];
+        let current = this.list_head;
+        while(current) {
+            return_arr.push(fn(current.data));
+            current = current.getNext();
+        }
+    }
+}
+
 export default ListNode;
-const zone_types = ['left', 'right', 'up', 'down'];
+const zone_types = ['left', 'up', 'right', 'down'];
 
 const DropZone = styled.div.attrs(props => ({
     ...props,
@@ -136,32 +179,61 @@ class DragContainer extends Component {
 
 class DragGrid extends Component {
     constructor(props) {
-        super(prrops);
-
+        super(props);
+        // this.props.children should all be DragContainers
+        /*
+            
+        */
+        this.state = {
+            item_list: null,
+            item_list_length: 0,
+        }
         this.dragged_item = null;
     }
 
     itemStartDragging = (item_info) => (event) => {
         this.dragged_item = item_info;
+        event.target.classList.add('dragging');
     }
 
     itemStopDragging = (item_info) => (event) => {
-
+        event.target.classList.remove('remove');
+        this.dragged_item = null;
     }
 
-    itemDragging = (item_info) => (event) => {
-
-    }
-
-    dragEnter = (item_info) => (event) => {
-
+    dragEnter = (item_info, orientation) => (event) => {
+        event.preventDefault();
     }
 
     dragExit = (item_info) => (event) => {
-
+        event.preventDefault();
     }
 
     drop = (item_info, orientation) => (event) => {
+        event.preventDefault();
+        if (item_info != this.dragged_item) {
+            
+            let current_head = this.state.item_list;
+            this.dragged_item.removeAndMend();
+            if (orientation < 2) {
+                item_info.insertBefore(this.dragged_item);
+                if (item_info == this.dragged_item) {
+                    current_head = this.dragged_item;
+                    current_head.setPrev(null);
+                }
+            } else {
+                item_info.insertAfter(this.dragged_item);
+            }
+            this.setState({
+                item_list:current_head,
+            }, () => {
+                this.dragged_item = null;
+            })
+        }
         // use the orientation to either insert the item before or after another item
+    }
+
+    render() {
+        return (<div/>)
     }
 }

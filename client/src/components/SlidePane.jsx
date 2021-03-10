@@ -163,12 +163,26 @@ class DragContainer extends Component {
             parent_container: null,
         }
         this.parent_container = props.parent_container;
+        this.node = null;
         this.verticle = props.verticle ? props.verticle : false;
+    }
+
+    setParentGrid(parent) {
+        this.parent_container = parent;
+    }
+
+    setNode(node) {
+        this.node = node;
     }
 
     render() {
         return (
         <DragContainer>
+            <DropZone zone={this.verticle ? 0 : 2}
+            onDragLeave={this.parent_container.dragExit(this.node)}
+            onDragEnter={this.parent_container.dragEnter(this.node, this.verticle ? 0 : 2)}
+            ></DropZone>
+            <DropZone zone={this.verticle ? 1 : 3}></DropZone>
             <DragHandle>
                 {this.props.children}
             </DragHandle>
@@ -184,11 +198,31 @@ class DragGrid extends Component {
         /*
             
         */
+
         this.state = {
             item_list: null,
             item_list_length: 0,
         }
         this.dragged_item = null;
+    }
+
+    componentDidMount = () => {
+        if (this.props.children.length) {
+            const children = this.props.children;
+            let item_list = new ListNode(0, children[0])
+            let current = item_list;
+
+            for (let i = 1; i <children.length; i++) {
+                const new_node = new ListNode(i, children[i])
+                chidlren[i].setNode(new_node);
+                new_node.setPrev(current);
+                current.setNext(new_node);
+
+                current = current.getNext();
+            }
+
+            this.setState({item_list: item_list});
+        }
     }
 
     itemStartDragging = (item_info) => (event) => {
@@ -234,6 +268,8 @@ class DragGrid extends Component {
     }
 
     render() {
-        return (<div/>)
+        return (<div>
+
+        </div>)
     }
 }

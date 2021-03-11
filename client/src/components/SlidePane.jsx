@@ -176,13 +176,18 @@ class DragContainer extends Component {
     }
 
     render() {
+        const orientation = this.verticle ? 0 : 1;
         return (
         <DragContainer>
-            <DropZone zone={this.verticle ? 0 : 2}
+            <DropZone zone={orientation}
             onDragLeave={this.parent_container.dragExit(this.node)}
-            onDragEnter={this.parent_container.dragEnter(this.node, this.verticle ? 0 : 2)}
+            onDragEnter={this.parent_container.dragEnter(this.node, orientation)}
+            onDrop={this.parent_container.drop(this.node, orientation)}
             ></DropZone>
-            <DropZone zone={this.verticle ? 1 : 3}></DropZone>
+            <DropZone zone={orientation+2}
+            onDragLeave={this.parent_container.dragExit(this.node)}
+            onDragEnter={this.parent_container.dragEnter(this.node, orientation+2)}
+            onDrop={this.parent_container.drop(this.node, orientation+2)}></DropZone>
             <DragHandle>
                 {this.props.children}
             </DragHandle>
@@ -215,6 +220,7 @@ class DragGrid extends Component {
             for (let i = 1; i <children.length; i++) {
                 const new_node = new ListNode(i, children[i])
                 chidlren[i].setNode(new_node);
+                children[i].setParentGrid(this);
                 new_node.setPrev(current);
                 current.setNext(new_node);
 

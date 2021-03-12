@@ -1,6 +1,22 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
+const Wrapper = styled.div.attrs({
+
+})`
+`
+
+const Row = styled.div.attrs({
+})`
+    width: 100%;
+`
+
+const Cell = styled.div.attrs({
+
+})`
+    width: ${props => 100/props.cols}%;
+`
+
 class ListNode {
     constructor(index, data) {
         this.index = index;
@@ -178,7 +194,11 @@ class DragContainer extends Component {
     render() {
         const orientation = this.verticle ? 0 : 1;
         return (
-        <DragContainer>
+        <DragContainer
+        draggable={true}
+        onDragStart={this.parent_container.itemStartDragging(this.node)}
+        onDragEnd={this.parent_container.itemStopDragging(this.node)}
+        >
             <DropZone zone={orientation}
             onDragLeave={this.parent_container.dragExit(this.node)}
             onDragEnter={this.parent_container.dragEnter(this.node, orientation)}
@@ -203,10 +223,12 @@ class DragGrid extends Component {
         /*
             
         */
-
+        const {num_rows, num_cols} = this.props;
         this.state = {
             item_list: null,
             item_list_length: 0,
+            rows: num_rows,
+            cols: num_cols,
         }
         this.dragged_item = null;
     }
@@ -227,7 +249,7 @@ class DragGrid extends Component {
                 current = current.getNext();
             }
 
-            this.setState({item_list: item_list});
+            this.setState({item_list: item_list, item_list_length: children.length});
         }
     }
 
@@ -238,7 +260,7 @@ class DragGrid extends Component {
 
     itemStopDragging = (item_info) => (event) => {
         event.target.classList.remove('remove');
-        this.dragged_item = null;
+        //this.dragged_item = null;
     }
 
     dragEnter = (item_info, orientation) => (event) => {
@@ -274,8 +296,27 @@ class DragGrid extends Component {
     }
 
     render() {
-        return (<div>
+        const {rows, cols, item_list_length, item_list} = this.state;
+        const row_c = Math.floor(item_list_length / cols);
+        let row_arr = [];
+        let current = item_list;
+        for (let i = 0; i < row_c; i++) {
+            let index = 0;
+            let cell_arr = [];
+            while(current && index < cols) {
+                cell_arr.push(current.data);
+                index += 1;
+            }
+            row_arr.push(cell_Arr);
+        }
 
-        </div>)
+        row_arr = row_arr.map((row) => {
+            <Row>{row.map((cell)=>{
+                <Cell cols={cols}>{cell}</Cell>
+            })}</Row>
+        })
+        return (<Wrapper>
+            {row_arr}
+        </Wrapper>)
     }
 }

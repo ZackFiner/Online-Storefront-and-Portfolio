@@ -191,6 +191,10 @@ class DragContainer extends Component {
         this.node = node;
     }
 
+    setOrientation(vert) {
+        this.verticle = vert;
+    }
+
     render() {
         const orientation = this.verticle ? 0 : 1;
         return (
@@ -228,7 +232,7 @@ class DragGrid extends Component {
             item_list: null,
             item_list_length: 0,
             rows: num_rows,
-            cols: num_cols,
+            cols: num_cols ? num_cols : 1,
         }
         this.dragged_item = null;
     }
@@ -243,6 +247,7 @@ class DragGrid extends Component {
                 const new_node = new ListNode(i, children[i])
                 chidlren[i].setNode(new_node);
                 children[i].setParentGrid(this);
+                children[i].setOrientation(cols==1);
                 new_node.setPrev(current);
                 current.setNext(new_node);
 

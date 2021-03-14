@@ -264,7 +264,7 @@ class DragGrid extends Component {
     }
 
     itemStopDragging = (item_info) => (event) => {
-        event.target.classList.remove('remove');
+        event.target.classList.remove('dragging');
         //this.dragged_item = null;
     }
 

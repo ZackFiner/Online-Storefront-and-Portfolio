@@ -301,7 +301,7 @@ class DragGrid extends Component {
     }
 
     render() {
-        const {rows, cols, item_list_length, item_list} = this.state;
+        const {cols, item_list_length, item_list} = this.state;
         const row_c = Math.floor(item_list_length / cols);
         let row_arr = [];
         let current = item_list;

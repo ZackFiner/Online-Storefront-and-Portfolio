@@ -7,5 +7,6 @@ import CreateAccountPage from './CreateAccount';
 import LoginPage from './Login';
 import {PostEditor, ImagePost} from './CreatePost';
 import FrontPage from './FrontPage';
+import SlideExamplePage from './SlideExamplePage';
 
-export {FrontPage, PostEditor, ImagePost, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};
+export {FrontPage, SlideExamplePage, PostEditor, ImagePost, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};

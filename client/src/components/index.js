@@ -9,6 +9,6 @@ import AuthorizedRoute from './AuthorizedRoute';
 import ItemSearchBar from './ItemSearchBar'
 import ImageSlide from './ImageSlide';
 import StyledComponents from './StyledComponents';
-import ListNode from './SlidePane';
+import {ListNode, DragContainer, DragGrid} from './SlidePane';
 
-export {ListNode, StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export {ListNode, DragContainer, DragGrid,  StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

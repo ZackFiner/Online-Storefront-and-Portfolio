@@ -12,9 +12,12 @@ const Row = styled.div.attrs({
 `
 
 const Cell = styled.div.attrs({
-
+    className: 'cell_debug'
 })`
-    width: ${props => 100/props.cols}%;
+    display: inline-block;
+    width: ${props => `${100/props.cols}%`};
+    margin-left:0;
+    margin-right:0;
 `
 
 class ListNode {
@@ -39,6 +42,10 @@ class ListNode {
 
     getPrev() {
         return this.prev;
+    }
+
+    setData(data) {
+        this.data = data;
     }
 
     insertBefore(target) {
@@ -126,7 +133,6 @@ class LinkedList {
     }
 }
 
-export default ListNode;
 const zone_types = ['left', 'up', 'right', 'down'];
 
 const DropZone = styled.div.attrs(props => ({
@@ -165,9 +171,10 @@ const DragHandle = styled.div.attrs({
 })`
 `
 
-const DragContainer = styled.div.attrs({
+const DragWrapper = styled.div.attrs({
 
 })`
+    position: relative;
 `
 
 
@@ -179,7 +186,7 @@ class DragContainer extends Component {
             parent_container: null,
         }
         this.parent_container = props.parent_container;
-        this.node = null;
+        this.node = props.node;
         this.verticle = props.verticle ? props.verticle : false;
     }
 
@@ -198,7 +205,7 @@ class DragContainer extends Component {
     render() {
         const orientation = this.verticle ? 0 : 1;
         return (
-        <DragContainer
+        <DragWrapper
         draggable={true}
         onDragStart={this.parent_container.itemStartDragging(this.node)}
         onDragEnd={this.parent_container.itemStopDragging(this.node)}
@@ -215,7 +222,7 @@ class DragContainer extends Component {
             <DragHandle>
                 {this.props.children}
             </DragHandle>
-        </DragContainer>
+        </DragWrapper>
         );
     }
 }
@@ -240,14 +247,23 @@ class DragGrid extends Component {
     componentDidMount = () => {
         if (this.props.children.length) {
             const children = this.props.children;
-            let item_list = new ListNode(0, children[0])
-            let current = item_list;
 
+            let item_list = new ListNode(0, null);
+            item_list.setData(React.cloneElement(children[0], 
+                {
+                    node: item_list, 
+                    parent_container: this, 
+                    verticle:this.state.cols!=1
+                }));
+            let current = item_list;
             for (let i = 1; i <children.length; i++) {
-                const new_node = new ListNode(i, children[i])
-                chidlren[i].setNode(new_node);
-                children[i].setParentGrid(this);
-                children[i].setOrientation(cols==1);
+                const new_node = new ListNode(i, null);
+                new_node.setData(React.cloneElement(children[i], 
+                    {
+                        node: new_node, 
+                        parent_container: this, 
+                        verticle:this.state.cols!=1
+                    }));
                 new_node.setPrev(current);
                 current.setNext(new_node);
 
@@ -261,6 +277,7 @@ class DragGrid extends Component {
     itemStartDragging = (item_info) => (event) => {
         this.dragged_item = item_info;
         event.target.classList.add('dragging');
+        console.log(item_info);
     }
 
     itemStopDragging = (item_info) => (event) => {
@@ -302,7 +319,7 @@ class DragGrid extends Component {
 
     render() {
         const {cols, item_list_length, item_list} = this.state;
-        const row_c = Math.floor(item_list_length / cols);
+        const row_c = Math.ceil(item_list_length / cols);
         let row_arr = [];
         let current = item_list;
         for (let i = 0; i < row_c; i++) {
@@ -311,17 +328,19 @@ class DragGrid extends Component {
             while(current && index < cols) {
                 cell_arr.push(current.data);
                 index += 1;
+                current = current.getNext();
             }
-            row_arr.push(cell_Arr);
+            row_arr.push(cell_arr);
         }
-
         row_arr = row_arr.map((row) => {
-            <Row>{row.map((cell)=>{
-                <Cell cols={cols}>{cell}</Cell>
-            })}</Row>
-        })
+            return (<Row>{row.map((cell)=>{
+                return (<Cell cols={cols}>{cell}</Cell>);
+            })}</Row>);
+        });
         return (<Wrapper>
             {row_arr}
         </Wrapper>)
     }
 }
+
+export {DragGrid, DragContainer, ListNode};

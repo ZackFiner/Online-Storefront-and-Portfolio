@@ -286,10 +286,12 @@ class DragGrid extends Component {
     }
 
     dragEnter = (item_info, orientation) => (event) => {
+        console.log(item_info);
         event.preventDefault();
     }
 
     dragExit = (item_info) => (event) => {
+        console.log(item_info);
         event.preventDefault();
     }
 

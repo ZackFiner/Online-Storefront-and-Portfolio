@@ -212,11 +212,13 @@ class DragContainer extends Component {
         >
             <DropZone zone={orientation}
             onDragLeave={this.parent_container.dragExit(this.node)}
+            onDragOver={this.parent_container.dragOver(this.node)}
             onDragEnter={this.parent_container.dragEnter(this.node, orientation)}
             onDrop={this.parent_container.drop(this.node, orientation)}
             ></DropZone>
             <DropZone zone={orientation+2}
             onDragLeave={this.parent_container.dragExit(this.node)}
+            onDragOver={this.parent_container.dragOver(this.node)}
             onDragEnter={this.parent_container.dragEnter(this.node, orientation+2)}
             onDrop={this.parent_container.drop(this.node, orientation+2)}></DropZone>
             <DragHandle>
@@ -275,9 +277,9 @@ class DragGrid extends Component {
     }
 
     itemStartDragging = (item_info) => (event) => {
+        console.log(item_info);
         this.dragged_item = item_info;
         event.target.classList.add('dragging');
-        console.log(item_info);
     }
 
     itemStopDragging = (item_info) => (event) => {
@@ -286,16 +288,19 @@ class DragGrid extends Component {
     }
 
     dragEnter = (item_info, orientation) => (event) => {
-        console.log(item_info);
         event.preventDefault();
     }
 
     dragExit = (item_info) => (event) => {
-        console.log(item_info);
+        event.preventDefault();
+    }
+
+    dragOver = (item_info) => (event) => {
         event.preventDefault();
     }
 
     drop = (item_info, orientation) => (event) => {
+        console.log(item_info);
         event.preventDefault();
         if (item_info != this.dragged_item) {
             
@@ -303,7 +308,7 @@ class DragGrid extends Component {
             this.dragged_item.removeAndMend();
             if (orientation < 2) {
                 item_info.insertBefore(this.dragged_item);
-                if (item_info == this.dragged_item) {
+                if (item_info == current_head) {
                     current_head = this.dragged_item;
                     current_head.setPrev(null);
                 }
@@ -320,6 +325,7 @@ class DragGrid extends Component {
     }
 
     render() {
+        console.log("re-render");
         const {cols, item_list_length, item_list} = this.state;
         const row_c = Math.ceil(item_list_length / cols);
         let row_arr = [];

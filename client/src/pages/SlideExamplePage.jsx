@@ -19,19 +19,19 @@ class SlidePageExample extends Component {
         return <Wrapper>
             <DragGrid num_cols={4}>
                 <DragContainer>
-                    1
+                    <div>1</div>
                 </DragContainer>
                 <DragContainer>
-                    2
+                    <div>2</div>
                 </DragContainer>
                 <DragContainer>
-                    3
+                    <div>3</div>
                 </DragContainer>
                 <DragContainer>
-                    4
+                    <div>4</div>
                 </DragContainer>
                 <DragContainer>
-                    5
+                    <div>5</div>
                 </DragContainer>
             </DragGrid>
         </Wrapper>

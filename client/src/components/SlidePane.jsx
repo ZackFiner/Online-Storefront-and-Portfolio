@@ -84,7 +84,6 @@ class ListNode {
         if (next) {
             next.setPrev(prev);
         }
-
         return next ? next : prev;
     }
 }
@@ -300,28 +299,43 @@ class DragGrid extends Component {
     }
 
     drop = (item_info, orientation) => (event) => {
-        console.log(item_info);
         event.preventDefault();
         if (item_info != this.dragged_item) {
-            
             let current_head = this.state.item_list;
-            this.dragged_item.removeAndMend();
+            let replacement = this.dragged_item.removeAndMend();
+            if (this.dragged_item == current_head) {
+                current_head = replacement;
+                current_head.setPrev(null);
+            }
+            console.log(this.dragged_item);
             if (orientation < 2) {
-                item_info.insertBefore(this.dragged_item);
                 if (item_info == current_head) {
                     current_head = this.dragged_item;
                     current_head.setPrev(null);
                 }
+                item_info.insertBefore(this.dragged_item);
             } else {
                 item_info.insertAfter(this.dragged_item);
             }
+            console.log(this.dragged_item);
             this.setState({
                 item_list:current_head,
             }, () => {
+                this.printList(this.state.item_list);
                 this.dragged_item = null;
             })
         }
         // use the orientation to either insert the item before or after another item
+    }
+
+    printList(list_head) {
+        let curr = list_head;
+        let a = '';
+        while (curr) {
+            a += `${curr.index}->`;
+            curr = curr.next;
+        }
+        console.log(a);
     }
 
     render() {

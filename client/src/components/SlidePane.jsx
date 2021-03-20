@@ -28,12 +28,12 @@ class ListNode {
         this.next = null;
     }
 
-    setNext(next) {
-        this.next = next;
+    setNext(_next) {
+        this.next = _next;
     }
 
-    setPrev(prev) {
-        this.prev = prev;
+    setPrev(_prev) {
+        this.prev = _prev;
     }
 
     getNext() {
@@ -77,7 +77,6 @@ class ListNode {
     removeAndMend() {
         const prev = this.getPrev();
         const next = this.getNext();
-
         if (prev) {
             prev.setNext(next);
         }
@@ -142,11 +141,13 @@ const DropZone = styled.div.attrs(props => ({
     z-index: 250;
 
     &.left {
+        background-color: rgba(255.0,0.0,0.0,0.5);
         height: 100%;
         width: 50%;
         left: 0;
     }
     &.right {
+        background-color: rgba(0.0,0.0,255.0,0.5);
         height: 100%;
         width:50%;
         left: 50%;
@@ -185,7 +186,7 @@ class DragContainer extends Component {
             parent_container: null,
         }
         this.parent_container = props.parent_container;
-        this.node = props.node;
+        this.list_node = props.node;
         this.verticle = props.verticle ? props.verticle : false;
     }
 
@@ -194,7 +195,7 @@ class DragContainer extends Component {
     }
 
     setNode(node) {
-        this.node = node;
+        this.list_node = node;
     }
 
     setOrientation(vert) {
@@ -206,20 +207,20 @@ class DragContainer extends Component {
         return (
         <DragWrapper
         draggable={true}
-        onDragStart={this.parent_container.itemStartDragging(this.node)}
-        onDragEnd={this.parent_container.itemStopDragging(this.node)}
+        onDragStart={this.parent_container.itemStartDragging(this.list_node)}
+        onDragEnd={this.parent_container.itemStopDragging(this.list_node)}
         >
             <DropZone zone={orientation}
-            onDragLeave={this.parent_container.dragExit(this.node)}
-            onDragOver={this.parent_container.dragOver(this.node)}
-            onDragEnter={this.parent_container.dragEnter(this.node, orientation)}
-            onDrop={this.parent_container.drop(this.node, orientation)}
+            onDragLeave={this.parent_container.dragExit(this.list_node)}
+            onDragOver={this.parent_container.dragOver(this.list_node)}
+            onDragEnter={this.parent_container.dragEnter(this.list_node, orientation)}
+            onDrop={this.parent_container.drop(this.list_node, orientation)}
             ></DropZone>
             <DropZone zone={orientation+2}
-            onDragLeave={this.parent_container.dragExit(this.node)}
-            onDragOver={this.parent_container.dragOver(this.node)}
-            onDragEnter={this.parent_container.dragEnter(this.node, orientation+2)}
-            onDrop={this.parent_container.drop(this.node, orientation+2)}></DropZone>
+            onDragLeave={this.parent_container.dragExit(this.list_node)}
+            onDragOver={this.parent_container.dragOver(this.list_node)}
+            onDragEnter={this.parent_container.dragEnter(this.list_node, orientation+2)}
+            onDrop={this.parent_container.drop(this.list_node, orientation+2)}></DropZone>
             <DragHandle>
                 {this.props.children}
             </DragHandle>
@@ -264,7 +265,7 @@ class DragGrid extends Component {
                         node: new_node, 
                         parent_container: this, 
                         verticle:this.state.cols!=1
-                    }));
+                    })); // clone the DragContainer that corresponds to this element. this should not change, only the data in the new_node should
                 new_node.setPrev(current);
                 current.setNext(new_node);
 
@@ -276,14 +277,16 @@ class DragGrid extends Component {
     }
 
     itemStartDragging = (item_info) => (event) => {
-        console.log(item_info);
+        const index = event.target.id;
+        event.dataTransfer.setData('drag_index', index);
         this.dragged_item = item_info;
+        console.log(item_info);
         event.target.classList.add('dragging');
     }
 
     itemStopDragging = (item_info) => (event) => {
         event.target.classList.remove('dragging');
-        //this.dragged_item = null;
+        this.dragged_item = null;
     }
 
     dragEnter = (item_info, orientation) => (event) => {
@@ -300,14 +303,18 @@ class DragGrid extends Component {
 
     drop = (item_info, orientation) => (event) => {
         event.preventDefault();
+        console.log(this.dragged_item);
+        console.log(item_info);
+        console.log(orientation);
+        const {item_list} = this.state;
+        this.printList(item_list);
         if (item_info != this.dragged_item) {
-            let current_head = this.state.item_list;
+            let current_head = item_list;
             let replacement = this.dragged_item.removeAndMend();
             if (this.dragged_item == current_head) {
                 current_head = replacement;
                 current_head.setPrev(null);
             }
-            console.log(this.dragged_item);
             if (orientation < 2) {
                 if (item_info == current_head) {
                     current_head = this.dragged_item;
@@ -317,11 +324,11 @@ class DragGrid extends Component {
             } else {
                 item_info.insertAfter(this.dragged_item);
             }
-            console.log(this.dragged_item);
             this.setState({
-                item_list:current_head,
+                item_list: current_head,
             }, () => {
-                this.printList(this.state.item_list);
+                const {item_list} = this.state;
+                this.printList(item_list);
                 this.dragged_item = null;
             })
         }
@@ -354,6 +361,10 @@ class DragGrid extends Component {
             }
             row_arr.push(cell_arr);
         }
+        // for some reason, even though the integrity of the list is being maintained,
+        // the wrong callback functions for onDragStart seem to be getting called
+        // which means that the wrong item is being dragged
+        console.log(row_arr);
         row_arr = row_arr.map((row) => {
             return (<Row>{row.map((cell)=>{
                 return (<Cell cols={cols}>{cell}</Cell>);

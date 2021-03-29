@@ -204,19 +204,20 @@ class DragContainer extends Component {
 
     render() {
         const orientation = this.verticle ? 0 : 1;
+        console.log("re-render cell")
         return (
         <DragWrapper
         draggable={true}
         onDragStart={this.parent_container.itemStartDragging(this.list_node)}
         onDragEnd={this.parent_container.itemStopDragging(this.list_node)}
         >
-            <DropZone zone={orientation}
+            <DropZone id={`${this.list_node.index}${orientation}`} zone={orientation}
             onDragLeave={this.parent_container.dragExit(this.list_node)}
             onDragOver={this.parent_container.dragOver(this.list_node)}
             onDragEnter={this.parent_container.dragEnter(this.list_node, orientation)}
             onDrop={this.parent_container.drop(this.list_node, orientation)}
             ></DropZone>
-            <DropZone zone={orientation+2}
+            <DropZone id={`${this.list_node.index}${orientation+1}`}zone={orientation+2}
             onDragLeave={this.parent_container.dragExit(this.list_node)}
             onDragOver={this.parent_container.dragOver(this.list_node)}
             onDragEnter={this.parent_container.dragEnter(this.list_node, orientation+2)}
@@ -225,7 +226,10 @@ class DragContainer extends Component {
                 {this.props.children}
             </DragHandle>
         </DragWrapper>
-        );
+        );// for some reason, these objects never seem to move, only their child data seems to move.
+        // i think the issue with this code is that we are not re-creating these elements when the underlying
+        // list is updated. in the frontpage, we re-created the cells every time an item was moved.
+        // this is not the case here, and our grid is behaving erradically as a result.
     }
 }
 
@@ -273,6 +277,21 @@ class DragGrid extends Component {
             }
 
             this.setState({item_list: item_list, item_list_length: children.length});
+        }
+    }
+
+    reintializeChildren = () => {
+        const {item_list} = this.state;
+
+        let curr = item_list;
+        while(curr) {
+            console.log(curr.data.children ? curr.data.children : "null child");
+            curr.setData(
+                <DragContainer node={curr} parent_container={this} verticle={this.state.cols!=1}>
+                    {curr.data.children}
+                </DragContainer>,
+                );
+            curr = curr.getNext();
         }
     }
 
@@ -324,9 +343,11 @@ class DragGrid extends Component {
             } else {
                 item_info.insertAfter(this.dragged_item);
             }
+            
             this.setState({
                 item_list: current_head,
             }, () => {
+                //this.reintializeChildren();
                 const {item_list} = this.state;
                 this.printList(item_list);
                 this.dragged_item = null;
@@ -365,9 +386,9 @@ class DragGrid extends Component {
         // the wrong callback functions for onDragStart seem to be getting called
         // which means that the wrong item is being dragged
         console.log(row_arr);
-        row_arr = row_arr.map((row) => {
-            return (<Row>{row.map((cell)=>{
-                return (<Cell cols={cols}>{cell}</Cell>);
+        row_arr = row_arr.map((row, index) => {
+            return (<Row id = {index} key={index}>{row.map((cell, _index)=>{
+                return (<Cell id = {_index} key={_index} cols={cols}>{cell}</Cell>);
             })}</Row>);
         });
         return (<Wrapper>

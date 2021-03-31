@@ -243,6 +243,31 @@ class DragContainer extends Component {
     }
 }
 
+function RenderDragContainer(onDragStart, onDragEnd, onDragOver, onDragEnter1, onDragEnter2, onDragLeave, onDrop1, onDrop2, orientation, data) {
+    return (
+        <DragWrapper
+        draggable={true}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        >
+            <DropZone id={`${orientation}`} zone={orientation}
+            onDragLeave={onDragLeave}
+            onDragOver={onDragOver}
+            onDragEnter={onDragEnter1}
+            onDrop={onDrop1}
+            ></DropZone>
+            <DropZone id={`${orientation+1}`}zone={orientation+2}
+            onDragLeave={onDragLeave}
+            onDragOver={onDragOver}
+            onDragEnter={onDragEnter2}
+            onDrop={onDrop2}></DropZone>
+            <DragHandle>
+                {data}
+            </DragHandle>
+        </DragWrapper>
+        );
+}
+
 class DragGrid extends Component {
     constructor(props) {
         super(props);
@@ -393,18 +418,18 @@ class DragGrid extends Component {
         row_arr = row_arr.map((row, index) => {
             return (<Row id = {index} key={index}>{row.map((cell, _index)=>{
                 return (<Cell id = {_index} key={_index} cols={cols}>
-                        <DragContainer verticle={vert}
-                            onDragStart={this.itemStartDragging(cell)}
-                            onDragEnd={this.itemStopDragging(cell)}
-                            onDragOver={this.dragOver(cell)}
-                            onDragEnter1={this.dragEnter(cell, orientation)}
-                            onDragEnter2={this.dragEnter(cell, orientation+2)}
-                            onDragLeave={this.dragExit(cell)}
-                            onDrop1={this.drop(cell, orientation)}
-                            onDrop2={this.drop(cell, orientation+2)}
-                            >
-                            {cell.data}
-                        </DragContainer>
+                        {RenderDragContainer(
+                            this.itemStartDragging(cell),
+                            this.itemStopDragging(cell),
+                            this.dragOver(cell),
+                            this.dragEnter(cell, orientation),
+                            this.dragEnter(cell, orientation+2),
+                            this.dragExit(cell),
+                            this.drop(cell, orientation),
+                            this.drop(cell, orientation+2),
+                            orientation,
+                            cell.data
+                        )}
                     </Cell>);
             })}</Row>);
         });

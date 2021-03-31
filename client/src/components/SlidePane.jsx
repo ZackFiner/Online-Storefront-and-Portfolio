@@ -188,6 +188,16 @@ class DragContainer extends Component {
         this.parent_container = props.parent_container;
         this.list_node = props.node;
         this.verticle = props.verticle ? props.verticle : false;
+
+        this.dragStart = props.onDragStart;
+        this.dragEnd = props.onDragEnd;
+        this.dragOver = props.onDragOver;
+        this.dragEnter1 = props.onDragEnter1;
+        this.dragEnter2 = props.onDragEnter2;
+
+        this.dragLeave = props.onDragLeave;
+        this.drop1 = props.onDrop1;
+        this.drop2 = props.onDrop2;
     }
 
     setParentGrid(parent) {
@@ -208,20 +218,20 @@ class DragContainer extends Component {
         return (
         <DragWrapper
         draggable={true}
-        onDragStart={this.parent_container.itemStartDragging(this.list_node)}
-        onDragEnd={this.parent_container.itemStopDragging(this.list_node)}
+        onDragStart={this.dragStart}
+        onDragEnd={this.dragEnd}
         >
-            <DropZone id={`${this.list_node.index}${orientation}`} zone={orientation}
-            onDragLeave={this.parent_container.dragExit(this.list_node)}
-            onDragOver={this.parent_container.dragOver(this.list_node)}
-            onDragEnter={this.parent_container.dragEnter(this.list_node, orientation)}
-            onDrop={this.parent_container.drop(this.list_node, orientation)}
+            <DropZone id={`${orientation}`} zone={orientation}
+            onDragLeave={this.dragLeave}
+            onDragOver={this.dragOver}
+            onDragEnter={this.dragEnter1}
+            onDrop={this.drop1}
             ></DropZone>
-            <DropZone id={`${this.list_node.index}${orientation+1}`}zone={orientation+2}
-            onDragLeave={this.parent_container.dragExit(this.list_node)}
-            onDragOver={this.parent_container.dragOver(this.list_node)}
-            onDragEnter={this.parent_container.dragEnter(this.list_node, orientation+2)}
-            onDrop={this.parent_container.drop(this.list_node, orientation+2)}></DropZone>
+            <DropZone id={`${orientation+1}`}zone={orientation+2}
+            onDragLeave={this.dragLeave}
+            onDragOver={this.dragOver}
+            onDragEnter={this.dragEnter2}
+            onDrop={this.drop2}></DropZone>
             <DragHandle>
                 {this.props.children}
             </DragHandle>
@@ -255,20 +265,14 @@ class DragGrid extends Component {
             const children = this.props.children;
 
             let item_list = new ListNode(0, null);
-            item_list.setData(React.cloneElement(children[0], 
+            item_list.setData(React.cloneElement(children[0].props.children, 
                 {
-                    node: item_list, 
-                    parent_container: this, 
-                    verticle:this.state.cols!=1
                 }));
             let current = item_list;
             for (let i = 1; i <children.length; i++) {
                 const new_node = new ListNode(i, null);
-                new_node.setData(React.cloneElement(children[i], 
+                new_node.setData(React.cloneElement(children[i].props.children, 
                     {
-                        node: new_node, 
-                        parent_container: this, 
-                        verticle:this.state.cols!=1
                     })); // clone the DragContainer that corresponds to this element. this should not change, only the data in the new_node should
                 new_node.setPrev(current);
                 current.setNext(new_node);
@@ -288,7 +292,7 @@ class DragGrid extends Component {
             console.log(curr.data.children ? curr.data.children : "null child");
             curr.setData(
                 <DragContainer node={curr} parent_container={this} verticle={this.state.cols!=1}>
-                    {curr.data.children}
+                    {curr.data.props.children}
                 </DragContainer>,
                 );
             curr = curr.getNext();
@@ -322,11 +326,7 @@ class DragGrid extends Component {
 
     drop = (item_info, orientation) => (event) => {
         event.preventDefault();
-        console.log(this.dragged_item);
-        console.log(item_info);
-        console.log(orientation);
         const {item_list} = this.state;
-        this.printList(item_list);
         if (item_info != this.dragged_item) {
             let current_head = item_list;
             let replacement = this.dragged_item.removeAndMend();
@@ -349,7 +349,7 @@ class DragGrid extends Component {
             }, () => {
                 //this.reintializeChildren();
                 const {item_list} = this.state;
-                this.printList(item_list);
+                //this.printList(item_list);
                 this.dragged_item = null;
             })
         }
@@ -369,6 +369,8 @@ class DragGrid extends Component {
     render() {
         console.log("re-render");
         const {cols, item_list_length, item_list} = this.state;
+        
+        this.printList(item_list);
         const row_c = Math.ceil(item_list_length / cols);
         let row_arr = [];
         let current = item_list;
@@ -376,7 +378,7 @@ class DragGrid extends Component {
             let index = 0;
             let cell_arr = [];
             while(current && index < cols) {
-                cell_arr.push(current.data);
+                cell_arr.push(current);
                 index += 1;
                 current = current.getNext();
             }
@@ -385,10 +387,25 @@ class DragGrid extends Component {
         // for some reason, even though the integrity of the list is being maintained,
         // the wrong callback functions for onDragStart seem to be getting called
         // which means that the wrong item is being dragged
+        const vert = this.state.cols!=1;
+        const orientation = vert ? 0 : 1;
         console.log(row_arr);
         row_arr = row_arr.map((row, index) => {
             return (<Row id = {index} key={index}>{row.map((cell, _index)=>{
-                return (<Cell id = {_index} key={_index} cols={cols}>{cell}</Cell>);
+                return (<Cell id = {_index} key={_index} cols={cols}>
+                        <DragContainer verticle={vert}
+                            onDragStart={this.itemStartDragging(cell)}
+                            onDragEnd={this.itemStopDragging(cell)}
+                            onDragOver={this.dragOver(cell)}
+                            onDragEnter1={this.dragEnter(cell, orientation)}
+                            onDragEnter2={this.dragEnter(cell, orientation+2)}
+                            onDragLeave={this.dragExit(cell)}
+                            onDrop1={this.drop(cell, orientation)}
+                            onDrop2={this.drop(cell, orientation+2)}
+                            >
+                            {cell.data}
+                        </DragContainer>
+                    </Cell>);
             })}</Row>);
         });
         return (<Wrapper>

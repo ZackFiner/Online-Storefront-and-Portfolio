@@ -214,7 +214,7 @@ class DragContainer extends Component {
 
     render() {
         const orientation = this.verticle ? 0 : 1;
-        console.log("re-render cell")
+        
         return (
         <DragWrapper
         draggable={true}
@@ -314,7 +314,6 @@ class DragGrid extends Component {
 
         let curr = item_list;
         while(curr) {
-            console.log(curr.data.children ? curr.data.children : "null child");
             curr.setData(
                 <DragContainer node={curr} parent_container={this} verticle={this.state.cols!=1}>
                     {curr.data.props.children}
@@ -328,7 +327,6 @@ class DragGrid extends Component {
         const index = event.target.id;
         event.dataTransfer.setData('drag_index', index);
         this.dragged_item = item_info;
-        console.log(item_info);
         event.target.classList.add('dragging');
     }
 
@@ -392,7 +390,6 @@ class DragGrid extends Component {
     }
 
     render() {
-        console.log("re-render");
         const {cols, item_list_length, item_list} = this.state;
         
         this.printList(item_list);
@@ -409,12 +406,10 @@ class DragGrid extends Component {
             }
             row_arr.push(cell_arr);
         }
-        // for some reason, even though the integrity of the list is being maintained,
-        // the wrong callback functions for onDragStart seem to be getting called
-        // which means that the wrong item is being dragged
+
         const vert = this.state.cols!=1;
         const orientation = vert ? 0 : 1;
-        console.log(row_arr);
+
         row_arr = row_arr.map((row, index) => {
             return (<Row id = {index} key={index}>{row.map((cell, _index)=>{
                 return (<Cell id = {_index} key={_index} cols={cols}>

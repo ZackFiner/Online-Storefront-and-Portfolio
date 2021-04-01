@@ -214,7 +214,7 @@ class DragContainer extends Component {
 
     render() {
         const orientation = this.verticle ? 0 : 1;
-        
+
         return (
         <DragWrapper
         draggable={true}
@@ -370,9 +370,7 @@ class DragGrid extends Component {
             this.setState({
                 item_list: current_head,
             }, () => {
-                //this.reintializeChildren();
                 const {item_list} = this.state;
-                //this.printList(item_list);
                 this.dragged_item = null;
             })
         }
@@ -392,7 +390,6 @@ class DragGrid extends Component {
     render() {
         const {cols, item_list_length, item_list} = this.state;
         
-        this.printList(item_list);
         const row_c = Math.ceil(item_list_length / cols);
         let row_arr = [];
         let current = item_list;

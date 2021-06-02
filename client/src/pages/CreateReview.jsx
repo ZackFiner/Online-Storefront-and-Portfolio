@@ -101,9 +101,9 @@ class CreateReview extends Component {
 
     handleSubmitReview = async () => {
         const {rating, author, reviewText, itemId} = this.state;
-        const payload = {rating, author, reviewText, itemId};
+        const payload = {rating, author, reviewText};
         
-        api.insertReview(payload).then( res => {
+        api.insertReview(itemId, payload).then( res => {
             window.alert('Review Successfully Submission');
             this.setState({
                 rating: 5,

@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ImageModel = require('./img-model');
+const UserReviewModel = require('./review-model');
 
 const StoreItemSchema = new Schema(
     {
         name: {type: String, required: true},
-        reviews: {type: [mongoose.Types.ObjectId], required: true},
+        reviews: {type: [UserReviewModel], required: false},
         gallery_images: {type: [ImageModel], required: false},
         description: {type: String, required: true},
         keywords: {type: [String], required: false},

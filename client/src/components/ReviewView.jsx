@@ -36,23 +36,15 @@ class ReviewView extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            itemId: props.itemId,
             id: props.id,
-            author: '',
-            reviewText: '',
-            rating: -1,
+            author: props.reviewData.author,
+            reviewText: props.reviewData.reviewText,
+            rating: props.reviewData.rating,
         }
     }
 
     componentDidMount = async () => {
-        api.getReviewById(this.state.id).then( review => {
-            this.setState({
-                author: review.data.data.author,
-                reviewText: review.data.data.reviewText,
-                rating: review.data.data.rating,
-            })
-        }).catch(err => {
-            console.log(err);
-        });
     }
 
     render() {

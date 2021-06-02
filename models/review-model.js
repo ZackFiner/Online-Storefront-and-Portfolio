@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UserReviewSchema = new Schema(
+const UserReviewModel = new Schema(
     {
         itemId: {type: mongoose.Types.ObjectId, required: true},
         author: {type: String, required: true},
@@ -10,5 +10,4 @@ const UserReviewSchema = new Schema(
     },
     {timestamps: true},
 )
-const UserReviewModel = mongoose.model('user_reviews', UserReviewSchema);
 module.exports = UserReviewModel;

@@ -79,8 +79,8 @@ class ItemView extends Component {
     render() {
         const {id, name, description, reviews, thumbnail_img, gallery_images, price, keywords} = this.state;
         const price_text = price ? `$${price.$numberDecimal}` : 'Not For Sale';
-        const reviewsSection = reviews ? reviews.map( reviewId => {
-            return <ReviewView key={reviewId} id={reviewId}/>
+        const reviewsSection = reviews ? reviews.map( review => {
+            return <ReviewView itemId={id} key={review._id} id={review._id} reviewData={review}/>
         }) : [];
         let reviewArea = [];
         if (reviews && reviews.length)

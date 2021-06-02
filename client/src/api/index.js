@@ -23,7 +23,7 @@ export const insertItem = payload => {
         },
         withCredentials: true
     }
-    return api.post(`/item`, formData, config);
+    return api.post(`/items`, formData, config);
 }
 export const getAllItems = () => api.get(`/items`);
 export const searchItems = payload => api.post(`/items/search`, payload);
@@ -44,14 +44,14 @@ export const updateItemById = (id, payload) => {
         withCredentials: true
     }
 
-    return api.put(`/item/${id}`, formData, config);
+    return api.put(`/items/${id}`, formData, config);
 }
-export const deleteItemById = id => api.delete(`/item/${id}`, {withCredentials: true});
-export const getItemById = id => api.get(`/item/${id}`);
+export const deleteItemById = id => api.delete(`/items/${id}`, {withCredentials: true});
+export const getItemById = id => api.get(`/items/${id}`);
 
-export const getReviewById = id => api.get(`/review/${id}`);
-export const insertReview = payload => api.post(`/review`, payload, {withCredentials: true});
-export const deleteReviewById = id => api.delete(`/review/${id}`, {withCredentials: true});
+export const getReviewById = (item_id, id) => api.get(`/items/${item_id}/reviews/${id}`);
+export const insertReview = (item_id, payload) => api.post(`/items/${item_id}/reviews`, payload, {withCredentials: true});
+export const deleteReviewById = (item_id, id) => api.delete(`/items/${item_id}/reviews/${id}`, {withCredentials: true});
 
 export const createUserAccount = payload => api.post(`/users`, payload);
 export const getUserData = (/*userID and Email should be attached during authentication*/) => api.get(`/users`, {withCredentials: true});

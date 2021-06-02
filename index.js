@@ -22,12 +22,7 @@ app.use(cookieParser());
 
 mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.get('/', (req,res) => {
-    res.send('Hello World!');
-});
-
-app.use('/api', itemRouter);
-app.use('/api', reviewRouter);
+app.use('/api/items', itemRouter);
 app.use('/api/users', userRouter);
 app.use('/api/authenticate', authRouter);
 app.use('/api/frontpage', postRouter);

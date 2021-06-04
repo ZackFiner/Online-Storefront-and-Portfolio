@@ -63,9 +63,10 @@ createItem = async (req, res) => {
             });
         })
         .catch(error => {
+            console.log(error);
             return res.status(500).json({
-                error,
-                message: 'Item could not be created',
+                success: false,
+                error: 'An error occurred while processing request',
             });
         })
 }
@@ -91,14 +92,15 @@ updateItem = async (req, res) => {
         item = await StoreItem.findOne({_id: id }).exec();
         if (!item) {
             return res.status(404).json({
-                err,
-                message: 'Item not found',
+                success: false,
+                error: 'Item not found',
             });
         }
     } catch (err) {
+        console.log(err);
         return res.status(404).json({
-            err,
-            message: 'Item not found',
+            success: false,
+            error: 'An error occurred while processing request'
         });
     }
 
@@ -108,8 +110,11 @@ updateItem = async (req, res) => {
             item.set(key, value);
         }
     } catch (error) {
-        // assuming the syntax above is valid, we should send a 400 error if the request
-        // specifies some parameters modification that's not part of the schema
+        console.log(error);
+        return res.status(400).json({
+            success: false,
+            error: 'Request body could not be parsed'
+        })
     }
 
 
@@ -142,9 +147,10 @@ updateItem = async (req, res) => {
             });
         })
         .catch(error => {
+            console.log(error);
             return res.status(404).json({
-                error,
-                message: 'Item not update',
+                success: false,
+                error: 'Item not update',
             });
         });
 }
@@ -155,7 +161,12 @@ deleteItem = async (req, res) => {
 
     await StoreItem.findOneAndDelete({_id: id}, (err, item) => {
         if (err) {
-            return res.status(400).json({success: false, error: err});
+            console.log(err);
+            return res.status(500).json(
+                {
+                    success: false, 
+                    error: 'An error occurred while processing request'
+                });
         }
 
         if (!item) {
@@ -165,7 +176,7 @@ deleteItem = async (req, res) => {
         }
 
         return res.status(200).json({ success: true, data: item});
-    }).catch(err => console.log(err));
+    })
 }
 
 getItemById = async (req, res) => {
@@ -173,7 +184,12 @@ getItemById = async (req, res) => {
 
     await StoreItem.findOne({ _id: id }, (err, item) => {
         if (err) {
-            return res.status(400).json({success: false, error: err});
+            console.log(err);
+            return res.status(500).json(
+                {
+                    success: false, 
+                    error: 'An error occurred while processing request'
+                });
         }
 
         if (!item) {
@@ -184,13 +200,13 @@ getItemById = async (req, res) => {
 
         return res.status(200).json({ success: true, data: item });
 
-    }).catch(err => console.log(err));
+    })
 }
 
 getItems = async (req, res) => {
     await StoreItem.find({}, (err, items) => {
         if (err) {
-            return res.status(500).json({ success: false, error: err});
+            return res.status(500).json({ success: false, error: 'An error occurred while processing request'});
         }
 
         if (!items.length) {
@@ -201,7 +217,7 @@ getItems = async (req, res) => {
 
         return res.status(200).json({ success: true, data: items});
 
-    }).catch(err => console.log(err));
+    })
 }
 
 searchItems = async (req, res) => {
@@ -222,7 +238,10 @@ searchItems = async (req, res) => {
     .then((items) => {
         return res.status(200).json({ success: true, data: items});
 
-    }).catch(err => console.log(err));
+    }).catch(err => {
+        console.log(err)
+        return res.status(500).json({success: false, error: 'An error occurred while processing request'})
+    });
 }
 
 module.exports = {

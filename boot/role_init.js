@@ -19,7 +19,7 @@ const role_init = async () => {
                 
             }
         } else {
-            console.log('NOTIFICATION: An error occured during base role retrieval');
+            console.log('NOTIFICATION: An error occurred during base role retrieval');
             console.log(err);
         }
     });
@@ -48,7 +48,7 @@ const role_init = async () => {
 
             }
         } else {
-            console.log('NOTIFICATION: An error occured during base role retrieval');
+            console.log('NOTIFICATION: An error occurred during base role retrieval');
             console.log(err);
         }
     });

@@ -35,10 +35,10 @@ createUser = (req, res) => {
             message: 'User account successfully created'
         })
     }).catch( (err) => {
+        console.log(err);
         return res.status(500).json({
             success: false,
-            error,
-            message: 'User account could not be created due to interal server error',
+            error: 'An error occurred while processing request'
         })
     } )
 }
@@ -67,7 +67,7 @@ authUser = (req, res) => {
             console.error(err);
             return res.status(500).json({
                 success: false,
-                error: 'Internal error, please try again'
+                error: 'An error occurred while processing request'
             })
         } else if (!user) {
             return res.status(401).json({
@@ -77,9 +77,10 @@ authUser = (req, res) => {
         } else {
             user.isCorrectPassword(password, (err, same) => {
                 if (err) {
+                    console.log(err);
                     return res.status(500).json({
                         success: false,
-                        error: 'Internal error, please try again'
+                        error: 'An error occurred while processing request'
                     })
                 } else if (!same) {
                     return res.status(401).json({
@@ -128,7 +129,7 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
     if (!userdata) {
         return res.status(400).json({
             success: false,
-            errror: 'Request must include basic userdata (userid and email)'
+            error: 'Request must include basic userdata (userid and email)'
         })
     }
 
@@ -137,7 +138,7 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
             console.error(err);
             return res.status(500).json({
                 success: false,
-                error: 'Internal error, please try again'
+                error: 'An error occurred while processing request'
             })
         } else if (!user) {
             return res.status(404).json({

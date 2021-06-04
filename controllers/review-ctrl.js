@@ -31,7 +31,8 @@ createReview = async (req, res) => {
         }).catch(error => {
             console.log(error);
             return res.status(500).json({
-                message: 'Review could not be created'
+                success: false,
+                error: 'An error occurred while processing request'
             })
         })
 }
@@ -46,7 +47,7 @@ deleteReview = async (req, res) => {
         return res.status(200).json({success: true})
     }).catch(error => {
         console.log(error);
-        return res.status(500).json({succes: false, error: "Server error"});
+        return res.status(500).json({succes: false, error: "An error occurred while processing request"});
     })
 }
 
@@ -57,7 +58,7 @@ getReviewById = async (req, res) => {
     StoreItem.findOne( {_id: id}, (err, item) => {
         if (err) {
             console.log(error)
-            return res.status(500).json({success: false, error: "Server error",});
+            return res.status(500).json({success: false, error: "An error occurred while processing request",});
         }
         const review = item.reviews.find(elem => elem._id==reviewId);
         if (!item | !review) {

@@ -42,14 +42,14 @@ const createPost = (req, res) => {
         } else {
             return res.status(500).json({
                 success: false,
-                error: `An error occured while processing request`
+                error: `An error occurred while processing request`
             })
         }
     }).catch(error => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            error: `An error occured while processing request`
+            error: `An error occurred while processing request`
         });
     });
 }
@@ -77,13 +77,13 @@ const uploadImage = (req, res) => {
                 console.log(error);
                 return res.status(500).json({
                     success: false,
-                    error: `An error occured while processing request`
+                    error: `An error occurred while processing request`
                 });
             });
         } else {
             return res.status(500).json({
                 success: false,
-                error: `An error occured while processing request`
+                error: `An error occurred while processing request`
             });
         }
 
@@ -117,7 +117,7 @@ const editPost = (req, res) => {
             console.log(err);
             return res.status(500).json({
                 success: false,
-                error: `An error occured while processing request`
+                error: `An error occurred while processing request`
             });
         }
         if (!value) {
@@ -142,14 +142,14 @@ const editPost = (req, res) => {
             } else {
                 return res.status(500).json({
                     success: false,
-                    error: 'An error occured while processing request'
+                    error: 'An error occurred while processing request'
                 });
             }
         }).catch(error => {
             console.log(error);
             return res.status(500).json({
                 success: false,
-                error: 'An error occured while processing request'
+                error: 'An error occurred while processing request'
             });
         });
     });
@@ -170,7 +170,7 @@ const deletePost = (req, res) => {
             console.log(err);
             return res.status(500).json({
                 success: false,
-                error: 'An error occured while processing request'
+                error: 'An error occurred while processing request'
             });
         }
         
@@ -189,7 +189,7 @@ const deletePost = (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            error: 'An error occured while processing request'
+            error: 'An error occurred while processing request'
         });
     });
 }
@@ -209,7 +209,7 @@ const getPost = (req, res) => {
             console.log(err);
             return res.status(500).json({
                 success: false,
-                error: 'An error occured while processing request'
+                error: 'An error occurred while processing request'
             });
         }
 
@@ -228,7 +228,7 @@ const getPost = (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            error: 'An error occured while processing request'
+            error: 'An error occurred while processing request'
         });
     });
 }
@@ -246,7 +246,7 @@ const getPosts = (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            error: 'An error occured while processing request'
+            error: 'An error occurred while processing request'
         });
     })
 }

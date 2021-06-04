@@ -1,6 +1,6 @@
 const UserModel = require("../models/user-model");
 const jwt = require('jsonwebtoken');
-const {secret} = require('../data/server-config');
+const {secret, sign_options} = require('../data/server-config');
 
 const {sanitizeForMongo, ObjectSanitizer, sanitizeHtml} = require('./sanitization');
 const AccountSanitizer = new ObjectSanitizer({
@@ -95,9 +95,7 @@ authUser = (req, res) => {
                             roles: user.roles,
                         }
                     };
-                    const token = jwt.sign(payload, secret, {
-                        expiresIn: '6m'
-                    }); // cookies will expire 6 minutes from when they are set, we will need
+                    const token = jwt.sign(payload, secret, sign_options); // cookies will expire 6 minutes from when they are set, we will need
                     // to implement an auto refresh feature on the front end or users will be logged out after 6 minutes
 
                     return res.cookie('token', token, {httpOnly: true}).sendStatus(200);

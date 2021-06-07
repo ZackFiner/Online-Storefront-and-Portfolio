@@ -5,7 +5,6 @@ const cors = require('cors');
 
 const {mongoosedb} = require('./db');
 const itemRouter = require('./routes/item-router');
-const reviewRouter = require('./routes/review-router');
 const userRouter = require('./routes/user-router');
 const postRouter = require('./routes/post-router');
 const init_func = require('./boot');

@@ -1,6 +1,6 @@
 const UserModel = require("../models/user-model");
 const jwt = require('jsonwebtoken');
-const {secret} = require('../data/server-config');
+const {secret, sign_options} = require('../data/server-config');
 
 const {sanitizeForMongo, ObjectSanitizer, sanitizeHtml} = require('./sanitization');
 const AccountSanitizer = new ObjectSanitizer({
@@ -35,10 +35,10 @@ createUser = (req, res) => {
             message: 'User account successfully created'
         })
     }).catch( (err) => {
+        console.log(err);
         return res.status(500).json({
             success: false,
-            error,
-            message: 'User account could not be created due to interal server error',
+            error: 'An error occurred while processing request'
         })
     } )
 }
@@ -67,7 +67,7 @@ authUser = (req, res) => {
             console.error(err);
             return res.status(500).json({
                 success: false,
-                error: 'Internal error, please try again'
+                error: 'An error occurred while processing request'
             })
         } else if (!user) {
             return res.status(401).json({
@@ -77,9 +77,10 @@ authUser = (req, res) => {
         } else {
             user.isCorrectPassword(password, (err, same) => {
                 if (err) {
+                    console.log(err);
                     return res.status(500).json({
                         success: false,
-                        error: 'Internal error, please try again'
+                        error: 'An error occurred while processing request'
                     })
                 } else if (!same) {
                     return res.status(401).json({
@@ -94,9 +95,7 @@ authUser = (req, res) => {
                             roles: user.roles,
                         }
                     };
-                    const token = jwt.sign(payload, secret, {
-                        expiresIn: '6m'
-                    }); // cookies will expire 6 minutes from when they are set, we will need
+                    const token = jwt.sign(payload, secret, sign_options); // cookies will expire 6 minutes from when they are set, we will need
                     // to implement an auto refresh feature on the front end or users will be logged out after 6 minutes
 
                     return res.cookie('token', token, {httpOnly: true}).sendStatus(200);
@@ -128,7 +127,7 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
     if (!userdata) {
         return res.status(400).json({
             success: false,
-            errror: 'Request must include basic userdata (userid and email)'
+            error: 'Request must include basic userdata (userid and email)'
         })
     }
 
@@ -137,7 +136,7 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
             console.error(err);
             return res.status(500).json({
                 success: false,
-                error: 'Internal error, please try again'
+                error: 'An error occurred while processing request'
             })
         } else if (!user) {
             return res.status(404).json({

@@ -55,9 +55,9 @@ export const deleteReviewById = (item_id, id) => api.delete(`/items/${item_id}/r
 
 export const createUserAccount = payload => api.post(`/users`, payload);
 export const getUserData = (/*userID and Email should be attached during authentication*/) => api.get(`/users`, {withCredentials: true});
-export const authUser = payload => api.post(`/authenticate`, payload, {withCredentials: true});
-export const logUserOut = () => api.delete(`/authenticate`, {withCredentials: true});
-export const refreshUserToken = () => api.put(`/authenticate`, {/*The payload is the credentials*/}, {withCredentials: true});
+export const authUser = payload => api.post(`/users/authenticate`, payload, {withCredentials: true});
+export const logUserOut = () => api.delete(`/users/authenticate`, {withCredentials: true});
+export const refreshUserToken = () => api.put(`/users/authenticate`, {/*The payload is the credentials*/}, {withCredentials: true});
 
 export const createPost = payload => api.post(`/frontpage`, payload, {withCredentials: true});
 export const editPost = (id, payload) => api.put(`/frontpage/${id}`, payload, {withCredentials: true});

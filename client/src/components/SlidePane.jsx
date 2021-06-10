@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-
+// After doing a bit of research, i think this whole thing should be scrapped
+// in favor of using an existing library react-beautiful-dnd
+// which is much nicer looking, and far better than anything I
+// can create from scratch in a week.
 const Wrapper = styled.div.attrs({
 
 })`

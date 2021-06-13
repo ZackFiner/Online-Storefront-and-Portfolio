@@ -1,5 +1,5 @@
 const ImageModel = require('../img-model');
-const {RoleAccessor, hasPermission, ROLE_CONSTANTS} = require('../../authorization');
+const {RoleAccessor, hasPermission, ROLE_CONSTANTS} = require('../../middleware/authorization');
 
 async function packageMedia(storeItem) {
     let packagedItem = new StoreItem(storeItem).toObject(); // this is already making me uncomfortable, hopefully this syntax is valid for documents

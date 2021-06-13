@@ -1,4 +1,4 @@
-const {RoleAccessor, hasPermission, ROLE_CONSTANTS} = require('../authorization');
+const {RoleAccessor, hasPermission, ROLE_CONSTANTS} = require('../middleware/authorization');
 const StoreItem = require('./item-model');
 
 const REVIEW_CREATE = 'REVIEW_CREATE';

@@ -1,4 +1,4 @@
-const {RoleCheckMiddleware} = require('../authorization')
+const {RoleCheckMiddleware} = require('../middleware/authorization')
 const express = require('express');
 const postCtrl = require('../controllers/post-ctrl');
 const { imageParser } = require('../db');

@@ -3,7 +3,6 @@ const {RoleCheckMiddleware} = require('../middleware/authorization')
 const ItemCtrl = require('../controllers/item-ctrl');
 const ReviewCtrl = require('../controllers/review-ctrl');
 const { imageParser } = require('../db');
-const { route } = require('./user-router');
 const router = express.Router();
 
 const itemImageCollector = imageParser.fields([

@@ -428,7 +428,7 @@ class FrontPage extends Component {
     render() {
         const {userdata, loggedin} = this.props;
         const component_this = this;
-        const edit = loggedin && isMemberofRole(userdata, 'admin');
+        const edit = loggedin && isMemberofRole(userdata, 'ROLE_ADMIN');
         const posts = component_this.getPostsFromList(edit);
 
         let post_buttons = null;

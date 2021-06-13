@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index",
-    "index": "nodemon index",
-    "client": "npm start --prefix client",
-    "launch": "concurrently \"npm run index\" \"npm run client\"",
-    "micro-launch": "concurrently \"npm run --prefix micro/user index\" \"npm run --prefix micro/posts index\" \"npm run --prefix micro/store index\"  \"npm run client\""
+    "index": "nodemon index"
   },
   "repository": {
     "type": "git",
@@ -22,7 +19,6 @@
   },
   "homepage": "https://github.com/ZackFiner/NewWebDevProject#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "cloudinary": "^1.26.0",
     "cookie-parser": "1.4.5",

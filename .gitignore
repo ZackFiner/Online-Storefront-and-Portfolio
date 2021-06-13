@@ -3,3 +3,9 @@ node_modules/*
 wrkspc_config.code-workspace
 data/server-config.js
 *.tfvars
+micro/user/data/server-config.js
+micro/store/data/server-config.js
+micro/posts/data/server-config.js
+micro/user/node_modules/*
+micro/posts/node_modules/*
+micro/store/node_modules/*

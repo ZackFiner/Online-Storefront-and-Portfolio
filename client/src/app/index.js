@@ -27,15 +27,15 @@ function App() {
       <Switch>
         <Route path="/login" exact component={LoginPage} />
         <Route path="/createAccount" exact component={CreateAccountPage} />
-        <AuthorizedRoute path="/items/list" exact component={ItemList} roles={['admin']} />
-        <AuthorizedRoute path="/items/create" exact component={ItemUpdate} roles={['admin']} />
-        <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['admin']} />
+        <AuthorizedRoute path="/items/list" exact component={ItemList} roles={['ROLE_ADMIN']} />
+        <AuthorizedRoute path="/items/create" exact component={ItemUpdate} roles={['ROLE_ADMIN']} />
+        <AuthorizedRoute path="/items/update/:id" exact component={ItemUpdate} roles={['ROLE_ADMIN']} />
         <Route path="/items/view/:id" exact component={ItemView} />
-        <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['admin']} />
+        <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['ROLE_ADMIN']} />
         <Route path="/storefront" exact component={StoreFront} />
-        <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['admin']} />
-        <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['admin']} />
-        <AuthorizedRoute path="/frontpage/media/post" exact component={ImagePost} roles={['admin']} />
+        <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['ROLE_ADMIN']} />
+        <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['ROLE_ADMIN']} />
+        <AuthorizedRoute path="/frontpage/media/post" exact component={ImagePost} roles={['ROLE_ADMIN']} />
         <Route path="/" exact component={FrontPage}/>
       </Switch>
     </Router>

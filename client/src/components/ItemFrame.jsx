@@ -49,7 +49,7 @@ const CardLink =  styled.a.attrs({
         color: inherit;
     }
     &:hover .item-card-img {
-        transform: scale(1.2,1.2) translate(0%, calc(-50% / 1.2));
+        transform: scale(1.1,1.1) translate(0%, calc(-50% / 1.1));
     }
 `
 

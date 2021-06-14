@@ -1,6 +1,5 @@
 import Links from './Links';
 import NavBar from './NavBar';
-import ItemGrid from './ItemGrid';
 import ItemFrame from './ItemFrame';
 import ReviewView from './ReviewView';
 import MultiImageInput from './MultiImageInput';
@@ -10,4 +9,4 @@ import ItemSearchBar from './ItemSearchBar'
 import ImageSlide from './ImageSlide';
 import StyledComponents from './StyledComponents'
 
-export { StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export { StyledComponents, Links, NavBar, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

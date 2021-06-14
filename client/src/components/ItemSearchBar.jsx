@@ -4,6 +4,10 @@ import styled from 'styled-components';
 import api from '../api';
 
 
+const SearchBar = styled.form.attrs({
+})`
+`
+
 const SearchArea = styled.input.attrs({
     type: 'text'
 })`
@@ -19,9 +23,10 @@ const SearchArea = styled.input.attrs({
         outline:none;
     }
 `
-const SearchButton = styled.button.attrs({
-    
-})`
+const SearchButton = styled.input.attrs(props => ({
+    ...props,
+    type:'submit'
+}))`
     border-style: none;
     border-style: solid;
     border-radius: 0px 5px 5px 0px;
@@ -56,20 +61,24 @@ class ItemSearchBar extends Component {
         this.setState( {searchtext: value} );
     }
 
-    executeSearch = () => {
+    executeSearch = (event) => {
+        event.preventDefault();
         const {searchtext} = this.state;
         const payload = {searchtext};
-        console.log(payload);
         api.searchItems(payload).then( res => {
-            if (this.state.updateHandler)
-                this.state.updateHandler(res.data.data);
+            if (this.state.updateHandler) {
+                this.state.updateHandler(res.data.data, searchtext);
+            }
         });
     }
 
     render() {
-        return (<BarContainer>
-            <SearchArea onChange={this.handleChangeText} />
-            <SearchButton onClick={this.executeSearch}>Search</SearchButton>
+        return (
+        <BarContainer>
+            <SearchBar onSubmit={this.executeSearch}>
+                <SearchArea onChange={this.handleChangeText} />
+                <SearchButton value='Search' />
+            </SearchBar>
         </BarContainer>)
     }
 }

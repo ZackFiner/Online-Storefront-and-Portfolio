@@ -52,7 +52,8 @@ class CreateAccountPage extends Component {
         this.setState({verfPassword : verfPassword});
     }
 
-    handleSubmit = async () => {
+    handleSubmit = async (event) => {
+        event.preventDefault();
         const {email, password, verfPassword} = this.state;
         if (password === verfPassword) {
             const payload = {email, password};

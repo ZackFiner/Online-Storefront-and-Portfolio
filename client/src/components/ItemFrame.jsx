@@ -8,6 +8,7 @@ const Card = styled.div.attrs({
     className: 'card item-card'
 })`
     margin: 1rem;
+    border-radius: 0 0 0.25rem 0.25rem;
     &:hover .item-card-title {
         text-decoration: underline;
     }
@@ -46,6 +47,9 @@ const CardLink =  styled.a.attrs({
     &,&:hover,&:visited {
         text-decoration: inherit;
         color: inherit;
+    }
+    &:hover .item-card-img {
+        transform: scale(1.2,1.2) translate(0%, calc(-50% / 1.2));
     }
 `
 

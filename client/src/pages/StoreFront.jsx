@@ -33,7 +33,7 @@ const TopSearchBar = styled.div.attrs({
     margin-left: 0px;
     margin-right: 0px;
     &>* {
-        margin-left: auto;
+        margin-left: 0;
     }
 `;
 
@@ -71,19 +71,20 @@ class StoreFront extends Component {
             }
     }
 
-    displayItems = (items, searchtext) => {
+    displayItems = (searchtext) => {
         this.setState({ isLoading: true });
-
-        this.setState({
-            items: items,
-            isLoading: false,
-            search_text: searchtext,
-        }, () => {
-            this.props.history.push({ // save history
-                pathname: '/storefront',
-                search: `?searchtext=${encodeURIComponent(this.state.search_text)}`,
-                state: this.state
-            });
+        api.searchItems({searchtext}).then((res) => {
+            this.setState({
+                items: res.data.data,
+                isLoading: false,
+                search_text: searchtext,
+            }, () => {
+                this.props.history.push({ // save history
+                    pathname: '/storefront',
+                    search: `?searchtext=${encodeURIComponent(this.state.search_text)}`,
+                    state: this.state
+                });
+            })
         })
     }
 

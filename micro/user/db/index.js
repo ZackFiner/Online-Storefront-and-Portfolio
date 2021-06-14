@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-
+const {mongodb_connection} = require('../data/server-config')
 mongoose
-    .connect('mongodb://127.0.0.1:27017/storefrontdb', {useNewUrlParser: true})
+    .connect(mongodb_connection, {useNewUrlParser: true, useUnifiedTopology: true})
     .catch(e => {
         console.error('Connection error', e.message)
     });

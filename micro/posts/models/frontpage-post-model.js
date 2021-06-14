@@ -20,8 +20,12 @@ PostModel.pre('save', function(next) {
             if (err) {
                 next(err);
             } else {
-                const max_index = doc[0].index;
-                new_doc.index = max_index+1;
+                if (doc!=undefined && doc[0]!=undefined) {
+                    const max_index = doc[0].index;
+                    new_doc.index = max_index+1;
+                } else {
+                    new_doc.index = 0
+                }
                 next();
             }
         })

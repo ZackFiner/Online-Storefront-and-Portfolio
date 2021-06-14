@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const {CloudinaryStorage} = require('multer-storage-cloudinary');
-const {cloudinary_config} = require('../data/server-config');
+const {cloudinary_config, mongodb_connection} = require('../data/server-config');
 
 mongoose
-    .connect('mongodb://127.0.0.1:27017/storefrontdb', {useNewUrlParser: true})
+    .connect(mongodb_connection, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
     .catch(e => {
         console.error('Connection error', e.message)
     });

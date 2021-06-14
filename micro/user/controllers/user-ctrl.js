@@ -19,7 +19,7 @@ createUser = (req, res) => {
     const body = AccountSanitizer.sanitizeObject(raw_body);
 
     const userAccount = new UserModel(body);
-    userAccount.roles.push(global.USER_ROLE_ID);
+    userAccount.roles.push('ROLE_ADMIN');
     if (!userAccount) {
         return res.status(400).json({
             success: false,

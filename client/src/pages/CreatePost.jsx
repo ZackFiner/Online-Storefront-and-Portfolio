@@ -127,8 +127,11 @@ class ImagePost extends Component {
         event.preventDefault();
         const payload = this.state;
         if (payload.selectedFile)
-            api.createPostImage(payload);
-            window.alert("Image posted");
+            api.createPostImage(payload).then(res => {
+                if (res.status == 200) {
+                    window.alert("Image posted");
+                }
+            });
     }
 
     render() {

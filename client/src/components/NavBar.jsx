@@ -124,7 +124,7 @@ class NavBar extends Component {
                         Shop
                     </Link></li>
                     <li><Link to="/" className="navbar-brand">
-                        FrontPage
+                        Blog
                     </Link></li>
                     </ul>
                 </Sidebar>,<SidebarBumper 

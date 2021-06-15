@@ -5,7 +5,9 @@ import placeholder_thumb from '../assets/placeholder.png'
 
 const ThumbnailContainer = styled.div.attrs({})`
     text-align: center;
-    min-height: 300px;
+    width: 100%;
+    min-width: 300px;
+    padding-top: 75%;
     background-color: black;
     position: relative;
     overflow: hidden;
@@ -16,7 +18,6 @@ const ThumbnailImage = styled.img.attrs(props => ({
     className: 'card-img-top item-card-img'
 }))`
     margin: auto;
-    max-height: 300px;
     object-fit: cover;
     position: absolute;
     border-radius: 0;

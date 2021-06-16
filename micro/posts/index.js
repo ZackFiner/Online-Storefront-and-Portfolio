@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.use('/api/frontpage', postRouter);
+app.use('/', postRouter);
 
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

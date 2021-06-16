@@ -116,7 +116,7 @@ const PostContent = styled.div.attrs({
 })`
 `
 
-function FrontPagePost(edit, 
+function BlogPost(edit, 
                         p, 
                         handleDrag, 
                         handleDragStop, 
@@ -236,7 +236,7 @@ class ListNode {
     }
 }
 
-class FrontPage extends Component {
+class BlogPage extends Component {
     constructor(props) {
         super(props);
 
@@ -407,7 +407,7 @@ class FrontPage extends Component {
                 });
             }
 
-            const post_element = FrontPagePost(
+            const post_element = BlogPost(
                 edit, 
                 p, 
                 this.handleDrag(curr), 
@@ -452,4 +452,4 @@ const mapStateToProps = state => {
 export default connect(
     mapStateToProps,
     null
-)(FrontPage);
+)(BlogPage);

@@ -7,6 +7,8 @@ provider "aws" {
             We will be using let's encrypt for the SSL certificates
     
     TODO: setup the following services - 
+    1 EC2 Container Instance - this is what the containers will actually run on
+
     1 ECS Cluster with 3 Services, 1 per microservice, use the docker images built for each microservice
     
     3 Elatic Load Balancers (Application) - one per each service

@@ -2,6 +2,10 @@ provider "aws" {
     region = "us-west-2"
 }
 
+data "aws_caller_identity" "current" {
+
+}
+
 /*
     TODO: To do this correctly, we need to register a domain name and provide an SSL/TLS certicate.
             We will be using let's encrypt for the SSL certificates
@@ -21,3 +25,4 @@ provider "aws" {
     be best to use OpenAPI or some other standard to specifiy the API.
 
 */
+

@@ -21,7 +21,7 @@ data "aws_ami" "ecs_linux_ami" {
 }
 
 resource "aws_launch_configuration" "container_instance" {
-    name_prefix                 = "ecs-cluster-instance-"
+    name_prefix                 = "ecs-${var.cluster}-${var.group_name}-instance-"
     image_id                    = data.aws_ami.ecs_linux_ami.id
     instance_type               = var.instance_type
 
@@ -32,7 +32,7 @@ resource "aws_launch_configuration" "container_instance" {
 }
 
 resource "aws_autoscaling_group" "container_instances" {
-    name = "${var.cluster}_instances"
+    name = "${var.cluster}_${var.group_name}_instances"
 
     // for now, only allow 1 instance at a time
     desired_capacity        = 1
@@ -43,5 +43,6 @@ resource "aws_autoscaling_group" "container_instances" {
     launch_configuration    = aws_launch_configuration.container_instance.name
     vpc_zone_identifier     = var.subnet_ids
 
-    load_balancers          = var.load_balancer_arns
+    //load_balancers          = var.load_balancer_arns
+    // load balancers will be set at the service level
 }

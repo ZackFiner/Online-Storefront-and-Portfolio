@@ -6,3 +6,4 @@ variable "instance_type" { type=string, default="t2.micro" }
 variable "zones" { type=list(string), default=["us-west-2"] }
 variable "cluster" { type=string }
 variable "load_balancer_arns" {type=list(string), description="arns to classic load balancers"}
+variable "iam_instance_profile" { type=string }

@@ -1,4 +1,4 @@
-
+terraform/.terraform/*
 node_modules/*
 wrkspc_config.code-workspace
 data/server-config.js

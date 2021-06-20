@@ -10,3 +10,5 @@ micro/user/node_modules/*
 micro/posts/node_modules/*
 micro/store/node_modules/*
 *.pem
+*.exe
+*.hcl

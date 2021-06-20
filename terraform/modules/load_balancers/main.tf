@@ -28,7 +28,7 @@ resource "aws_alb_listener" "listener" {
 }
 
 output "arn" {
-    value = aws_lb.load_balancer.arn
+    value = aws_alb.load_balancer.arn
 }
 
 output "target_group_arn" {

@@ -47,33 +47,21 @@ module "container_instances" { // create the container instances for the cluster
 
 }
 
-// create load balancers for each service below
-module "store_lb" {
-    subnets = module.vpc.subnets
-    internal = false
-    security_groups = module.vpc.security_groups
-    name = "store_load_balancer"
-}
 
 // maybe use this: https://registry.terraform.io/modules/cn-terraform/ecs-alb/aws/latest?tab=dependencies
 // instead
 
 module "blog_lb" {
+    source = "./modules/load_balancers"
     subnets = module.vpc.subnets
     internal = false
     security_groups = module.vpc.security_groups
-    name = "blog_load_balancer"
-}
-
-module "user_lb" {
-    subnets = module.vpc.subnets
-    internal = false
-    security_groups = module.vpc.security_groups
-    name = "user_load_balancer"
+    name = "blog-load-balancer"
+    vpc_id = module.vpc.id
 }
 
 module "blog_def" {
-    source = "../task definitions/blog"
+    source = "./task-definitions/blog"
     taskExecutionRole = var.taskExecutionRole
     dockerHubSecretARN = var.dockerHubSecretARN
 }

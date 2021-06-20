@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "blog" {
     execution_role_arn = var.taskExecutionRole
     cpu = 256
     memory = 512
-    networkMode = "bridge"
+    network_mode = "bridge"
 
     requires_compatibilities = ["EC2"]
 }

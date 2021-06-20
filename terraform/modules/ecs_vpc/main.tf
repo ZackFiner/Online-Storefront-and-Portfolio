@@ -51,11 +51,11 @@ resource "aws_security_group" "ecs_security_group" {
 }
 
 output "security_groups" {
-    value = ["${aws_security_group.ecs_security_group.id}"]
+    value = [aws_security_group.ecs_security_group.id]
 }
 
 output "subnets" {
-    value = ["${aws_subnet.public_subnet1.id}"]
+    value = [aws_subnet.public_subnet1.id]
 }
 
 output "id" {

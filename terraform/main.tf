@@ -55,6 +55,9 @@ module "store_lb" {
     name = "store_load_balancer"
 }
 
+// maybe use this: https://registry.terraform.io/modules/cn-terraform/ecs-alb/aws/latest?tab=dependencies
+// instead
+
 module "blog_lb" {
     subnets = module.vpc.subnets
     internal = false

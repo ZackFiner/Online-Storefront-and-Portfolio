@@ -18,6 +18,12 @@ data "aws_ami" "ecs_linux_ami" {
         name    = "root-device-type"
         values  = ["ebs"]
     }
+
+    filter {
+        name = "architecture"
+        values = ["x86_64"]
+    }
+
 }
 
 resource "aws_launch_configuration" "container_instance" {

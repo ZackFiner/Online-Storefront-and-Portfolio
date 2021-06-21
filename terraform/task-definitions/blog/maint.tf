@@ -3,7 +3,7 @@ resource "aws_ecs_task_definition" "blog" {
     container_definitions = jsonencode([{
         portMappings =  [
           {
-            hostPort = 0
+            hostPort = 3002
             protocol =  "tcp"
             containerPort = 3002
           }
@@ -19,7 +19,7 @@ resource "aws_ecs_task_definition" "blog" {
     execution_role_arn = var.taskExecutionRole
     cpu = 256
     memory = 512
-    network_mode = "bridge"
+    network_mode = "host"
 
     requires_compatibilities = ["EC2"]
 }

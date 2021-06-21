@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "ecs_instance" { // ecs instance role document
 }
 
 resource "aws_iam_role" "ecs_instance_role" { // role for ecs instances
-    name                = "ecsInstanceRole"
+    name                = "ecsInstanceRoleTF"
     assume_role_policy  = data.aws_iam_policy_document.ecs_instance.json
 }
 

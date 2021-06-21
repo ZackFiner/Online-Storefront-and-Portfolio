@@ -9,17 +9,20 @@ resource "aws_alb" "load_balancer" {
 
 resource "aws_alb_target_group" "target_group" {
     name            = "${var.name}-tg"
-    port            = 80
-    protocol        = "HTTP"
-    target_type     = "ip"
+    port            = var.target_port
+    protocol        = "HTTPS"
+    target_type     = "instance"
     vpc_id          = var.vpc_id
 }
 
 resource "aws_alb_listener" "listener" {
     load_balancer_arn = aws_alb.load_balancer.arn
-    port = 80 // when you get an SSL certificate, switch this to 443, and the protocol to https
-    protocol = "HTTP"
-
+    port = 443 // when you get an SSL certificate, switch this to 443, and the protocol to https
+    
+    protocol = "HTTPS"
+    ssl_policy = "ELBSecurityPolicy-2016-08"
+    certificate_arn = var.ssl_cert_arn // add our ssl certificate to this listener
+    
     default_action {
         type = "forward"
         target_group_arn = aws_alb_target_group.target_group.arn

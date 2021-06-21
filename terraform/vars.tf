@@ -5,3 +5,7 @@ variable "taskExecutionRole" {
 variable "dockerHubSecretARN" {
     type = string
 }
+
+variable "SSLCertificateARN" {
+    type = string
+}

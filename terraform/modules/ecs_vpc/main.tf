@@ -1,5 +1,5 @@
 resource "aws_vpc" "ecs_vpc" {
-    cidr_block = "10.0.0.0/24"
+    cidr_block = "10.0.0.0/16"
 
 }
 
@@ -9,7 +9,14 @@ resource "aws_internet_gateway" "internet_gateway" { // create an internet gatew
 
 resource "aws_subnet" "public_subnet1" { // setup a public subnet for our vpc
     vpc_id      = aws_vpc.ecs_vpc.id
-    cidr_block  = "10.1.0.0/22"
+    cidr_block  = "10.0.0.0/24"
+    availability_zone = "us-west-2a"
+}
+
+resource "aws_subnet" "public_subnet2" { // setup a public subnet for our vpc
+    vpc_id      = aws_vpc.ecs_vpc.id
+    cidr_block  = "10.0.1.0/24"
+    availability_zone = "us-west-2b"
 }
 
 resource "aws_route_table" "public" {
@@ -20,10 +27,16 @@ resource "aws_route_table" "public" {
     }
 }
 
-resource "aws_route_table_association" "route_table_association" {
+resource "aws_route_table_association" "route_table_association1" {
     subnet_id       = aws_subnet.public_subnet1.id // associate our public subnet
     route_table_id  = aws_route_table.public.id // with the route table we created above
 }
+
+resource "aws_route_table_association" "route_table_association2" {
+    subnet_id       = aws_subnet.public_subnet2.id // associate our public subnet
+    route_table_id  = aws_route_table.public.id // with the route table we created above
+}
+
 
 resource "aws_security_group" "ecs_security_group" {
     vpc_id          = aws_vpc.ecs_vpc.id
@@ -55,7 +68,7 @@ output "security_groups" {
 }
 
 output "subnets" {
-    value = [aws_subnet.public_subnet1.id]
+    value = [aws_subnet.public_subnet1.id, aws_subnet.public_subnet2.id]
 }
 
 output "id" {

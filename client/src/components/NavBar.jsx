@@ -3,19 +3,39 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Links from './Links';
 import LoginIndicator from './LoginIndicator';
-import LogoSVG from '../logo3.svg';
+import LogoSVG from '../logo3small.svg';
 
 const Collapse = styled.div.attrs({
     className: 'collapse navbar-collapse',
 })``
 
-const Logo = styled.img.attrs({
+
+const LogoLink = styled.a.attrs({
+    href: '/',
+    className:'nav-bar-logo',
+})`
+    color: white;
+    font-size: 20px;
+    text-align: top;
+    &:hover {
+        text-decoration: none;
+        color: white;
+    }
+`
+const LogoIcon = styled.img.attrs({
     src:LogoSVG,
 })`
     height: 100%;
     width: 3rem;
-    margin: 0 10px 0 10px;
+    margin: 0.25rem 0.75rem 0.25rem 0.75rem;
+    .nav-bar-logo:hover>& {
+        width: 3.5rem;
+        margin: 0 0.5rem 0 0.5rem;
+        transition: 0.3s;
+    }
 `
+
+const Logo = <LogoLink><LogoIcon />Studio Finer</LogoLink>
 
 const Container = styled.div.attrs({ // make the navbar occupy all the space at the top
     className: 'container',
@@ -122,7 +142,7 @@ class NavBar extends Component {
                             data-target=".sidebarCollapse">
                         <span className="navbar-toggler-icon"></span>
                     </SidebarToggle>
-                    <Link to="/" className="navbar-logo"><Logo/></Link>
+                    {Logo}
                     <Collapse>
                     </Collapse>
                     <LoginIndicator/>

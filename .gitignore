@@ -12,3 +12,4 @@ micro/store/node_modules/*
 *.pem
 *.exe
 *.hcl
+client/src/data/index.js

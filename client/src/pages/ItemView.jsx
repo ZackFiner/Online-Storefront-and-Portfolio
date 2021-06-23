@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import {ReviewView, ImageSlide} from '../components'
+import {ReviewView, ImageSlide, PayPalGateway} from '../components'
 
 import {connect} from 'react-redux'
 import {isMemberofRole} from '../authorization'
-
 import api from '../api';
 
 const Wrapper = styled.div.attrs({
@@ -108,6 +107,7 @@ class ItemView extends Component {
                 <ItemDetailsArea>
                     <h3>Price: {price_text}</h3>
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
+                    <PayPalGateway/>
                 </ItemDetailsArea>
                 </RowWrapper>
                 {reviewArea}

@@ -11,10 +11,6 @@ class PayPalGateway extends Component {
         super(props);
     }
 
-    componentDidMount = () => {
-        //paypal_sdk.Buttons({createOrder:this.createOrder, onApprove:this.onApprove}).render('#paypal-button-loc');
-    }
-
     createOrder = (data, actions) => {
         return actions.order.create({
             purchase_units: [

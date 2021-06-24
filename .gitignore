@@ -13,3 +13,5 @@ micro/store/node_modules/*
 *.exe
 *.hcl
 client/src/data/index.js
+micro/orders/data/server-config.js
+micro/payments/data/server-config.js

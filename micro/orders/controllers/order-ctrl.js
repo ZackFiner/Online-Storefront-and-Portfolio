@@ -29,8 +29,8 @@ postOrder = async (req, res) => {
 
     if (!inventory_record) {
         // terminate the transaction, this item doesn't exist
-        runner.rollbackTransaction();
-        runner.release();
+        await runner.rollbackTransaction();
+        await runner.release();
         return res.status(404).json({
             success: false,
             error: "No such item exists"
@@ -38,8 +38,8 @@ postOrder = async (req, res) => {
     }
 
     if (inventory_record.qty < 1) {
-        runner.rollbackTransaction();
-        runner.release();
+        await runner.rollbackTransaction();
+        await runner.release();
         return res.status(200).json({
             success: false,
             message: "Item is out of stock"

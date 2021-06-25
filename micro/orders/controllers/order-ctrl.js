@@ -19,20 +19,28 @@ postOrder = async (req, res) => {
         });
     const {_id} = item;
     
-    await getConnection().transaction( manager => {
-        const inventory_records = await manager.createQueryBuilder()
-            .select()
-            .from(Item, "item")
-            .where("item_desc_id = :desc_id", {desc_id: _id});
+    await getConnection().transaction( async manager => {
+        const inventory_record = await manager
+            .createQueryBuilder(Item, "item")
+            .leftJoin(ItemPrice, "price", "price.id = item.id")
+            .where("item.item_desc_id = :desc_id", {desc_id: _id})
+            .getOne();
 
-        if (inventory_records.length() < 1) {
+        if (!inventory_record) {
             // terminate the transaction, this item doesn't exist
+            return;
+            
         }
-        item = inventory_records[0];
-        if (item.qty < 1) {
+        if (inventory_record.qty < 1) {
             // terminate the transaction, this item is out of stock
+            return;
         }
 
+        // send event to payments API with the price of the item and the payment info
+        
+        // if the payment was approved, complete the order (create the order entity)
+        
+        // otherwise exit and notify the order failed
 
     });
 }

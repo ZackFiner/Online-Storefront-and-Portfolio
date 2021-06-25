@@ -1,24 +1,26 @@
 const {EntitySchema} = require("typeorm");
-const ItemPrice = require("../../model/ItemPrice");
+
+class ItemPrice {
+    constructor(id, price) {
+        this.id = id,
+        this.price = price
+    }
+}
 
 module.exports = new EntitySchema({
     name: "ItemPrice",
+    tableName: "item_prices",
     target: ItemPrice,
     columns: {
         id: {
             primary: true,
             type: "int",
-            generated: true,
-        },
-        item_id: {
-            type: String,
-            length: 24,
-
         },
         price: {
             type: "decimal",
             precision: 10,
             scale: 2,
+            nullable: false,
         }
     }
 })

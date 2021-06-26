@@ -22,30 +22,33 @@ postOrder = async (req, res) => {
         });
 
     const {_id} = item;
-
-    const runner = getConnection().createQueryRunner();
-    await runner.connect();
-    // attempt semi-critical (correctable) aspects of the order
-    
-    // address record creation
-    let address_id = undefined;
-    if (address.id) {
-        const r_address = await runner.manager.createQueryBuilder()
-                            .select()
-                            .from(Address, "address")
-                            .where("address.id = :adr_id", {adr_id: address.id})
-                            .getOne();
+    let order_id = undefined;
+    try {
+        const runner = getConnection().createQueryRunner();
+        await runner.connect();
+        // attempt semi-critical (correctable) aspects of the order
         
-        if (address) {
-            address_id = r_address.id;
+        // address record creation
+        let address_id = undefined;
+
+        await runner.startTransaction();
+
+        if (address.id) {
+            const r_address = await runner.manager.createQueryBuilder()
+                                .select()
+                                .from(Address, "address")
+                                .where("address.id = :adr_id", {adr_id: address.id})
+                                .getOne();
+            
+            if (address) {
+                address_id = r_address.id;
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid address information provided"
+                })
+            }
         } else {
-            return res.status(400).json({
-                success: false,
-                error: "Invalid address information provided"
-            })
-        }
-    } else {
-        try {
             const result = await runner.manager.insert(Address, {
                 user_id : userdata._id,
                 street_address : address.street_address,
@@ -54,80 +57,60 @@ postOrder = async (req, res) => {
                 zip : address.zip,
             });
             address_id = result.identifiers[0].id;
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({
-                success: false,
-                error: "An error occurred while processing request"
-            })
         }
-    }
 
+        const inventory_record = await runner.manager
+                .createQueryBuilder(Item, "item")
+                .leftJoinAndSelect(ItemPrice, "item.price", "price.id = item.id")
+                .where("item.item_desc_id = :desc_id", {desc_id: _id})
+                .select()
+                .getOne();
 
-    // begin critical phase of the order (non-correctable)
-    await runner.startTransaction();
-    const inventory_record = await runner.manager
-            .createQueryBuilder(Item, "item")
-            .leftJoinAndSelect(ItemPrice, "item.price", "price.id = item.id")
-            .where("item.item_desc_id = :desc_id", {desc_id: _id})
-            .select()
-            .getOne();
+        if (!inventory_record) {
+            // terminate the transaction, this item doesn't exist
+            await runner.rollbackTransaction();
+            await runner.release();
+            return res.status(404).json({
+                success: false,
+                error: "No such item exists"
+            });
+        }
 
-    if (!inventory_record) {
-        // terminate the transaction, this item doesn't exist
-        await runner.rollbackTransaction();
-        await runner.release();
-        return res.status(404).json({
-            success: false,
-            error: "No such item exists"
-        });
-    }
+        if (inventory_record.qty < 1) {
+            await runner.rollbackTransaction();
+            await runner.release();
+            return res.status(200).json({
+                success: false,
+                message: "Item is out of stock"
+            });
+        }
 
-    if (inventory_record.qty < 1) {
-        await runner.rollbackTransaction();
-        await runner.release();
-        return res.status(200).json({
-            success: false,
-            message: "Item is out of stock"
-        });
-    }
-
-    // send event to payments API with the price of the item and the payment info
-    const payment_res = await payments.postPayment({...payment, amount: inventory_record.price});
-    
-    if (payment.status >= 300 || 
-        !payment_res.data.data.payment_succeeded || 
-        !payment_res.data.data.payment_info.id) { // if the payment failed
-        await runner.rollbackTransaction();
-        await runner.release();
-        return res.status(500).json({
-            success: false,
-            error: "An error occured while processing payment"
-        });
-    }
-    const {payment_info} = payment_res.data.data;
-    try {
         const result = await runner.manager.insert(Order, {
-            payment_id : payment_info.id,
             user_id : userdata._id,
             item_id : inventory_record.id,
             address_id : address_id,
-            status : "INPROCESS",
+            status : "PENDING",
         });
 
-        return res.status(201).json({
-            success: true,
-            data: {
-                id: result.identifiers[0].id
-            }
-        })
+        order_id = result.identifiers[0].id;
+
+        await runner.commitTransaction(); // commit the transaction
+        await runner.release(); // release the query runner
     } catch(err) {
-        console.log("CRITICAL ERROR: ORDER FAILED TO BE PLACED!");
+        console.log(err);
         return res.status(500).json({
             success: false,
             error: "An error occured while processing request"
         })
     }
+    // send event to payments API with the price of the item and the payment info
+    payments.postPayment({...payment, amount: inventory_record.price});
+    return res.status(201).json({
+        success: true,
+        data: {
+            id: order_id
+        }
+    });
 }
 
 getOrders = (req, res) => {

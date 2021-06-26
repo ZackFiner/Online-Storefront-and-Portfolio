@@ -24,7 +24,7 @@ module.exports = new EntitySchema({
         },
         payment_id: {
             type: "int",
-            nullable: false,
+            nullable: true,
         },
         user_id: {
             type: String,
@@ -42,7 +42,8 @@ module.exports = new EntitySchema({
         status: {
             type: "enum",
             enum: [
-                "INPROCESS",
+                "PENDING",
+                "PROCESSING",
                 "SHIPPED",
                 "DELIVERED",
             ]

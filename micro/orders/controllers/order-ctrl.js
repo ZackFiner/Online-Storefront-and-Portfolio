@@ -61,9 +61,9 @@ postOrder = async (req, res) => {
 
         const inventory_record = await runner.manager
                 .createQueryBuilder(Item, "item")
+                .select()
                 .leftJoinAndSelect(ItemPrice, "item.price", "price.id = item.id")
                 .where("item.item_desc_id = :desc_id", {desc_id: _id})
-                .select()
                 .getOne();
 
         if (!inventory_record) {

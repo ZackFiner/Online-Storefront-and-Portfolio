@@ -23,13 +23,14 @@ postOrder = async (req, res) => {
 
     const {_id} = item;
     let order_id = undefined;
-    try {
-        const runner = getConnection().createQueryRunner();
-        let address_id = undefined;
-        
-        await runner.connect();
-        await runner.startTransaction();
 
+    const runner = getConnection().createQueryRunner();
+    let address_id = undefined;
+    
+    await runner.connect();
+    await runner.startTransaction();
+
+    try {
         if (address.id) {
             const r_address = await runner.manager.createQueryBuilder()
                                 .select()
@@ -94,6 +95,8 @@ postOrder = async (req, res) => {
         await runner.commitTransaction(); // commit the transaction
         await runner.release(); // release the query runner
     } catch(err) {
+        await runner.rollbackTransaction();
+        await runner.release();
         console.log(err);
         return res.status(500).json({
             success: false,

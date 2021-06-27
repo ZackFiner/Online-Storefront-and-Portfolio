@@ -25,12 +25,9 @@ postOrder = async (req, res) => {
     let order_id = undefined;
     try {
         const runner = getConnection().createQueryRunner();
-        await runner.connect();
-        // attempt semi-critical (correctable) aspects of the order
-        
-        // address record creation
         let address_id = undefined;
-
+        
+        await runner.connect();
         await runner.startTransaction();
 
         if (address.id) {

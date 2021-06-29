@@ -7,6 +7,7 @@ const cors = require('cors');
 //const {mongoosedb} = require('./db');
 require('./db');
 const invRouter = require('./routes/inv-router');
+const orderRouter = require('./routes/order-router');
 const app = express();
 const apiPort = 3003;
 
@@ -18,8 +19,8 @@ app.use(cookieParser());
 
 //mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.use('/', invRouter);
-
+app.use('/inventory/items', invRouter);
+app.use('/orders', orderRouter);
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
 

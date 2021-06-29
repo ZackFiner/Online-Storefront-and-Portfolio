@@ -4,9 +4,9 @@ const {payments} = require('../req');
 
 postOrder = async (req, res) => {
     const body = req.body;
-    const userdata = req.userdata; // from jwt token
-
-    if (!body || userdata) {
+    //const userdata = req.userdata; // from jwt token
+    const userdata = {_id: req.params.user_id};
+    if (!body || !userdata) {
         return res.status(400).json({
             success: false,
             error: "Invalid request format"
@@ -33,7 +33,7 @@ postOrder = async (req, res) => {
     try {
         if (address.id) {
             const r_address = await runner.manager.createQueryBuilder()
-                                .select()
+                                .select("address")
                                 .from(Address, "address")
                                 .where("address.id = :adr_id", {adr_id: address.id})
                                 .getOne();
@@ -58,9 +58,10 @@ postOrder = async (req, res) => {
         }
 
         const inventory_record = await runner.manager
-                .createQueryBuilder(Item, "item")
-                .select()
-                .leftJoinAndSelect(ItemPrice, "item.price", "price.id = item.id")
+                .createQueryBuilder()
+                .select("item")
+                .from(Item, "item")
+                .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
                 .where("item.item_desc_id = :desc_id", {desc_id: _id})
                 .getOne();
 
@@ -83,6 +84,11 @@ postOrder = async (req, res) => {
             });
         }
 
+        await runner.manager.update(Item, inventory_record.id, { // update inventory records to reflect that this item has been sold
+            qty: inventory_record.qty - 1
+        });
+
+        
         const result = await runner.manager.insert(Order, {
             user_id : userdata._id,
             item_id : inventory_record.id,
@@ -104,7 +110,7 @@ postOrder = async (req, res) => {
         })
     }
     // send event to payments API with the price of the item and the payment info
-    payments.postPayment({...payment, amount: inventory_record.price});
+    await payments.postPayment({...payment, amount: inventory_record.price});
     return res.status(201).json({
         success: true,
         data: {
@@ -113,7 +119,7 @@ postOrder = async (req, res) => {
     });
 }
 
-getOrders = (req, res) => {
+getOrders = async (req, res) => {
     const {user_id} = req.params;
 
     if (!user_id) {
@@ -126,10 +132,10 @@ getOrders = (req, res) => {
         const builder = getConnection().createQueryBuilder();
         
         const orders = await builder
-            .select()
+            .select("order")
             .from(Order, "order")
-            .leftJoinAndSelect(Item, "item", "item.id = order.item_id")
-            .leftJoinAndSelect(Address, "address", "address.id = order.address_id")
+            .leftJoinAndMapOne("order.item", Item, "item", "item.id = order.item_id")
+            .leftJoinAndMapOne("order.address", Address, "address", 'address.id = order.address_id')
             .where("order.user_id = :user_id", {user_id: user_id})
             .getMany();
         
@@ -146,7 +152,7 @@ getOrders = (req, res) => {
     }
 }
 
-getOrder = (req, res) => {
+getOrder = async (req, res) => {
     const {user_id, order_id} = req.params;
 
     if (!user_id || !order_id) {
@@ -160,11 +166,11 @@ getOrder = (req, res) => {
         const builder = getConnection().createQueryBuilder();
 
         const order = await builder
-                        .select()
+                        .select("order")
                         .from(Order, "order")
-                        .leftJoinAndSelect(Item, "item", "item.id = order.item_id")
-                        .leftJoinAndSelect(Address, "address", "address.id = order.address_id")
-                        .where("order.id = :order_id AND order.user_id = :user_id", {order_id: order_id, user_id: user_id})
+                        .leftJoinAndMapOne("order.item", Item, "item", "item.id = order.item_id")
+                        .leftJoinAndMapOne("order.address", Address, "address", 'address.id = order.address_id')
+                        .where("order.id = :_order_id AND order.user_id = :user_id", {_order_id: order_id, user_id: user_id})
                         .getOne();
         
         if (!order) {
@@ -186,4 +192,4 @@ getOrder = (req, res) => {
     }
 }
 
-module.exports = {createOrder, getOrders, getOrder};
+module.exports = {postOrder, getOrders, getOrder};

@@ -1,16 +1,4 @@
-const UserRoleModel = require('../../models/role-model');
-const {ADMIN_ROLE_ID, USER_ROLE_ID} = require('../../boot/role_init');
 
-
-const ROLE_CONSTANTS = Object.freeze({
-OBJ_PERM_ANY: undefined,
-OP_PERM_ANY:'any',
-});
-
-async function unpackUserRoles(user_roles) {
-    role_data = await UserRoleModel.find({name: { $in: user_roles }});
-    return role_data;
-}
 // We should probably also ACL, that way we can allow users to post/edit comments
 function hasPermission (role_data, op_perm, obj_perm) {
     // it's in here that we actually check permission
@@ -29,4 +17,4 @@ function hasPermission (role_data, op_perm, obj_perm) {
     return false;
 }
 
-module.exports = {unpackUserRoles, hasPermission, ROLE_CONSTANTS};
+module.exports = {hasPermission};

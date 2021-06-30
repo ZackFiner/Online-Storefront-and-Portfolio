@@ -89,10 +89,12 @@ authUser = (req, res) => {
                     })
                 } else {
                     const payload = { // Give them the token, which we'll attach some user account info to
-                        userdata: {
-                            _id: user._id,
-                            email: email,
-                            roles: user.roles,
+                        authdata: {
+                            userdata: {
+                                _id: user._id,
+                                email: email,
+                                roles: user.roles,
+                            }
                         }
                     };
                     const token = jwt.sign(payload, secret, sign_options); // cookies will expire 6 minutes from when they are set, we will need
@@ -123,7 +125,7 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
     // instead, it should use the encrypted jwt token which (in theory) cannot be modified by the user.
     // otherwise, someone could access other user's user data.
 
-    const userdata = req.userdata; // extract from a jwt token
+    const userdata = req.authdata.userdata; // extract from a jwt token
     if (!userdata) {
         return res.status(400).json({
             success: false,
@@ -150,8 +152,8 @@ getUserData = async (req, res) => { // this should not use req.userdata: this co
 }
 
 refreshUserToken = (req, res) => {
-    if (req.userdata) {// if the user has been authenticated and currently posesses a valid token
-        const payload = {userdata: { ... req.userdata } }
+    if (req.authdata.userdata) {// if the user has been authenticated and currently posesses a valid token
+        const payload = {authdata: {userdata: { ... req.authdata.userdata } } }
         const token = jwt.sign(payload, secret, { // create a new session token with more time
             expiresIn: '6m' // refresh the expiration time to give the user another 6 minutes
         });

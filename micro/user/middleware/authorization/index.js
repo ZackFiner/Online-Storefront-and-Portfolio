@@ -1,5 +1,4 @@
-const RoleAccessor = require('./RoleAccessor');
 const RoleCheckMiddleware = require('./RoleCheckMiddleware');
-const {unpackUserRoles, hasPermission, ROLE_CONSTANTS} = require('./RoleUtilities');
+const {hasPermission} = require('./RoleUtilities');
 
-module.exports = {RoleAccessor, RoleCheckMiddleware, unpackUserRoles, hasPermission, ROLE_CONSTANTS};
+module.exports = {RoleCheckMiddleware, hasPermission};

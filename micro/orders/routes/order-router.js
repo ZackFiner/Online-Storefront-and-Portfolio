@@ -1,6 +1,6 @@
 const express = require("express");
 const OrderCtrl = require("../controllers/order-ctrl");
-const withAuth = require("../middleware/authentication");
+const {withAuth} = require("../middleware/authentication");
 const router = express.Router();
 
 router.post("/users/:user_id/orders", withAuth, OrderCtrl.postOrder);

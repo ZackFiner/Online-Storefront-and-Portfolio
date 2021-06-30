@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
-const {secret, verify_options} = require('../data/server-config');
 
-const withAuth = (req, res, next) => {
+const withAuthMiddleware = (secret, verify_options) => (req, res, next) => {
     const token = req.cookies.token; // remember, we saved this to the client on login
 
     if (!token) {
@@ -11,11 +10,11 @@ const withAuth = (req, res, next) => {
             if (err) {
                 res.status(401).send('Unauthorized: invalid token');
             } else {
-                req.userdata = { ...decoded.userdata };
+                req.authdata = { ...decoded.authdata };
                 next();
             }
         });
     }
 }
 
-module.exports = withAuth;
+module.exports = withAuthMiddleware;

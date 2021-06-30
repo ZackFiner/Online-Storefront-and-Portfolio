@@ -1,7 +1,7 @@
 const express = require('express');
 
 const UserCtrl = require('../controllers/user-ctrl');
-const withAuth = require('../middleware/authentication');
+const {withAuth} = require('../middleware/authentication');
 const router = express.Router();
 
 router.post('/', UserCtrl.createUser);

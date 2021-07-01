@@ -1,10 +1,11 @@
 const typeorm = require("typeorm");
 const {mysql_connection_creds} = require("../data/server-config");
 
-const dbcon = mysql.createConnection({
+const dbcon = typeorm.createConnection({
+    name: "default",
     ...mysql_connection_creds, 
     entities: [
-        require("./entities/PaymentEnt")
+        require("../model/PaymentEnt")
     ],
 });
 

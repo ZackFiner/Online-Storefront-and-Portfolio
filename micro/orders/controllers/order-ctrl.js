@@ -121,6 +121,11 @@ postOrder = async (req, res) => {
 
 getOrders = async (req, res) => {
     const {user_id} = req.params;
+    const userdata = req.authdata?.userdata;
+
+    if (!userdata || userdata._id != user_id) {
+        return res.status(401).send("Unauthorized")
+    }
 
     if (!user_id) {
         return res.status(400).json({
@@ -128,6 +133,7 @@ getOrders = async (req, res) => {
             error: "No User ID provided",
         })
     }
+
     try {
         const builder = getConnection().createQueryBuilder();
         
@@ -154,6 +160,11 @@ getOrders = async (req, res) => {
 
 getOrder = async (req, res) => {
     const {user_id, order_id} = req.params;
+    const userdata = req.authdata?.userdata;
+    
+    if (!userdata || userdata._id != user_id) {
+        return res.status(401).send("Unauthorized")
+    }
 
     if (!user_id || !order_id) {
         return res.status(400).json({

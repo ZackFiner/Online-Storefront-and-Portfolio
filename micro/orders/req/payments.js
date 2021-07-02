@@ -1,6 +1,7 @@
 
-const {payment_endpoint, api_cred} = require('../data/server-config.js')
+const {payment_endpoint} = require('../data/server-config.js')
 const axios = require("axios");
+const {generateAPIToken} = require('../utils');
 
 const payment_api = axios.create({
     baseURL: payment_endpoint,
@@ -9,7 +10,7 @@ const payment_api = axios.create({
 const postPayment = (payment) => {
     return payment_api.post(payment, {
         headers: {
-            Authorization: `Basic ${api_cred}`
+            Authorization: `Bearer ${generateAPIToken()}`
         }
     });
 }

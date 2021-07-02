@@ -107,10 +107,10 @@ postOrder = async (req, res) => {
         return res.status(500).json({
             success: false,
             error: "An error occured while processing request"
-        })
+        });
     }
     // send event to payments API with the price of the item and the payment info
-    await payments.postPayment({...payment, amount: inventory_record.price});
+    await payments.postPayment({...payment, item_price: inventory_record.price});
     return res.status(201).json({
         success: true,
         data: {

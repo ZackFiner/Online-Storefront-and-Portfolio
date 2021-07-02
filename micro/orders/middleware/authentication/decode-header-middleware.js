@@ -8,6 +8,9 @@ const withAuthHeaderMiddleware = (secret, verify_options) => (req, res, next) =>
     } else {
         const {token_type, token_credentials} = header.split(" ");
         const token = token_credentials;
+        if (token_type != "Bearer") { // only accept bearer tokens
+            res.status(401).send('Unauthorized: invalid token type');
+        }
         jwt.verify(token, secret, verify_options, (err, decoded) => {
             if (err) {
                 res.status(401).send('Unauthorized: invalid token');

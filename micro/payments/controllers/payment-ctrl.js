@@ -1,6 +1,6 @@
 const {getConnection} = require('typeorm');
 const Payment = require('../model/Payment');
-const {PayPal} = require('../req');
+const {PayPal, Orders} = require('../req');
 
 const postPayment = async (req, res) => {
     const {body, authdata} = req;
@@ -19,21 +19,21 @@ const postPayment = async (req, res) => {
     const {item_price} = body;
     const runner = getConnection().createQueryRunner();
     await runner.connect();
+    await runner.startTransaction();
     
-    runner.startTransaction();
     let payment_id = undefined;
     try {
         // record the payment in the database using a transaction
         const result = await runner.manager.insert(Payment, {
-            user_id: req.authdata.userdata._id,
+            user_id: authdata.userdata._id,
             amount: item_price,
             status: "PROCESSING",
         });
         payment_id = result.identifiers[0].id;
 
     } catch (err) {
-        runner.rollbackTransaction();
-        runner.release();
+        await runner.rollbackTransaction();
+        await runner.release();
         console.log(err);
         return res.status(500).json({
             success: false,
@@ -43,8 +43,8 @@ const postPayment = async (req, res) => {
 
     PayPal.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(value => {
-        runner.commitTransaction();
-        runner.release();
+        await runner.commitTransaction();
+        await runner.release();
         return res.status(200).json({
             success: true,
             data: {
@@ -56,8 +56,8 @@ const postPayment = async (req, res) => {
     .catch(error => {
         // roll back the transaction
         // notify the user that an issue has occured creating the payment
-        runner.rollbackTransaction();
-        runner.release();
+        await runner.rollbackTransaction();
+        await runner.release();
         console.log(error);
         return res.status(500).json({
             success: false,
@@ -80,10 +80,52 @@ const executePayment = async (req, res) => {
         });
     }
 
-    const {item_price, payment_id, payer_id} = body;
-    // TODO
+    const {payment_id, payer_id} = body;
+    
+    const runner = getConnection().createQueryRunner();
+    await runner.connect();
+    await runner.startTransaction();
+    
+    try {
+        const payment = await runner.manager.createQueryBuilder()
+                                    .select('payment')
+                                    .from(Payment, 'payment')
+                                    .where('paypal_payment_id = :_payment_id', {_payment_id: payment_id})
+                                    .getOne();
+        
+        if (!payment) {
+            throw new Error("No Payment with the specified id was found");
+        }
 
+        const update_result = await runner.manager.update(Payment, payment.id, {
+            paypal_payment_id: payment_id,
+            paypal_payer_id: payer_id,
+            status: "APPROVED"
+        });
 
+        if (!update_result.affected) {
+            throw new Error("Could not update payment record");
+        }
+
+        const paypal_req_result = await PayPal.executePayment(payment.amount, payment_id, payer_id, '/', '/');
+        const order_req_result = await Orders.notifyOrdersPayment(payment.id, payment.status);
+
+        await runner.commitTransaction();
+        await runner.release();
+        return res.status(200).json({
+            success:true
+        })
+
+    } catch (err) {
+        console.log(err);
+        await runner.rollbackTransaction();
+        await runner.release();
+
+        return res.status(500).json({
+            success: false,
+            error: "An error occured while processing request"
+        });
+    }
 }
 
 const getPayments = async (req, res) => {
@@ -164,4 +206,4 @@ const getPayment = async (req, res) => {
 }
 
 
-module.exports = {postPayment, getPayments, getPayment};
+module.exports = {postPayment, executePayment, getPayments, getPayment};

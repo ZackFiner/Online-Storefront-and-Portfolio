@@ -97,9 +97,6 @@ postOrder = async (req, res) => {
         });
 
         order_id = result.identifiers[0].id;
-
-        await runner.commitTransaction(); // commit the transaction
-        await runner.release(); // release the query runner
     } catch(err) {
         await runner.rollbackTransaction();
         await runner.release();
@@ -110,13 +107,33 @@ postOrder = async (req, res) => {
         });
     }
     // send event to payments API with the price of the item and the payment info
-    await payments.postPayment({...payment, item_price: inventory_record.price});
-    return res.status(201).json({
-        success: true,
-        data: {
-            id: order_id
-        }
-    });
+    payments.postPayment({...payment, item_price: inventory_record.price}, {userdata:userdata})
+    .then((value) => {
+        const {id, paypal_payment_id} = value.data.data;
+        await runner.manager.update(Order, order_id, {
+            payment_id: id
+        });
+        await runner.commitTransaction(); // commit the transaction
+        await runner.release(); // release the query runner
+
+        return res.status(201).json({
+            success: true,
+            data: {
+                id: order_id,
+                paypal_payment_id: paypal_payment_id
+            }
+        });
+
+    })
+    .catch(error => {
+        await runner.rollbackTransaction();
+        await runner.release();
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "An error occured while processing request"
+        })
+    })
 }
 
 getOrders = async (req, res) => {

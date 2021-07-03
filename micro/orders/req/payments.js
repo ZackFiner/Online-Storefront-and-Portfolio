@@ -7,10 +7,10 @@ const payment_api = axios.create({
     baseURL: payment_endpoint,
 });
 
-const postPayment = (payment) => {
-    return payment_api.post(payment, {
+const postPayment = (payment, authdata) => {
+    return payment_api.post('/', payment, {
         headers: {
-            Authorization: `Bearer ${generateAPIToken()}`
+            Authorization: `Bearer ${generateAPIToken(authdata)}`
         }
     });
 }

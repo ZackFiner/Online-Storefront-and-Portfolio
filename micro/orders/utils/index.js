@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const {api_secret, sign_options} = require('../data/server-config');
 
-const generateAPIToken = () => {
+const generateAPIToken = (authdata) => {
     const token = jwt.sign({
         authdata: {
+            ...authdata,
             issuing_service: 'API_ORDERS'
         }
     }, api_secret, sign_options)

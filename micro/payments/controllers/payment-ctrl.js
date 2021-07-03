@@ -1,9 +1,9 @@
 const {getConnection} = require('typeorm');
 const Payment = require('../model/Payment');
+const {PayPal} = require('../req');
 
 const postPayment = async (req, res) => {
     const {body, authdata} = req;
-
     if (!authdata) {
         res.status(401).send("Unauthorized: authdata could not be parsed");
     }
@@ -16,8 +16,73 @@ const postPayment = async (req, res) => {
     }
 
     // ensure the data sent is valid and ready for transmission to paypal
-    // record the payment in the database using a transaction
-    // attempt to transmit the data to paypal before confirming the transaction
+    const {item_price} = body;
+    const runner = getConnection().createQueryRunner();
+    await runner.connect();
+    
+    runner.startTransaction();
+    let payment_id = undefined;
+    try {
+        // record the payment in the database using a transaction
+        const result = await runner.manager.insert(Payment, {
+            user_id: req.authdata.userdata._id,
+            amount: item_price,
+            status: "PROCESSING",
+        });
+        payment_id = result.identifiers[0].id;
+
+    } catch (err) {
+        runner.rollbackTransaction();
+        runner.release();
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            error: "An error occured while processing request"
+        });
+    }
+
+    PayPal.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
+    .then(value => {
+        runner.commitTransaction();
+        runner.release();
+        return res.status(200).json({
+            success: true,
+            data: {
+                id: payment_id,
+                paypal_payment_id: value.data.id
+            }
+        });
+    })
+    .catch(error => {
+        // roll back the transaction
+        // notify the user that an issue has occured creating the payment
+        runner.rollbackTransaction();
+        runner.release();
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: "An error occured while processing request"
+        });
+    })
+}
+
+const executePayment = async (req, res) => {
+    const {body, authdata} = req;
+    
+    if (!authdata) {
+        res.status(401).send("Unauthorized: authdata could not be parsed");
+    }
+
+    if (!body) {
+        res.status(400).json({
+            success: false,
+            error: "Reqeust body could not be parsed"
+        });
+    }
+
+    const {item_price, payment_id, payer_id} = body;
+    // TODO
+
 
 }
 

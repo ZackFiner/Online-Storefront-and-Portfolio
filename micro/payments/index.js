@@ -5,7 +5,7 @@ const cors = require('cors');
 
 // because this application will be handling financial information, it should use a SQL database layer (for transactions).
 //const {mongoosedb} = require('./db');
-//const postRouter = require('./routes/post-router');
+const paymentRouter = require('./routes/payment-router');
 const app = express();
 const apiPort = 3003;
 
@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 //mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-//app.use('/', postRouter);
+app.use('/', paymentRouter);
 
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));

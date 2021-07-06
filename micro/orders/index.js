@@ -9,7 +9,7 @@ require('./db');
 const invRouter = require('./routes/inv-router');
 const orderRouter = require('./routes/order-router');
 const app = express();
-const apiPort = 3003;
+const apiPort = 3004;
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors({origin:'http://localhost:8000', credentials:true}));

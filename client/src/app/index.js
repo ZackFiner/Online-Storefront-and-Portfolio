@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 import {ActivitySensor, LogoutUser} from '../authentication';
-import {FrontPage, PostEditor, ImagePost, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
+import {SlideExamplePage, FrontPage, PostEditor, ImagePost, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -37,6 +37,7 @@ function App() {
         <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['admin']} />
         <AuthorizedRoute path="/frontpage/media/post" exact component={ImagePost} roles={['admin']} />
         <Route path="/" exact component={FrontPage}/>
+        <Route path="/slidezone" exact component={SlideExamplePage}/>
       </Switch>
     </Router>
   );//note the :id tells react to await for a param called id when making the request.

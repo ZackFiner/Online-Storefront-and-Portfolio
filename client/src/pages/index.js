@@ -6,6 +6,7 @@ import CreateReview from './CreateReview';
 import CreateAccountPage from './CreateAccount';
 import LoginPage from './Login';
 import {PostEditor, ImagePost} from './CreatePost';
-import FrontPage from './FrontPage';
+import BlogPage from './Blog';
+import LandingPage from './Landing';
 
-export {FrontPage, PostEditor, ImagePost, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};
+export {BlogPage, PostEditor, ImagePost, LandingPage, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};

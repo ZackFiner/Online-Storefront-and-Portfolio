@@ -1,6 +1,5 @@
 import Links from './Links';
 import NavBar from './NavBar';
-import ItemGrid from './ItemGrid';
 import ItemFrame from './ItemFrame';
 import ReviewView from './ReviewView';
 import MultiImageInput from './MultiImageInput';
@@ -9,5 +8,6 @@ import AuthorizedRoute from './AuthorizedRoute';
 import ItemSearchBar from './ItemSearchBar'
 import ImageSlide from './ImageSlide';
 import StyledComponents from './StyledComponents'
+import PayPalGateway from './PayPalGateway';
 
-export { StyledComponents, Links, NavBar, ItemGrid, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export { StyledComponents, Links, PayPalGateway, NavBar, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

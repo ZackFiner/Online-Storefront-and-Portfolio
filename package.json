@@ -5,10 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index",
-    "index": "nodemon index",
     "client": "npm start --prefix client",
-    "launch": "concurrently \"npm run index\" \"npm run client\""
+    "micro-launch": "concurrently \"npm run --prefix micro/user index\" \"npm run --prefix micro/posts index\" \"npm run --prefix micro/store index\"  \"npm run client\""
   },
   "repository": {
     "type": "git",

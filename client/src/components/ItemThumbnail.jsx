@@ -3,16 +3,40 @@ import styled from 'styled-components';
 
 import placeholder_thumb from '../assets/placeholder.png'
 
-const ThumbnailContainer = styled.img.attrs({
+const ThumbnailContainer = styled.div.attrs({})`
+    text-align: center;
+    width: 100%;
+    min-width: 300px;
+    padding-top: 75%;
+    background-color: black;
+    position: relative;
+    overflow: hidden;
+`
+
+const ThumbnailImage = styled.img.attrs(props => ({
+    ...props,
     className: 'card-img-top item-card-img'
-})`
+}))`
     margin: auto;
+    object-fit: cover;
+    position: absolute;
+    border-radius: 0;
+    top: 50%;
+    left: 0%;
+    transform: translate(0%, -50%);
+    transition: all .3s;
 `
 const ThumbnailFlexor = styled.div.attrs({})`
-    width: 300px;
-    height: 300px;
+    max-height: 300px;
     overflow: hidden;
-    
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    &:hover {
+        transform: scale(2,2);
+    }
+
 `
 
 class ItemThumbnail extends Component {
@@ -26,7 +50,7 @@ class ItemThumbnail extends Component {
 
     render() {
         const {item_img} = this.state;
-        return <ThumbnailContainer src={item_img ? item_img.path : placeholder_thumb} alt="Missing Thumbnail" width="300" Height="180" />
+        return <ThumbnailContainer><ThumbnailImage src={item_img ? item_img.path : placeholder_thumb} alt="Missing Thumbnail" width="300" Height="180" /></ThumbnailContainer>
     }
 }
 export default ItemThumbnail;

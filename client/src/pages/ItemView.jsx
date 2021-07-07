@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import {ReviewView, ImageSlide} from '../components'
+import {ReviewView, ImageSlide, PayPalGateway} from '../components'
 
+import {connect} from 'react-redux'
+import {isMemberofRole} from '../authorization'
 import api from '../api';
 
 const Wrapper = styled.div.attrs({
@@ -77,6 +79,8 @@ class ItemView extends Component {
     }
 
     render() {
+        const {loggedin, userdata} = this.props;
+
         const {id, name, description, reviews, thumbnail_img, gallery_images, price, keywords} = this.state;
         const price_text = price ? `$${price.$numberDecimal}` : 'Not For Sale';
         const reviewsSection = reviews ? reviews.map( review => {
@@ -88,6 +92,10 @@ class ItemView extends Component {
             <h2>Reviews</h2>,
             reviewsSection
         ];
+
+        if (loggedin && isMemberofRole(userdata, 'ROLE_ADMIN'))
+            reviewArea.push(<Button><a href={`/items/view/${id}/review`}>Post Review</a></Button>)
+            
         return (
             <Wrapper>
                 <Title>{name}</Title>
@@ -99,13 +107,23 @@ class ItemView extends Component {
                 <ItemDetailsArea>
                     <h3>Price: {price_text}</h3>
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
+                    <PayPalGateway/>
                 </ItemDetailsArea>
                 </RowWrapper>
                 {reviewArea}
-                <Button><a href={`/items/view/${id}/review`}>Post Review</a></Button>
             </Wrapper>
         )
     }
 }
 
-export default ItemView;
+const mapStateToProps = state => {
+    const {userdata, loggedin} = state.accountRedu;
+    return {
+        userdata, loggedin
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    {}
+)(ItemView);

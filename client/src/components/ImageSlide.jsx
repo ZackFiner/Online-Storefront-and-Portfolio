@@ -26,7 +26,7 @@ const ImageSlideButton = styled.input.attrs(props => ({
     background-size: contain;
     background-position: center center;
     width: 10rem;
-    height: 7rem;
+    height: calc(10rem * 2 / 3);
     border-style: none;
     border-width: 0px;
     border-radius: 0;
@@ -78,7 +78,7 @@ const ImageSlideCanvas = styled.div.attrs({
     background-position: center center;
     transition: background 0.5s linear;
     max-width: 50rem;
-    height: 30rem;
+    padding-top: calc(100% * 2/3);
 `
 
 class ImageSlide extends Component {

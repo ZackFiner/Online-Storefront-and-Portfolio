@@ -69,7 +69,7 @@ class LoginIndicator extends Component {
         const {loggedin, userdata} = this.props;
 
         let creator_items = null;
-        if (isMemberofRole(userdata, 'admin'))
+        if (isMemberofRole(userdata, 'ROLE_ADMIN'))
             creator_items = [
                 <NavLink href="/items/list">List Items</NavLink>, 
                 <NavLink href="/items/create">Post Item</NavLink>

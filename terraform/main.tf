@@ -6,6 +6,22 @@ data "aws_caller_identity" "current" {
 
 }
 
+/*
+    TODO:
+    We need to add a few more resources in order to eliminate the need for external connections from within the VPC:
+    1. A S3 bucket for image storage and hosting
+    2. A VPC Endpoint gateway so resources in private subnets can access the S3 bucket for uploading
+    3. A mongodb database cluster (EC2) to eliminate the need for a mongodb atlas connections
+*/
+
+resource "aws_s3_bucket" "image_bucket" {
+    bucket = "tf-finer-studio-image-bucket"
+    acl = "private"
+    // ...
+}
+
+
+
 module "vpc" { // setup the vpc for the ecs cluster
     source = "./modules/ecs_vpc"
 }

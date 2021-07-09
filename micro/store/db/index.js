@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const {CloudinaryStorage} = require('multer-storage-cloudinary');
+//const {CloudinaryStorage} = require('multer-storage-cloudinary');
 const {cloudinary_config, mongodb_connection, s3_connection, aws_config, bucket_name} = require('../data/server-config');
 
 const aws = require("aws-sdk");

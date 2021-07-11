@@ -1,6 +1,8 @@
 const {getConnection} = require('typeorm');
 const Payment = require('../model/Payment');
-const {PayPal, Orders} = require('../req');
+const {PayPal} = require('../req');
+const {sendMessageToOrders} = require('../mq');
+
 
 const postPayment = async (req, res) => {
     const {body, authdata} = req;
@@ -108,7 +110,8 @@ const executePayment = async (req, res) => {
         }
 
         const paypal_req_result = await PayPal.executePayment(payment.amount, payment_id, payer_id, '/', '/');
-        const order_req_result = await Orders.notifyOrdersPayment(payment.id, payment.status);
+        await sendMessageToOrders({payment_id: payment.id, status: payment.status}); // publish the payment's status to the orders queue
+        
 
         await runner.commitTransaction();
         await runner.release();

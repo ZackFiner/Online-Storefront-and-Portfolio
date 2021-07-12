@@ -1,12 +1,19 @@
 const amqp = require('amqplib');
 const {mq_connection_string, orders_queue} = require('../data/server-config');
 
-const MQConn = await amqp.connect(mq_connection_string);
-const PrimaryChannel = await MQConn.createChannel();
+var MQConn = undefined;
+var PrimaryChannel = undefined;
+
+class MQSingleton {
+    static async init() {
+        MQConn = await amqp.connect(mq_connection_string);
+        PrimaryChannel = await MQConn.createChannel();
+    }
+} // NOTE: these connections should be closed when not in use
 
 const recievePaymentNotif = async (consumeCB) => {
     if (!MQConn) {
-        throw new Error("Error: cannot publish without a MQ connection");
+        await MQSingleton.init();
     }
 
     await PrimaryChannel.assertQueue(orders_queue, {durable:true});
@@ -14,4 +21,4 @@ const recievePaymentNotif = async (consumeCB) => {
 }
 
 
-module.exports = {MQConn, PrimaryChannel, recievePaymentNotif};
+module.exports = {MQSingleton, recievePaymentNotif};

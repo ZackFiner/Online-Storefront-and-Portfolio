@@ -108,7 +108,7 @@ postOrder = async (req, res) => {
     }
     // send event to payments API with the price of the item and the payment info
     payments.postPayment({...payment, item_price: inventory_record.price}, {userdata:userdata})
-    .then((value) => {
+    .then(async (value) => {
         const {id, paypal_payment_id} = value.data.data;
         await runner.manager.update(Order, order_id, {
             payment_id: id
@@ -125,7 +125,7 @@ postOrder = async (req, res) => {
         });
 
     })
-    .catch(error => {
+    .catch(async (error) => {
         await runner.rollbackTransaction();
         await runner.release();
         console.log(error);
@@ -138,7 +138,7 @@ postOrder = async (req, res) => {
 
 getOrders = async (req, res) => {
     const {user_id} = req.params;
-    const userdata = req.authdata?.userdata;
+    const userdata = req.authdata ? req.authdata.userdata : undefined;
 
     if (!userdata || userdata._id != user_id) {
         return res.status(401).send("Unauthorized")
@@ -177,7 +177,7 @@ getOrders = async (req, res) => {
 
 getOrder = async (req, res) => {
     const {user_id, order_id} = req.params;
-    const userdata = req.authdata?.userdata;
+    const userdata = req.authdata ? req.authdata.userdata : undefined;
     
     if (!userdata || userdata._id != user_id) {
         return res.status(401).send("Unauthorized")
@@ -259,5 +259,8 @@ paymentListener = async (req, res) => {
     }
 }
 
+const testMessaging = async () => {
+    
+}
 
 module.exports = {postOrder, getOrders, getOrder, paymentListener};

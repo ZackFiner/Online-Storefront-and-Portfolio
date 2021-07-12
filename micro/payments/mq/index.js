@@ -1,12 +1,20 @@
 const amqp = require('amqplib');
 const {mq_connection_string, orders_queue} = require('../data/server-config');
 
-const MQConn = await amqp.connect(mq_connection_string);
-const PrimaryChannel = await MQConn.createChannel();
+var MQConn = undefined;
+var PrimaryChannel = undefined;
+
+class MQSingleton {
+    static async init() {
+        MQConn = await amqp.connect(mq_connection_string);
+        PrimaryChannel = await MQConn.createChannel();
+    }
+}
+
 
 const sendMessageToOrders = async (json_msg) => {
     if (!MQConn) {
-        throw new Error("Error: cannot publish without a MQ connection");
+        await MQSingleton.init();
     }
 
     await PrimaryChannel.assertQueue(orders_queue, {durable:true});
@@ -14,4 +22,4 @@ const sendMessageToOrders = async (json_msg) => {
 } 
 
 
-module.exports = {MQConn, PrimaryChannel, sendMessageToOrders};
+module.exports = {MQSingleton, sendMessageToOrders};

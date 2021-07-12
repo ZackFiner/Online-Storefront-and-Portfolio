@@ -44,7 +44,7 @@ const postPayment = async (req, res) => {
     }
 
     PayPal.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
-    .then(value => {
+    .then(async (value) => {
         await runner.commitTransaction();
         await runner.release();
         return res.status(200).json({
@@ -55,7 +55,7 @@ const postPayment = async (req, res) => {
             }
         });
     })
-    .catch(error => {
+    .catch(async error => {
         // roll back the transaction
         // notify the user that an issue has occured creating the payment
         await runner.rollbackTransaction();
@@ -132,7 +132,7 @@ const executePayment = async (req, res) => {
 }
 
 const getPayments = async (req, res) => {
-    const userdata = req.authdata?.userdata;
+    const userdata = req.authdata ? req.authdata.userdata : undefined;
     const {user_id} = req.params;
 
     if (!userdata || userdata._id != user_id) {
@@ -168,7 +168,7 @@ const getPayments = async (req, res) => {
 }
 
 const getPayment = async (req, res) => {
-    const userdata = req.authdata?.userdata;
+    const userdata = req.authdata ? req.authdata.userdata : undefined;
     const {user_id, payment_id} = req.params;
 
     if (!userdata || userdata._id != user_id) {

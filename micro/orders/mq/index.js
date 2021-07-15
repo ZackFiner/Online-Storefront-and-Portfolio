@@ -21,6 +21,8 @@ function handleOrders(msg) {
     console.log("message")
     console.log(msg_obj);
 
+    PrimaryChannel.ack(msg); // notify the queue that the message has been processed.
+
 }
 
 const startRecievePaymentNotif = async (consumeCB) => {

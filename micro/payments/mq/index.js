@@ -6,8 +6,12 @@ var PrimaryChannel = undefined;
 
 class MQSingleton {
     static async init() {
-        MQConn = await amqp.connect(mq_connection_string);
-        PrimaryChannel = await MQConn.createChannel();
+        try {
+            MQConn = await amqp.connect(mq_connection_string);
+            PrimaryChannel = await MQConn.createChannel();
+        } catch(err) {
+            console.log(err);
+        }
     }
 }
 
@@ -18,7 +22,7 @@ const sendMessageToOrders = async (json_msg) => {
     }
 
     await PrimaryChannel.assertQueue(orders_queue, {durable:true});
-    PrimaryChannel.sendToQueue(orders_queue, JSON.stringify(json_msg), {persistent: true});
+    PrimaryChannel.sendToQueue(orders_queue, Buffer.from(JSON.stringify(json_msg)), {persistent: true});
 } 
 
 

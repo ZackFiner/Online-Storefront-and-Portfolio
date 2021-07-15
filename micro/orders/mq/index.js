@@ -6,24 +6,33 @@ var PrimaryChannel = undefined;
 
 class MQSingleton {
     static async init() {
-        MQConn = await amqp.connect(mq_connection_string);
-        PrimaryChannel = await MQConn.createChannel();
+        try {
+            MQConn = await amqp.connect(mq_connection_string);
+            PrimaryChannel = await MQConn.createChannel();
+        } catch (err) {
+            console.log(err);
+        }
     }
 } // NOTE: these connections should be closed when not in use
 
 
 function handleOrders(msg) {
-    msg_obj = JSON.parse(msg);
-    
+    msg_obj = JSON.parse(msg.content);
+    console.log("message")
+    console.log(msg_obj);
+
 }
 
 const startRecievePaymentNotif = async (consumeCB) => {
     if (!MQConn) {
         await MQSingleton.init();
     }
-
+    
     await PrimaryChannel.assertQueue(orders_queue, {durable:true});
-    PrimaryChannel.consume(orders_queue, consumeCB); // consume will call the consumeCB we pass it EVERY TIME a message is added to the queue
+    if (!consumeCB)
+        PrimaryChannel.consume(orders_queue, handleOrders);
+    else
+        PrimaryChannel.consume(orders_queue, consumeCB) // consume will call the consumeCB we pass it EVERY TIME a message is added to the queue
 }
 
 

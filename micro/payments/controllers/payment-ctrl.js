@@ -208,5 +208,10 @@ const getPayment = async (req, res) => {
     }
 }
 
+const mqTest = async (req, res) => {
+    const body = req.body;
+    await sendMessageToOrders(body);
+    return res.status(200).json({});
+}
 
-module.exports = {postPayment, executePayment, getPayments, getPayment};
+module.exports = {postPayment, executePayment, getPayments, getPayment, mqTest};

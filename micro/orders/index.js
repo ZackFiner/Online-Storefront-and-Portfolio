@@ -16,12 +16,13 @@ app.use(cors({origin:'http://localhost:8000', credentials:true}));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-
 //mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use('/inventory/items', invRouter);
 app.use('/orders', orderRouter);
 
+require('./mq').startRecievePaymentNotif();
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
+
 
 

@@ -22,6 +22,8 @@ class MQSingleton {
         await PrimaryChannel.assertQueue(queue, queue_options);
         PrimaryChannel.consume(queue, consumerCB(PrimaryChannel));
     }
+
+    
 } // NOTE: these connections should be closed when not in use
 
 /*

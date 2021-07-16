@@ -220,47 +220,4 @@ getOrder = async (req, res) => {
     }
 }
 
-paymentListener = async (req, res) => {
-    const {body, authdata} = req;
-
-    if (!body || !authdata) {
-        return res.status(400).json({
-            success: false,
-            error: "Invalid request format"
-        });
-    }
-
-    const runner = getConnection().createQueryRunner();
-    await runner.connect();
-    await runner.startTransaction();
-
-    try {
-        const {payment_id, status} = body;
-        if (status != "APPROVED")
-            throw new Error("An issue occured while processing payment");
-
-        const result = await runner.manager.update(Order, {payment_id: payment_id, status: "PENDING"}, {
-            status: "PROCESSING"
-        });
-
-        if (!result.affected) {
-            throw new Error("No Orders with that payment_id were updated");
-        }
-
-        await runner.commitTransaction();
-        await runner.release();
-
-        return res.status(200);
-    } catch (err) {
-        console.log(err);
-        await runner.rollbackTransaction();
-        await runner.release();
-        return res.status(500)
-    }
-}
-
-const testMessaging = async () => {
-    
-}
-
-module.exports = {postOrder, getOrders, getOrder, paymentListener};
+module.exports = {postOrder, getOrders, getOrder};

@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use('/inventory/items', invRouter);
 app.use('/orders', orderRouter);
 
-require('./mq').startRecievePaymentNotif();
+require('./mq/consumers/payment-cons'); // start the payment consumer
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
 
 

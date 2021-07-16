@@ -13,9 +13,18 @@ class MQSingleton {
             console.log(err);
         }
     }
+
+    static async attachConsumer(consumerCB, queue, queue_options={durable:true}) {
+        if (MQConn) {
+            await MQSingleton.init();
+        }
+
+        await PrimaryChannel.assertQueue(queue, queue_options);
+        PrimaryChannel.consume(queue, consumerCB(PrimaryChannel));
+    }
 } // NOTE: these connections should be closed when not in use
 
-
+/*
 function handleOrders(msg) {
     msg_obj = JSON.parse(msg.content);
     console.log("message")
@@ -23,8 +32,8 @@ function handleOrders(msg) {
 
     PrimaryChannel.ack(msg); // notify the queue that the message has been processed.
 
-}
-
+}*/
+/*
 const startRecievePaymentNotif = async (consumeCB) => {
     if (!MQConn) {
         await MQSingleton.init();
@@ -35,7 +44,7 @@ const startRecievePaymentNotif = async (consumeCB) => {
         PrimaryChannel.consume(orders_queue, handleOrders);
     else
         PrimaryChannel.consume(orders_queue, consumeCB) // consume will call the consumeCB we pass it EVERY TIME a message is added to the queue
-}
+}*/
 
 
-module.exports = {MQSingleton, startRecievePaymentNotif};
+module.exports = {MQSingleton};

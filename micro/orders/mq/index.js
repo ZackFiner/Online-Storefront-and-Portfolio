@@ -15,7 +15,7 @@ class MQSingleton {
     }
 
     static async attachConsumer(consumerCB, queue, queue_options={durable:true}) {
-        if (MQConn) {
+        if (!MQConn) {
             await MQSingleton.init();
         }
 

@@ -1,18 +1,9 @@
-const {Item, ItemPrice} = require('../models');
+const {MQSingleton} = require('../');
 const {getConnection} = require('typeorm');
-// everything in here should be inter-service events
+const {Item, ItemPrice} = require('../../models');
 
-createInvItem = async (req, res) => {
-    const body = req.body;
-    if (!body) {
-        return res.status(400).json({
-            success: false,
-            error: "Invalid request format"
-        })
-    }
-
-
-    const {item_name, item_desc_id, qty, price} = body;
+function createInvItem(content) {
+    const {item_name, item_desc_id, qty, price} = content;
     const runner = getConnection().createQueryRunner();
 
     await runner.connect();
@@ -43,25 +34,19 @@ createInvItem = async (req, res) => {
         await runner.commitTransaction();
         await runner.release();
     } catch (err) {
-        console.log(err);
-
         await runner.rollbackTransaction(); // roll back the transaction
         await runner.release(); // and release it
         
-        return res.status(500).json({
+        return {
             success: false,
-            error: "An error occured while processing request"
-        });
+            error: err
+        };
     }
-
-    return res.status(201).json({
-        success: true,
-        data: {id: created_id}
-    });
+    return {success: true};
 }
 
-deleteInvItem = async (req, res) => {
-    const id = req.params.id;
+function deleteInvItem(content) {
+    const id = content.id;
     const runner = getConnection().createQueryRunner();
         
     await runner.connect();
@@ -74,10 +59,7 @@ deleteInvItem = async (req, res) => {
         if (!inv_result.affected) {
             await runner.rollbackTransaction();
             await runner.release();
-            return res.status(404).json({
-                success: false,
-                error: "No item with that ID exists"
-            });
+            return {success:true};
         }
 
         const price_result = await runner.manager
@@ -93,17 +75,32 @@ deleteInvItem = async (req, res) => {
         await runner.rollbackTransaction();
         await runner.release();
         
-        console.log(err);
-        
-        return res.status(500).json({
+        return {
             success: false,
-            error: "An error occured while processing request"
-        })
+            error: err
+        }
     }
 
-    return res.status(200).json({
-        success: true
-    });
+    return {success: true};
 }
 
-module.exports = {createInvItem, deleteInvItem};
+const invConsumer = (channel) => async (msg) => {
+    const obj = JSON.parse(msg.content);
+    const {action, content} = obj;
+    let result;
+    switch(action) {
+        case "CREATE":
+            result = createInvItem(content)
+            break;
+        case "DELETE":
+            result = deleteInvItem(content)
+            break;
+        default:
+            console.log(`Inventory Queue Error: Invalid Action ${action}`);
+    }
+    if (result.success)
+        channel.ack(msg);
+}
+
+MQSingleton.attachConsumer(invConsumer, "inventory_queue");
+

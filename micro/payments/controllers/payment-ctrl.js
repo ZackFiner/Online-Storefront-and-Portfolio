@@ -110,6 +110,7 @@ const executePayment = async (req, res) => {
         }
 
         const paypal_req_result = await PayPal.executePayment(payment.amount, payment_id, payer_id, '/', '/');
+        // the data in the result should be saved
         await sendMessageToOrders({payment_id: payment.id, status: payment.status}); // publish the payment's status to the orders queue
         
 

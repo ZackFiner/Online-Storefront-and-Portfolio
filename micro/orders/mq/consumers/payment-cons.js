@@ -1,7 +1,7 @@
 const {MQSingleton} = require('../');
 const {getConnection} = require('typeorm');
 const {Order} = require('../../models');
-
+const {orders_queue} = require('../../data/server-config');
 
 const consumePayment = (channel) => async (msg) => {
     const body = JSON.parse(msg.content);
@@ -37,4 +37,4 @@ const consumePayment = (channel) => async (msg) => {
     }
 }
 
-MQSingleton.attachConsumer(consumePayment, 'orders_queue');
+MQSingleton.attachConsumer(consumePayment, orders_queue);

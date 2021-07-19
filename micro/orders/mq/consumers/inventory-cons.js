@@ -1,6 +1,7 @@
 const {MQSingleton} = require('../');
 const {getConnection} = require('typeorm');
 const {Item, ItemPrice} = require('../../models');
+const {inventory_queue} = require('../../data/server-config');
 
 function createInvItem(content) {
     const {item_name, item_desc_id, qty, price} = content;
@@ -102,5 +103,5 @@ const invConsumer = (channel) => async (msg) => {
         channel.ack(msg);
 }
 
-MQSingleton.attachConsumer(invConsumer, "inventory_queue");
+MQSingleton.attachConsumer(invConsumer, inventory_queue);
 

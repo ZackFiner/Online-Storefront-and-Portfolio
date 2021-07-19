@@ -1,5 +1,6 @@
 const StoreItem = require('../models/item-model');
-
+const {inventory_queue} = require('../data/server-config');
+const {MQSingleton} = require('../mq');
 const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
 
 const ItemSanitizer = new ObjectSanitizer({
@@ -55,7 +56,16 @@ createItem = async (req, res) => {
     
     store_item
         .save()
-        .then(() => {
+        .then(async () => {
+            await MQSingleton.sendMessageToQueue(inventory_queue, {
+                action: "CREATE",
+                content: {
+                    item_name: store_item.name,
+                    item_desc_id: store_item._id,
+                    qty: 1,
+                    price: store_item.price
+                }
+            });
             return res.status(201).json({
                 success: true,
                 id: store_item._id,
@@ -139,7 +149,17 @@ updateItem = async (req, res) => {
 
     item
         .save()
-        .then(() => {
+        .then(async () => {
+            if (body.hasOwnProperty("name") || body.hasOwnProperty("price"))
+                await MQSingleton.sendMessageToQueue(inventory_queue, {
+                    action: "UPDATE",
+                    content: {
+                        item_name: item.name,
+                        price: item.price,
+                        item_desc_id: item._id
+                    }
+                });
+            
             return res.status(200).json({
                 success: true,
                 id: item._id,
@@ -174,7 +194,12 @@ deleteItem = async (req, res) => {
                 .status(404)
                 .json({success: false, error: `Item not found`});
         }
-
+        await MQSingleton.sendMessageToQueue(inventory_queue, {
+            action: "DELETE",
+            content: {
+                id: id
+            }
+        });
         return res.status(200).json({ success: true, data: item});
     })
 }

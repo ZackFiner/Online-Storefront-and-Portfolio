@@ -1,5 +1,6 @@
 const PostModel = require('../models/frontpage-post-model');
 const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
+const {prep_image_s3} = require('./helpers');
 
 const PostSanitizer = new ObjectSanitizer({
     header: (h) => {return sanitizeForMongo(sanitizeForTinyMCE(h));},
@@ -56,7 +57,7 @@ const createPost = (req, res) => {
 
 const uploadImage = (req, res) => {
     if (req.files['selectedImage'] && req.files['selectedImage'][0]) {
-        const value = req.files['selectedImage'][0];
+        const value = prep_image_s3(req.files['selectedImage'][0]);
         
         if (value) {
             const new_post = new PostModel({

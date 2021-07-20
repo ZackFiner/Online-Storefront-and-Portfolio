@@ -10,12 +10,15 @@ import styled from "styled-components"
 class PayPalGateway extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            item_id: props.item_id,
+        }
     }
 
     payment = (data, actions) => {
         return actions.request.post(`${order_api_str}users/${this.props.userdata._id}/orders`, {
             address: {},
-            item: {_id: ''},
+            item: {_id: this.state.item_id},
             payment: data,
         },  {withCredentials: true})
         .then(res => {
@@ -34,7 +37,7 @@ class PayPalGateway extends Component {
 
     render() {
 
-        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons payment={this.payment}/></PayPalScriptProvider>
+        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons payment={this.payment} onAuthorize={this.onAuthorize}/></PayPalScriptProvider>
     }
 }
 const mapStateToProps = state => {

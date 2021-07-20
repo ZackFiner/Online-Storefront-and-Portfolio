@@ -1,9 +1,10 @@
 import React, {Component} from "react"
 import ReactDOM from "react-dom"
 import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js"
+import {connect} from 'react-redux';
 
 import {paypal_clientid} from "../data"
-
+import { order_api_str, payment_api_Str } from "../api"
 import styled from "styled-components"
 
 class PayPalGateway extends Component {
@@ -11,21 +12,40 @@ class PayPalGateway extends Component {
         super(props);
     }
 
-    createOrder = (data, actions) => {
-        return actions.order.create({
-            purchase_units: [
-            ],
+    payment = (data, actions) => {
+        return actions.request.post(`${order_api_str}users/${this.props.userdata._id}/orders`, {
+            address: {},
+            item: {_id: ''},
+            payment: data,
+        },  {withCredentials: true})
+        .then(res => {
+            return res.id;
         });
     }
 
-    onApprove = (data, actions) => {
-        return actions.order.capture();
+    onAuthorize = (data, actions) => {
+        return actions.payment.post(`${payment_api_Str}users/${this.props.userdata._id}/payments/0/execute`, {
+            payment_id: data.paymentID,
+            payer_id: data.payerID
+        }).then((res) => {
+            return res;
+        })
     }
 
     render() {
 
-        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons/></PayPalScriptProvider>
+        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons payment={this.payment}/></PayPalScriptProvider>
     }
 }
+const mapStateToProps = state => {
+    const payload = state.accountRedu;
+    return {
+        userdata: payload.userdata,
+        loggedin: payload.loggedin,
+    };
+}
 
-export default PayPalGateway;
+export default connect(
+    mapStateToProps,
+    null
+)(PayPalGateway);

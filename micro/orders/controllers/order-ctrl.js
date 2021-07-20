@@ -4,8 +4,8 @@ const {payments} = require('../req');
 
 postOrder = async (req, res) => {
     const body = req.body;
-    //const userdata = req.userdata; // from jwt token
-    const userdata = {_id: req.params.user_id};
+    const userdata = req.userdata; // from jwt token
+    //const userdata = {_id: req.params.user_id};
     if (!body || !userdata) {
         return res.status(400).json({
             success: false,

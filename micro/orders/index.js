@@ -17,7 +17,7 @@ app.use(cookieParser());
 
 //mongoosedb.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.use('/orders', orderRouter);
+app.use('/', orderRouter);
 
 require('./mq/consumers/payment-cons'); // start the payment consumer
 require('./mq/consumers/inventory-cons'); // start the inventory consumer

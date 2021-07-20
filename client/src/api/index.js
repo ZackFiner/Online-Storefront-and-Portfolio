@@ -12,6 +12,17 @@ const post_api = axios.create({
     baseURL: 'http://localhost:3002/',
 });
 
+const payment_api = axios.create({
+    baseURL: 'http://localhost:3003/',
+})
+
+const orders_api = axios.create({
+    baseURL: 'http://localhost:3004/',
+});
+
+export const order_api_str = 'http://localhost:3004/';
+export const payment_api_Str = 'http://localhost:3003/';
+
 export const insertItem = payload => {
     /* Because this request is handled using the multer middleware
      * we need to repackage the contents into a multipart form
@@ -86,6 +97,9 @@ export const createPostImage = payload => {
     return post_api.post(`/media`, formData, config);
 }
 
+export const postOrder = (user_id, payload) => orders_api.post(`/users/${user_id}/orders`, payload, {withCredentials: true});
+export const approvePayment = (user_id, payment_id, payload) => payment_api.post(`/users/${user_id}/payments/${payment_id}/execute`, payload, {withCredentials: true});
+
 const apis = {
     insertItem,
     getAllItems,
@@ -111,6 +125,9 @@ const apis = {
     getPostById,
     getPosts,
     createPostImage,
+
+    postOrder,
+    approvePayment
 }
 
 export default apis;

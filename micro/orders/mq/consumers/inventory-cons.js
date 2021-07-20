@@ -6,7 +6,7 @@ const {inventory_queue} = require('../../data/server-config');
 async function createInvItem(content) {
     const {item_name, item_desc_id, qty, price} = content;
     const runner = getConnection().createQueryRunner();
-
+    const str_price = price["$numberDecimal"];
     await runner.connect();
     await runner.startTransaction();
     try {
@@ -25,7 +25,7 @@ async function createInvItem(content) {
         const price_result = await runner.manager
                                 .insert(ItemPrice, {
                                     id: created_id,
-                                    price: price,
+                                    price: str_price,
                                 });
         
         if (price_result.identifiers.length < 1) {
@@ -87,6 +87,7 @@ async function deleteInvItem(content) {
 
 async function updateItem(content) {
     const {item_name, price, item_desc_id} = content;
+    const str_price = price["$numberDecimal"];
     const runner = getConnection().createQueryRunner();
 
     await runner.connect();
@@ -111,7 +112,7 @@ async function updateItem(content) {
             {
                 id: inv_item.id,
             },{
-                price: price
+                price: str_price
             });
         
         await runner.commitTransaction();
@@ -134,13 +135,13 @@ const invConsumer = (channel) => async (msg) => {
     let result;
     switch(action) {
         case "CREATE":
-            result = createInvItem(content);
+            result = await createInvItem(content);
             break;
         case "DELETE":
-            result = deleteInvItem(content);
+            result = await deleteInvItem(content);
             break;
         case "UPDATE":
-            result = updateItem(content);
+            result = await updateItem(content);
             break;
         default:
             console.log(`Inventory Queue Error: Invalid Action ${action}`);

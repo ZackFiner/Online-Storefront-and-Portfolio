@@ -39,8 +39,9 @@ const imageStorage = S3Storage({
         callback(null, {fieldName: file.fieldname});
     },
     key: (req, file, callback) => {
-        callback(null, uuidv4());
-    }
+        callback(null, `${uuidv4()}.jpg`);
+    },
+    contentType: S3Storage.AUTO_CONTENT_TYPE
 });
 
 const imageParser = multer({ storage: imageStorage });

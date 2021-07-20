@@ -2,6 +2,7 @@ const StoreItem = require('../models/item-model');
 const {inventory_queue} = require('../data/server-config');
 const {MQSingleton} = require('../mq');
 const {sanitizeForTinyMCE, sanitizeForMongo, ObjectSanitizer} = require('./sanitization');
+const {prep_image_s3} = require('./helpers');
 
 const ItemSanitizer = new ObjectSanitizer({
     name: (name) => {return sanitizeForMongo(sanitizeForTinyMCE(name))},
@@ -38,7 +39,8 @@ createItem = async (req, res) => {
 
     if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
         try {
-            store_item.thumbnail_img = req.files['selectedThumbnail'][0];
+            console.log(req.files['selectedThumbnail'][0]);
+            store_item.thumbnail_img = prep_image_s3(req.files['selectedThumbnail'][0]);
         } catch (error) {
             console.error(error);
         }
@@ -47,7 +49,7 @@ createItem = async (req, res) => {
     if (req.files['galleryImages']) {
         for(let file of req.files['galleryImages']) {
             try {
-                store_item.gallery_images.push(file);
+                store_item.gallery_images.push(prep_image_s3(file));
             } catch (error) {
                 console.error(error);
             }
@@ -131,7 +133,7 @@ updateItem = async (req, res) => {
     // following this logic, the client should only send files when they are changing/adding them
     if (req.files['selectedThumbnail'] && req.files['selectedThumbnail'][0]) { //if the user specified a file
         try {
-            item.thumbnail_img = req.files['selectedThumbnail'][0];
+            item.thumbnail_img = prep_image_s3(req.files['selectedThumbnail'][0]);
         } catch (error) {
             console.error(error);
         }
@@ -140,7 +142,7 @@ updateItem = async (req, res) => {
     if (req.files['galleryImages']) {
         for(let file of req.files['galleryImages']) {
             try {
-                item.gallery_images.push(file);
+                item.gallery_images.push(prep_image_s3(file));
             } catch (error) {
                 console.error(error);
             }
@@ -179,7 +181,7 @@ updateItem = async (req, res) => {
 deleteItem = async (req, res) => {
     const id = sanitizeForMongo(req.params.id);
 
-    await StoreItem.findOneAndDelete({_id: id}, (err, item) => {
+    await StoreItem.findOneAndDelete({_id: id}, async (err, item) => {
         if (err) {
             console.log(err);
             return res.status(500).json(

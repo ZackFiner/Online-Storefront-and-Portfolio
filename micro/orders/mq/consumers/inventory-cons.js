@@ -97,7 +97,7 @@ async function updateItem(content) {
                             .createQueryBuilder()
                             .select("item")
                             .from(Item, "item")
-                            .where("item.item_desc_id = :desc_id", {desc_id = item_desc_id})
+                            .where("item.item_desc_id = :_item_desc_id", {_item_desc_id : item_desc_id})
                             .getOne();
         const inv_result = await runner.manager.update(Item,
             {

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "npm start --prefix client",
-    "micro-launch": "concurrently \"npm run --prefix micro/user index\" \"npm run --prefix micro/posts index\" \"npm run --prefix micro/store index\"  \"npm run client\""
+    "micro-launch": "concurrently \"npm run --prefix micro/user index\" \"npm run --prefix micro/posts index\" \"npm run --prefix micro/store index\" \"npm run --prefix micro/payments index\" \"npm run --prefix micro/orders index\" \"npm run client\""
   },
   "repository": {
     "type": "git",

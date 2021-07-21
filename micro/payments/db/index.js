@@ -5,7 +5,7 @@ const dbcon = typeorm.createConnection({
     name: "default",
     ...mysql_connection_creds, 
     entities: [
-        require("../model/PaymentEnt")
+        require("../model/Payment")
     ],
 });
 

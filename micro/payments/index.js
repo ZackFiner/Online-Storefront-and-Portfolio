@@ -5,6 +5,7 @@ const cors = require('cors');
 
 // because this application will be handling financial information, it should use a SQL database layer (for transactions).
 //const {mongoosedb} = require('./db');
+require('./db');
 const paymentRouter = require('./routes/payment-router');
 const app = express();
 const apiPort = 3003;

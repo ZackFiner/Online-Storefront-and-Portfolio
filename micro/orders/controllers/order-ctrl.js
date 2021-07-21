@@ -4,7 +4,7 @@ const {payments} = require('../req');
 
 postOrder = async (req, res) => {
     const body = req.body;
-    const userdata = req.userdata; // from jwt token
+    const userdata = req.authdata ? req.authdata.userdata : undefined; // from jwt token
     //const userdata = {_id: req.params.user_id};
     if (!body || !userdata) {
         return res.status(400).json({
@@ -25,11 +25,11 @@ postOrder = async (req, res) => {
     let order_id = undefined;
 
     const runner = getConnection().createQueryRunner();
-    let address_id = undefined;
-    
+    let address_id = undefined;    
+    let inventory_record = undefined;
+
     await runner.connect();
     await runner.startTransaction();
-
     try {
         if (address.id) {
             const r_address = await runner.manager.createQueryBuilder()
@@ -57,7 +57,7 @@ postOrder = async (req, res) => {
             address_id = result.identifiers[0].id;
         }
 
-        const inventory_record = await runner.manager
+        inventory_record = await runner.manager
                 .createQueryBuilder()
                 .select("item")
                 .from(Item, "item")
@@ -107,7 +107,7 @@ postOrder = async (req, res) => {
         });
     }
     // send event to payments API with the price of the item and the payment info
-    payments.postPayment({...payment, item_price: inventory_record.price}, {userdata:userdata})
+    payments.postPayment({...payment, item_price: inventory_record.price.price}, {userdata:userdata})
     .then(async (value) => {
         const {id, paypal_payment_id} = value.data.data;
         await runner.manager.update(Order, order_id, {

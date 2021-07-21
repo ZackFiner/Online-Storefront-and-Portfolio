@@ -6,8 +6,9 @@ const withAuthHeaderMiddleware = (secret, verify_options) => (req, res, next) =>
     if (!header) {
         res.status(401).send('Unauthorized: No authorization header was provided');
     } else {
-        const {token_type, token_credentials} = header.split(" ");
+        const [token_type, token_credentials] = header.split(" ");
         const token = token_credentials;
+        
         if (token_type != "Bearer") { // only accept bearer tokens
             res.status(401).send('Unauthorized: invalid token type');
         }

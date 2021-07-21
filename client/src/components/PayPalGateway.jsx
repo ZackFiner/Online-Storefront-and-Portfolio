@@ -4,9 +4,8 @@ import {PayPalScriptProvider, PayPalButtons} from "@paypal/react-paypal-js"
 import {connect} from 'react-redux';
 
 import {paypal_clientid} from "../data"
-import { order_api_str, payment_api_Str } from "../api"
+import api from "../api"
 import styled from "styled-components"
-
 class PayPalGateway extends Component {
     constructor(props) {
         super(props);
@@ -15,19 +14,25 @@ class PayPalGateway extends Component {
         }
     }
 
-    payment = (data, actions) => {
-        return actions.request.post(`${order_api_str}users/${this.props.userdata._id}/orders`, {
-            address: {},
+    createOrder = (data, actions) => {
+        return api.postOrder(this.props.userdata._id, {
+            address: {
+                user_id: this.props.userdata._id,
+                street_address: "9999 Street Ave.",
+                city: "City",
+                state_code: "CA",
+                zip: 44444
+            },
             item: {_id: this.state.item_id},
             payment: data,
-        },  {withCredentials: true})
+        })
         .then(res => {
-            return res.id;
+            return res.data.data.paypal_payment_id;
         });
     }
 
-    onAuthorize = (data, actions) => {
-        return actions.payment.post(`${payment_api_Str}users/${this.props.userdata._id}/payments/0/execute`, {
+    onApprove = (data, actions) => {
+        return api.approvePayment(this.props.userdata._id, data.paymentID, {
             payment_id: data.paymentID,
             payer_id: data.payerID
         }).then((res) => {
@@ -37,7 +42,7 @@ class PayPalGateway extends Component {
 
     render() {
 
-        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons payment={this.payment} onAuthorize={this.onAuthorize}/></PayPalScriptProvider>
+        return <PayPalScriptProvider options={{"client-id": paypal_clientid}}><PayPalButtons createOrder={this.createOrder} onApprove={this.onApprove}/></PayPalScriptProvider>
     }
 }
 const mapStateToProps = state => {

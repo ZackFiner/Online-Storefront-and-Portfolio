@@ -46,13 +46,21 @@ const postPayment = async (req, res) => {
     
     PayPal.PayPalSingleton.createOrder(item_price, order_info, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(async (value) => {
+        const result = await runner.manager.update(Payment, payment_id, {
+            paypal_order_id: value.data.id
+        })
+
+        if (!result.affected)
+            throw new Error("Could not capture order id")
+
         await runner.commitTransaction();
         await runner.release();
+
         return res.status(200).json({
             success: true,
             data: {
                 id: payment_id,
-                paypal_payment_id: value.data.id
+                paypal_order_id: value.data.id
             }
         });
     })
@@ -69,6 +77,7 @@ const postPayment = async (req, res) => {
     })
 }
 
+// TODO: we don't care about payer id or 
 const executePayment = async (req, res) => {
     const {body, authdata} = req;
     
@@ -110,7 +119,7 @@ const executePayment = async (req, res) => {
             throw new Error("Could not update payment record");
         }
 
-        const paypal_req_result = await PayPal.PayPalSingleton.executePayment(payment.amount, payment_id, payer_id, '/', '/');
+        const paypal_req_result = await PayPal.PayPalSingleton.authorizeOrder(payment.amount, payment_id, payer_id, '/', '/');
         // the data in the result should be saved
         await sendMessageToOrders({payment_id: payment.id, status: payment.status}); // publish the payment's status to the orders queue
         

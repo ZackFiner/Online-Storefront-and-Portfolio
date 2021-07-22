@@ -111,7 +111,7 @@ postOrder = async (req, res) => {
         items: [{name: inventory_record.item_name, quantity: 1, price: inventory_record.price.price}]
     }}, {userdata:userdata})
     .then(async (value) => {
-        const {id, paypal_payment_id} = value.data.data;
+        const {id, paypal_order_id} = value.data.data;
         await runner.manager.update(Order, order_id, {
             payment_id: id
         });
@@ -122,7 +122,7 @@ postOrder = async (req, res) => {
             success: true,
             data: {
                 id: order_id,
-                paypal_payment_id: paypal_payment_id
+                paypal_order_id: paypal_order_id
             }
         });
 

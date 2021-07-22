@@ -27,7 +27,7 @@ class PayPalGateway extends Component {
             payment: data,
         })
         .then(res => {
-            return res.data.data.paypal_payment_id;
+            return res.data.data.paypal_order_id;
         });
     }
 

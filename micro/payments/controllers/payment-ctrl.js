@@ -43,7 +43,7 @@ const postPayment = async (req, res) => {
         });
     }
 
-    PayPal.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
+    PayPal.PayPalSingleton.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(async (value) => {
         await runner.commitTransaction();
         await runner.release();
@@ -60,7 +60,7 @@ const postPayment = async (req, res) => {
         // notify the user that an issue has occured creating the payment
         await runner.rollbackTransaction();
         await runner.release();
-        console.log(error);
+        console.log(error.response.data.details);
         return res.status(500).json({
             success: false,
             error: "An error occured while processing request"
@@ -109,7 +109,7 @@ const executePayment = async (req, res) => {
             throw new Error("Could not update payment record");
         }
 
-        const paypal_req_result = await PayPal.executePayment(payment.amount, payment_id, payer_id, '/', '/');
+        const paypal_req_result = await PayPal.PayPalSingleton.executePayment(payment.amount, payment_id, payer_id, '/', '/');
         // the data in the result should be saved
         await sendMessageToOrders({payment_id: payment.id, status: payment.status}); // publish the payment's status to the orders queue
         

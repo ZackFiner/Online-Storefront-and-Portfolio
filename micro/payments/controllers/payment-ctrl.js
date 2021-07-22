@@ -46,7 +46,6 @@ const postPayment = async (req, res) => {
     
     PayPal.PayPalSingleton.createOrder(item_price, order_info, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(async (value) => {
-        console.log(value);
         await runner.commitTransaction();
         await runner.release();
         return res.status(200).json({
@@ -62,7 +61,7 @@ const postPayment = async (req, res) => {
         // notify the user that an issue has occured creating the payment
         await runner.rollbackTransaction();
         await runner.release();
-        console.log(error.response.data.details);
+        console.log(error);
         return res.status(500).json({
             success: false,
             error: "An error occured while processing request"

@@ -83,10 +83,10 @@ postOrder = async (req, res) => {
                 message: "Item is out of stock"
             });
         }
-
+/*
         await runner.manager.update(Item, inventory_record.id, { // update inventory records to reflect that this item has been sold
             qty: inventory_record.qty - 1
-        });
+        });*/
 
         
         const result = await runner.manager.insert(Order, {
@@ -107,7 +107,9 @@ postOrder = async (req, res) => {
         });
     }
     // send event to payments API with the price of the item and the payment info
-    payments.postPayment({...payment, item_price: inventory_record.price.price}, {userdata:userdata})
+    payments.postPayment({...payment, item_price: inventory_record.price.price, order_info:{
+        items: [{name: inventory_record.item_name, quantity: 1, price: inventory_record.price.price}]
+    }}, {userdata:userdata})
     .then(async (value) => {
         const {id, paypal_payment_id} = value.data.data;
         await runner.manager.update(Order, order_id, {

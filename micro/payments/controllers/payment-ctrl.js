@@ -18,7 +18,7 @@ const postPayment = async (req, res) => {
     }
 
     // ensure the data sent is valid and ready for transmission to paypal
-    const {item_price} = body;
+    const {item_price, order_info} = body;
     const runner = getConnection().createQueryRunner();
     await runner.connect();
     await runner.startTransaction();
@@ -43,8 +43,10 @@ const postPayment = async (req, res) => {
         });
     }
 
-    PayPal.PayPalSingleton.createPayment(item_price, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
+    
+    PayPal.PayPalSingleton.createOrder(item_price, order_info, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(async (value) => {
+        console.log(value);
         await runner.commitTransaction();
         await runner.release();
         return res.status(200).json({

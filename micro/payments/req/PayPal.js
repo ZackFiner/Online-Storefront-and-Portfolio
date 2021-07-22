@@ -1,6 +1,6 @@
 const axios = require('axios');
 const {paypal_api, paypal_clientid, paypal_secret} = require('../data/server-config');
-
+const {v4: uuidv4} = require('uuid');
 const paypal_api_ax = axios.create({
     baseURL: paypal_api
 });
@@ -38,7 +38,7 @@ class PayPalSingleton {
         
     }
 
-    static async createPayment(amount, redirect_url, cancel_url) {
+    static async createPayment(amount, order_info, redirect_url, cancel_url) {
         if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
             await this.initAuth();
         
@@ -52,10 +52,20 @@ class PayPalSingleton {
                     amount: {
                         total: amount,
                         currency: 'USD'
+                    },
+                    item_list: {
+                        items: [
+                            {
+                                quantity: order_info.items[0].quantity,
+                                name: order_info.items[0].name,
+                                price: order_info.items[0].price,
+                                currency: 'USD'
+                            }
+                        ]
                     }
                 }
             ],
-            redirect_url: {
+            redirect_urls: {
                 return_url: redirect_url,
                 cancel_url: cancel_url
             }
@@ -66,7 +76,72 @@ class PayPalSingleton {
             }
         })
     }
+
+    static async createOrder(amount, order_info, redirect_url, cancel_url) {
+        if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
+            await this.initAuth();
+        
+        return paypal_api_ax.post('/v2/checkout/orders', {
+            intent: 'CAPTURE',
+
+            purchase_units: [
+                {
+                    amount: {
+                        value: amount,
+                        currency_code: 'USD',
+                        breakdown: {
+                            item_total: {
+                                currency_code: "USD",
+                                value: amount,
+                            },
+                            shipping: {
+                                currency_code: "USD",
+                                value: 0, // CHANGE THIS
+                            },
+                            tax_total: {
+                                currency_code: "USD",
+                                value: 0 // change this
+                            },
+                            discount: {
+                                currency_code: "USD",
+                                value: 0
+                            }
+                        }
+                    },
+                    items: [
+                        {
+                            quantity: order_info.items[0].quantity,
+                            name: order_info.items[0].name,
+                            unit_amount: {
+                                value: order_info.items[0].price,
+                                currency_code: 'USD'
+                            }
+                        }
+                    ]
+                }
+            ],
+        }, {
+            headers: {
+                Authorization: `Bearer ${api_auth.data.access_token}`,
+                'content-type': 'application/json'
+            }
+        })
+    }
     
+    static async authorizeOrder(amount, payment_id, payer_id, redirect_url, cancel_url) {
+        if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
+            await this.initAuth();
+
+        return paypal_api_ax.post(`/v1/payments/payment/${payment_id}/authorize`, {
+        }, {
+            headers: {
+                Authorization: `Bearer ${api_auth.data.access_token}`,
+                "PayPal-Request-Id": uuidv4()
+            }
+        })
+    }
+
+
     static async executePayment(amount, payment_id, payer_id, redirect_url, cancel_url) {
         if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
             await this.initAuth();

@@ -37,7 +37,7 @@ module.exports = new EntitySchema({
         },
         address_id: {
             type: "int",
-            nullable: true,
+            nullable: false,
         },
         status: {
             type: "enum",

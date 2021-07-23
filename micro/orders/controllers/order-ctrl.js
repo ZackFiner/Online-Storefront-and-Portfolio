@@ -13,7 +13,7 @@ postOrder = async (req, res) => {
         })
     }
 
-    const {address, payment, item} = body;
+    const {/*address, */payment, item} = body;
     
     if (!payment || !item)
         return res.status(400).json({
@@ -31,7 +31,7 @@ postOrder = async (req, res) => {
     await runner.connect();
     await runner.startTransaction();
     try {
-        if (address.id) {
+        /*if (address.id) { // don't require address when setting up the order, we'll prompt the customer for it later.
             const r_address = await runner.manager.createQueryBuilder()
                                 .select("address")
                                 .from(Address, "address")
@@ -55,7 +55,7 @@ postOrder = async (req, res) => {
                 zip : address.zip,
             });
             address_id = result.identifiers[0].id;
-        }
+        }*/
 
         inventory_record = await runner.manager
                 .createQueryBuilder()
@@ -92,7 +92,7 @@ postOrder = async (req, res) => {
         const result = await runner.manager.insert(Order, {
             user_id : userdata._id,
             item_id : inventory_record.id,
-            address_id : address_id,
+            /*address_id : address_id,*/
             status : "PENDING",
         });
 

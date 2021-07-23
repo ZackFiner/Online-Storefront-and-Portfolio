@@ -16,13 +16,13 @@ class PayPalGateway extends Component {
 
     createOrder = (data, actions) => {
         return api.postOrder(this.props.userdata._id, {
-            address: {
+            /*address: {
                 user_id: this.props.userdata._id,
                 street_address: "9999 Street Ave.",
                 city: "City",
                 state_code: "CA",
                 zip: 44444
-            },
+            },*/
             item: {_id: this.state.item_id},
             payment: data,
         })
@@ -32,7 +32,7 @@ class PayPalGateway extends Component {
     }
 
     onApprove = (data, actions) => {
-        return api.approvePayment(this.props.userdata._id, data.paymentID, {
+        return api.approvePayment(this.props.userdata._id, data.orderID, {
             order_id: data.orderID,
             payer_id: data.payerID
         }).then((res) => {

@@ -144,7 +144,7 @@ const invConsumer = (channel) => async (msg) => {
             result = await updateItem(content);
             break;
         default:
-            console.log(`Inventory Queue Error: Invalid Action ${action}`);
+            result = {success: false, error:`Inventory Queue Error: Invalid Action ${action}`};
     }
     if (result.success)
         channel.ack(msg);

@@ -42,7 +42,6 @@ const postPayment = async (req, res) => {
             error: "An error occured while processing request"
         });
     }
-
     
     PayPal.PayPalSingleton.createOrder(item_price, order_info, '/', '/') // attempt to transmit the data to paypal before confirming the transaction
     .then(async (value) => {

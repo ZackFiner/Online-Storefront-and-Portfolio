@@ -76,7 +76,7 @@ const postPayment = async (req, res) => {
     })
 }
 
-// TODO: we don't care about payer id or 
+
 const executePayment = async (req, res) => {
     const {body, authdata} = req;
     
@@ -91,7 +91,7 @@ const executePayment = async (req, res) => {
         });
     }
 
-    const {payment_id, payer_id} = body;
+    const {order_id, payer_id} = body;
     
     const runner = getConnection().createQueryRunner();
     await runner.connect();
@@ -101,24 +101,29 @@ const executePayment = async (req, res) => {
         const payment = await runner.manager.createQueryBuilder()
                                     .select('payment')
                                     .from(Payment, 'payment')
-                                    .where('paypal_payment_id = :_payment_id', {_payment_id: payment_id})
+                                    .where('paypal_order_id = :_order_id', {_order_id: order_id})
                                     .getOne();
         
         if (!payment) {
             throw new Error("No Payment with the specified id was found");
         }
 
+        const paypal_req_result = await PayPal.PayPalSingleton.authorizeOrder(order_id, payer_id);
+        if (paypal_req_result.data.status != 'COMPLETED')
+        {
+            throw new Error("Failed to authorize payment")
+        }
+        const authorization_id = paypal_req_result.data.payments.authorizations[0].id;
+        
         const update_result = await runner.manager.update(Payment, payment.id, {
-            paypal_payment_id: payment_id,
-            paypal_payer_id: payer_id,
+            paypal_authorization_id: authorization_id,
             status: "APPROVED"
         });
 
         if (!update_result.affected) {
-            throw new Error("Could not update payment record");
+            throw new Error(`Payment ${payment.id} has been approved and is ready for capture, but could not be recorded in local db`);
         }
 
-        const paypal_req_result = await PayPal.PayPalSingleton.authorizeOrder(payment.amount, payment_id, payer_id, '/', '/');
         // the data in the result should be saved
         await sendMessageToOrders({payment_id: payment.id, status: payment.status}); // publish the payment's status to the orders queue
         

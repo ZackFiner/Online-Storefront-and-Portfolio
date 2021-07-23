@@ -38,45 +38,6 @@ class PayPalSingleton {
         
     }
 
-    static async createPayment(amount, order_info, redirect_url, cancel_url) {
-        if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
-            await this.initAuth();
-        
-        return paypal_api_ax.post('/v1/payments/payment', {
-            intent: 'sale',
-            payer: {
-                payment_method: 'paypal',
-            },
-            transactions: [
-                {
-                    amount: {
-                        total: amount,
-                        currency: 'USD'
-                    },
-                    item_list: {
-                        items: [
-                            {
-                                quantity: order_info.items[0].quantity,
-                                name: order_info.items[0].name,
-                                price: order_info.items[0].price,
-                                currency: 'USD'
-                            }
-                        ]
-                    }
-                }
-            ],
-            redirect_urls: {
-                return_url: redirect_url,
-                cancel_url: cancel_url
-            }
-        }, {
-            headers: {
-                Authorization: `Bearer ${api_auth.data.access_token}`,
-                'content-type': 'application/json'
-            }
-        })
-    }
-
     static async createOrder(amount, order_info, redirect_url, cancel_url) {
         if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
             await this.initAuth();
@@ -128,11 +89,11 @@ class PayPalSingleton {
         })
     }
     
-    static async authorizeOrder(amount, payment_id, payer_id, redirect_url, cancel_url) {
+    static async authorizeOrder(order_id, payer_id) {
         if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
             await this.initAuth();
 
-        return paypal_api_ax.post(`/v1/payments/payment/${payment_id}/authorize`, {
+        return paypal_api_ax.post(`/v2/checkout/orders/${order_id}/authorize`, {
         }, {
             headers: {
                 Authorization: `Bearer ${api_auth.data.access_token}`,
@@ -140,81 +101,6 @@ class PayPalSingleton {
             }
         })
     }
-
-
-    static async executePayment(amount, payment_id, payer_id, redirect_url, cancel_url) {
-        if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
-            await this.initAuth();
-
-        return paypal_api_ax.post(`/v1/payments/payment/${payment_id}/execute`, {
-            payer_id: payer_id,
-            transactions: [
-                {
-                    amount: {
-                        total: amount,
-                        currency: 'USD'
-                    }
-                }
-            ],
-            redirect_url: {
-                return_url: redirect_url,
-                cancel_url: cancel_url
-            }
-        }, {
-            headers: {
-                Authorization: `Bearer ${api_auth.data.access_token}`
-            }
-        })
-    }
-
 }
 
-const createPayment = (amount, redirect_url, cancel_url) => {
-    return paypal_api_ax.post('/v1/payments/payment', {
-        intent: 'sale',
-        payer: {
-            payment_method: 'paypal',
-        },
-        transactions: [
-            {
-                amount: {
-                    total: amount,
-                    currency: 'USD'
-                }
-            }
-        ],
-        redirect_url: {
-            return_url: redirect_url,
-            cancel_url: cancel_url
-        }
-    }, {
-        headers: {
-            //Authorization: `Bearer ${paypal_access_token.access_token}`
-            Authorization: `Basic ${paypal_clientid}:${paypal_secret}`
-        }
-    })
-}
-
-const executePayment = (amount, payment_id, payer_id, redirect_url, cancel_url) => {
-    return paypal_api_ax.post(`/v1/payments/payment/${payment_id}/execute`, {
-        payer_id: payer_id,
-        transactions: [
-            {
-                amount: {
-                    total: amount,
-                    currency: 'USD'
-                }
-            }
-        ],
-        redirect_url: {
-            return_url: redirect_url,
-            cancel_url: cancel_url
-        }
-    }, {
-        headers: {
-            Authorization: `Basic ${paypal_clientid}:${paypal_secret}`
-        }
-    })
-}
-
-module.exports = {PayPalSingleton, createPayment, executePayment}
+module.exports = {PayPalSingleton}

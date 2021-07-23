@@ -33,7 +33,7 @@ class PayPalGateway extends Component {
 
     onApprove = (data, actions) => {
         return api.approvePayment(this.props.userdata._id, data.paymentID, {
-            payment_id: data.paymentID,
+            order_id: data.orderID,
             payer_id: data.payerID
         }).then((res) => {
             return res;

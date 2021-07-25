@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import {connect} from "react-redux";
 import api from '../api';
+import { StyledComponents } from "../components";
 
 const Wrapper = styled.div`
 `;
@@ -27,7 +28,6 @@ const FormInputField = (props) => (<FormGroup>
     <FormInput {...props.input}/>
 </FormGroup>)
 
-//TODO
 class Checkout extends Component {
     constructor(props) {
         super(props);
@@ -45,9 +45,14 @@ class Checkout extends Component {
         });
     } 
 
+    submit = async (event) => {
+        event.preventDefault();
+        // TODO: make sure data is valid, and proceed to paypal checkout
+    }
+
     render() {
         return <Wrapper>
-            <FormWrapper>
+            <FormWrapper onSubmit={this.submit}>
                 <FormInputField {...{
                     label_text: "Street Address & Apt. Number",
                     input: {
@@ -79,6 +84,17 @@ class Checkout extends Component {
                         onChnage: this.updateField
                     }
                 }}/>
+                <FormInputField {...{
+                    label_text: "Zip Code",
+                    input: {
+                        id: "inp-checkout-zip-code",
+                        type: "text",
+                        placeholder: "Ex: 45017",
+                        name: "zip",
+                        onChnage: this.updateField
+                    }
+                }}/>
+                <StyledComponents.Submit value="Next"/>
             </FormWrapper>
         </Wrapper>;
     }

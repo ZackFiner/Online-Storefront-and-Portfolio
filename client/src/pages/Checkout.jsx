@@ -24,6 +24,22 @@ const FormInput = styled.input.attrs((props) => ({
 }))`
 `
 
+const CartList = styled.ul.attrs(props => ({
+}))`
+
+list-style-type: none;
+margin: 30px;
+& > li {
+    font-size: 24px;
+}
+
+& .cart-list-details {
+    font-size: 12px;
+    list-style-type: none;
+}
+`
+const CartListItem = props => (<li class="cart-list-item">{props.item.name}<ul class="cart-list-details"><li class="cart-list-detail">Price: ${props.item.price}</li><li class="cart-list-detail">Qty: {props.item.qty}</li></ul></li>)
+
 const FormInputField = (props) => (<FormGroup>
     <label for={props.input.id}>{props.label_text}</label>
     <FormInput {...props.input}/>
@@ -33,6 +49,7 @@ class Checkout extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            cart_items: [{name: "Test Item", price: "1.25", qty: 1}],
             street_address: undefined,
             city: undefined,
             state_code: undefined,
@@ -51,8 +68,16 @@ class Checkout extends Component {
         // TODO: make sure data is valid, and proceed to paypal checkout
     }
 
+    componentDidMount = async () => {
+        //
+    }
+
     render() {
+        const {cart_items} = this.state;
+        const CartBreakout = cart_items.map(item => <CartListItem item={item}></CartListItem>)
+
         return <Wrapper>
+            <CartList>{CartBreakout}</CartList>
             <FormWrapper onSubmit={this.submit}>
                 <FormInputField {...{
                     label_text: "Street Address & Apt. Number",
@@ -95,7 +120,7 @@ class Checkout extends Component {
                         onChnage: this.updateField
                     }
                 }}/>
-                <StyledComponents.Submit value="Next"/>
+                <StyledComponents.Submit value="Finish Checkout with Paypal"/>
             </FormWrapper>
         </Wrapper>;
     }

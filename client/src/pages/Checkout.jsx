@@ -38,7 +38,13 @@ margin: 30px;
     list-style-type: none;
 }
 `
-const CartListItem = props => (<li class="cart-list-item">{props.item.name}<ul class="cart-list-details"><li class="cart-list-detail">Price: ${props.item.price}</li><li class="cart-list-detail">Qty: {props.item.qty}</li></ul></li>)
+const CartListItem = props => (<li class="cart-list-item">
+        {props.item.name}
+        <ul class="cart-list-details">
+            <li class="cart-list-detail">Price: ${props.item.price}</li>
+            <li class="cart-list-detail">Qty: {props.item.qty}</li>
+        </ul>
+    </li>)
 
 const FormInputField = (props) => (<FormGroup>
     <label for={props.input.id}>{props.label_text}</label>

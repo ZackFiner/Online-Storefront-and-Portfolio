@@ -10,6 +10,7 @@ const Wrapper = styled.div`
 const FormWrapper = styled.form.attrs((props) => ({
     ...props,
 }))`
+    margin: 30px;
 `
 
 const FormGroup = styled.div.attrs((props) => ({

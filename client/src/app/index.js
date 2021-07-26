@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import {AuthorizedRoute} from '../components';
 import { NavBar } from '../components';
 import {ActivitySensor, LogoutUser} from '../authentication';
-import {BlogPage, PostEditor, ImagePost, LandingPage, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
+import {BlogPage, Checkout, PostEditor, ImagePost, LandingPage, ItemUpdate, ItemList, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage} from '../pages'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
@@ -37,6 +37,7 @@ function App() {
         <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['ROLE_ADMIN']} />
         <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['ROLE_ADMIN']} />
         <AuthorizedRoute path="/frontpage/media/post" exact component={ImagePost} roles={['ROLE_ADMIN']} />
+        <AuthorizedRoute path="/storefront/checkout" exact component={Checkout} roles={['ROLE_USER']} />
         <Route path="/" exact component={LandingPage}/>
       </Switch>
     </Router>

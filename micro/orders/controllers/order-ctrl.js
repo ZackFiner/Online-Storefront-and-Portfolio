@@ -75,7 +75,7 @@ postOrder = async (req, res) => {
             });
         }
 
-        if (inventory_records.length() < item_ids.length()) {
+        if (inventory_records.length < item_ids.length) {
             await runner.rollbackTransaction();
             await runner.release();
             return res.status(200).json({

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import {connect} from "react-redux";
 import api from '../api';
-import { StyledComponents, OrderBreakout } from "../components";
+import { StyledComponents, OrderBreakout, PayPalGateway } from "../components";
 
 const Wrapper = styled.div`
 `;

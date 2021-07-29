@@ -13,15 +13,15 @@ postOrder = async (req, res) => {
         })
     }
 
-    const {address, payment, item} = body;
+    const {address, payment, items} = body;
     
-    if (!payment || !item)
+    if (!payment || !items)
         return res.status(400).json({
             success: false,
             error: "Body was missing crucial information"
         });
 
-    const {_id} = item;
+    const item_ids = items.map(item => {return item._id});
     let order_id = undefined;
 
     const runner = getConnection().createQueryRunner();
@@ -57,13 +57,13 @@ postOrder = async (req, res) => {
             address_id = result.identifiers[0].id;
         }
 
-        inventory_record = await runner.manager
+        inventory_records = await runner.manager
                 .createQueryBuilder()
                 .select("item")
                 .from(Item, "item")
                 .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
-                .where("item.item_desc_id = :desc_id", {desc_id: _id})
-                .getOne();
+                .where("item.item_desc_id IN (:...desc_id) AND item.qty > 0", {desc_id: item_ids})
+                .getMany();
 
         if (!inventory_record) {
             // terminate the transaction, this item doesn't exist
@@ -75,25 +75,30 @@ postOrder = async (req, res) => {
             });
         }
 
-        if (inventory_record.qty < 1) {
+        if (inventory_records.length() < item_ids.length()) {
             await runner.rollbackTransaction();
             await runner.release();
             return res.status(200).json({
                 success: false,
-                message: "Item is out of stock"
+                message: "Not all items are in stock"
             });
         }
 /*
-        await runner.manager.update(Item, inventory_record.id, { // update inventory records to reflect that this item has been sold
-            qty: inventory_record.qty - 1
-        });*/
-
+        await runner.manager.update(Item, 
+            inventory_records.map(item=>{
+                return item.id;
+            }), 
+            inventory_records.map(item=>{return {
+                qty: item.qty-1
+            };})
+        )*/
         
         const result = await runner.manager.insert(Order, {
             user_id : userdata._id,
             item_id : inventory_record.id,
             address_id : address_id,
             status : "PENDING",
+            items : inventory_records
         });
 
         order_id = result.identifiers[0].id;
@@ -107,8 +112,10 @@ postOrder = async (req, res) => {
         });
     }
     // send event to payments API with the price of the item and the payment info
-    payments.postPayment({...payment, item_price: inventory_record.price.price, order_info:{
-        items: [{name: inventory_record.item_name, quantity: 1, price: inventory_record.price.price}]
+    payments.postPayment({...payment, 
+        item_price: inventory_records.reduce((acc, cur) => {return acc + cur.price.price}), 
+        order_info:{
+            items: inventory_records.map(item => {return {name: item.item_name, quantity: 1, price: item.price.price}})
     }}, {userdata:userdata})
     .then(async (value) => {
         const {id, paypal_order_id} = value.data.data;

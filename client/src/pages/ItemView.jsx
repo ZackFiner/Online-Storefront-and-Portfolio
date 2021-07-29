@@ -107,7 +107,6 @@ class ItemView extends Component {
                 <ItemDetailsArea>
                     <h3>Price: {price_text}</h3>
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
-                    <PayPalGateway item_id={id}/>
                 </ItemDetailsArea>
                 </RowWrapper>
                 {reviewArea}

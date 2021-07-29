@@ -32,5 +32,11 @@ module.exports = new EntitySchema({
         qty: {
             type: "int"
         }
+    },
+    relations: {
+        orders: {
+            type: 'many-to-many',
+            target: 'Order',
+        }
     }
 })

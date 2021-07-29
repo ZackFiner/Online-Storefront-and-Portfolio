@@ -1,14 +1,14 @@
 const {EntitySchema} = require("typeorm");
 
 class Order {
-    constructor(id, payment_id, user_id, item_id, address_id, status, timestamp) {
+    constructor(id, payment_id, user_id, address_id, status, timestamp, items) {
         this.id = id;
         this.payment_id = payment_id;
         this.user_id = user_id;
-        this.item_id = item_id;
         this.address_id = address_id;
         this.status = status;
         this.timestamp = timestamp;
+        this.items = items;
     }
 }
 
@@ -31,10 +31,6 @@ module.exports = new EntitySchema({
             length: 24,
             nullable: false
         },
-        item_id: {
-            type: "int",
-            nullable: false,
-        },
         address_id: {
             type: "int",
             nullable: false,
@@ -52,6 +48,13 @@ module.exports = new EntitySchema({
             type: "datetime",
             default: () => "CURRENT_TIMESTAMP",
             nullable: false,
+        }
+    },
+    relations: {
+        items: {
+            type: 'many-to-many',
+            target: 'Item',
+            joinTable: true,
         }
     }
 })

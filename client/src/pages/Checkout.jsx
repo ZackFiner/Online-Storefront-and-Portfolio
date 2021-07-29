@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import {connect} from "react-redux";
 import api from '../api';
-import { StyledComponents } from "../components";
+import { StyledComponents, OrderBreakout } from "../components";
 
 const Wrapper = styled.div`
 `;
@@ -24,28 +24,6 @@ const FormInput = styled.input.attrs((props) => ({
 }))`
 `
 
-const CartList = styled.ul.attrs(props => ({
-}))`
-
-list-style-type: none;
-margin: 30px;
-& > li {
-    font-size: 24px;
-}
-
-& .cart-list-details {
-    font-size: 12px;
-    list-style-type: none;
-}
-`
-const CartListItem = props => (<li class="cart-list-item">
-        {props.item.name}
-        <ul class="cart-list-details">
-            <li class="cart-list-detail">Price: ${props.item.price}</li>
-            <li class="cart-list-detail">Qty: {props.item.qty}</li>
-        </ul>
-    </li>)
-
 const FormInputField = (props) => (<FormGroup>
     <label for={props.input.id}>{props.label_text}</label>
     <FormInput {...props.input}/>
@@ -55,7 +33,8 @@ class Checkout extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cart_items: [{name: "Test Item", price: "1.25", qty: 1}],
+            cart_items: [{_id: "321", name: "Test Item", price: "1.25", qty: 1},
+                         {_id: "123", name: "Test Item2", price: "2.75", qty: 1}],
             street_address: undefined,
             city: undefined,
             state_code: undefined,
@@ -80,10 +59,9 @@ class Checkout extends Component {
 
     render() {
         const {cart_items} = this.state;
-        const CartBreakout = cart_items.map(item => <CartListItem item={item}></CartListItem>)
 
         return <Wrapper>
-            <CartList>{CartBreakout}</CartList>
+            <OrderBreakout items = {cart_items} />
             <FormWrapper onSubmit={this.submit}>
                 <FormInputField {...{
                     label_text: "Street Address & Apt. Number",

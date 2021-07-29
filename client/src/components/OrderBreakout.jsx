@@ -40,6 +40,8 @@ class OrderBreakout extends Component {
     render() {
         const {items} = this.state;
         const breakout = items.map(item => <BreakoutListItem item={item}></BreakoutListItem>)
-        return <Wrapper>{breakout}</Wrapper>;
+        return <Wrapper><BreakoutList>{breakout}</BreakoutList></Wrapper>;
     }
 }
+
+export default OrderBreakout;

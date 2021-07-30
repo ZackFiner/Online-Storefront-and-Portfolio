@@ -10,6 +10,7 @@ import ImageSlide from './ImageSlide';
 import StyledComponents from './StyledComponents'
 import PayPalGateway from './PayPalGateway';
 import OrderBreakout from './OrderBreakout';
+import CartAddButton from './CartButton';
 
 
-export { StyledComponents, Links, OrderBreakout, PayPalGateway, NavBar, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };
+export { StyledComponents, Links, OrderBreakout, CartAddButton, PayPalGateway, NavBar, ItemFrame, ReviewView, MultiImageInput, ImageSelector, AuthorizedRoute, ItemSearchBar, ImageSlide };

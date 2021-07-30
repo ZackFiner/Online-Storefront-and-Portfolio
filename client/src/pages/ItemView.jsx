@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import {ReviewView, ImageSlide, PayPalGateway} from '../components'
+import {ReviewView, ImageSlide, PayPalGateway, CartAddButton} from '../components'
 
 import {connect} from 'react-redux'
 import {isMemberofRole} from '../authorization'
@@ -107,6 +107,7 @@ class ItemView extends Component {
                 <ItemDetailsArea>
                     <h3>Price: {price_text}</h3>
                     <h4>Keywords: {keywords ? keywords.join(', ') : ''}</h4>
+                    <CartAddButton item={{id, name, price, thumbnail_img}}/>
                 </ItemDetailsArea>
                 </RowWrapper>
                 {reviewArea}

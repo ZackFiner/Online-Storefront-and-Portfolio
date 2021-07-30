@@ -34,7 +34,7 @@ class CartAddButton extends Component {
     }
 
     render() {
-        return <Button onclick={this.onClick}>Add to Cart</Button>
+        return <Button onClick={this.onClick}>Add to Cart</Button>
     }
 }
 /*

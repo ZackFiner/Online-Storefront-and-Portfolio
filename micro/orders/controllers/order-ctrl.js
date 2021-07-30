@@ -84,6 +84,7 @@ postOrder = async (req, res) => {
             });
         }
 /*
+        // The code below changes inventory record to reflect sale
         await runner.manager.update(Item, 
             inventory_records.map(item=>{
                 return item.id;

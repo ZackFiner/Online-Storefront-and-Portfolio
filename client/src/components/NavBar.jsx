@@ -5,6 +5,9 @@ import Links from './Links';
 import LoginIndicator from './LoginIndicator';
 import LogoSVG from '../logo3small.svg';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
+
 const Collapse = styled.div.attrs({
     className: 'collapse navbar-collapse',
 })``
@@ -146,6 +149,7 @@ class NavBar extends Component {
                     <Collapse>
                     </Collapse>
                     <LoginIndicator/>
+                    <Link to="/cart"><FontAwesomeIcon icon={faShoppingCart} color="lightgray" size="2x"/></Link>
                 </Nav>,
                 <Sidebar>
                     <ul>

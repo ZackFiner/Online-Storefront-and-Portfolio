@@ -9,5 +9,6 @@ import {PostEditor, ImagePost} from './CreatePost';
 import BlogPage from './Blog';
 import LandingPage from './Landing';
 import Checkout from './Checkout';
+import Cart from './Cart';
 
-export {BlogPage, PostEditor, Checkout, ImagePost, LandingPage, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};
+export {BlogPage, PostEditor, Cart, Checkout, ImagePost, LandingPage, ItemList, ItemUpdate, StoreFront, ItemView, CreateReview, CreateAccountPage, LoginPage};

@@ -23,7 +23,10 @@
     "redux-thunk": "^2.3.0",
     "styled-components": "5.1.1",
     "tinymce": "^5.8.1",
-    "@paypal/react-paypal-js": "^7.0.0"
+    "@paypal/react-paypal-js": "^7.0.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14"
   },
   "scripts": {
     "start": "set PORT=8000 && react-scripts start",

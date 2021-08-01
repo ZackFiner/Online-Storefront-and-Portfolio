@@ -55,7 +55,17 @@ class Cart extends Component {
 
     render() {
         const cartItemRows = this.state.items.map(item => {return <CartItem item={item} removeCallback={this.removeItem(item)}/>});
-        return <Wrapper><CartTable><tr><th>Name</th><th>Price</th><th>Quantity</th><th></th></tr>{cartItemRows}</CartTable></Wrapper>
+        return (<Wrapper>
+            <CartTable>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th></th>
+                </tr>
+                {cartItemRows}
+            </CartTable>
+        </Wrapper>);
     }
 }
 

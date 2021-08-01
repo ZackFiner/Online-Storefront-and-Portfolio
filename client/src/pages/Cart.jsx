@@ -3,9 +3,33 @@ import styled from 'styled-components';
 import {connect} from 'react-redux';
 import {removeItemFromCart} from '../redux/actions/cartAct';
 
+const Wrapper = styled.div`
+`;
+
+const CartTable = styled.table.attrs(props => ({
+    ...props,
+    className: 'table'
+}))`
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+`;
+
+const Button = styled.button.attrs(props => ({
+    ...props,
+    className: 'btn btn-danger'
+}))`
+
+`
+
 const CartItem = (props) => {
     const {name, price, qty} =  props.item;
-    return <tr><td>{name}</td><td>${price["$numberDecimal"]}</td><td>{1}</td><td><button onClick={props.removeCallback}>Remove</button></td></tr>
+    return (<tr>
+        <td>{name}</td>
+        <td>${price["$numberDecimal"]}</td>
+        <td>{1}</td>
+        <td><Button onClick={props.removeCallback}>X</Button></td>
+    </tr>);
 }
 
 class Cart extends Component {
@@ -31,7 +55,7 @@ class Cart extends Component {
 
     render() {
         const cartItemRows = this.state.items.map(item => {return <CartItem item={item} removeCallback={this.removeItem(item)}/>});
-        return <table><tr><th>Name</th><th>Price</th><th>Quantity</th></tr>{cartItemRows}</table>
+        return <Wrapper><CartTable><tr><th>Name</th><th>Price</th><th>Quantity</th><th></th></tr>{cartItemRows}</CartTable></Wrapper>
     }
 }
 

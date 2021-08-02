@@ -15,12 +15,17 @@ const CartTable = styled.table.attrs(props => ({
     margin-right: 10%;
 `;
 
-const Button = styled.button.attrs(props => ({
+const DeleteButton = styled.button.attrs(props => ({
     ...props,
     className: 'btn btn-danger'
 }))`
 
 `
+
+const CheckoutButton = styled.button.attrs(props => ({
+    ...props,
+    className: 'btn'
+}))``;
 
 const CartItem = (props) => {
     const {name, price, qty} =  props.item;
@@ -28,7 +33,7 @@ const CartItem = (props) => {
         <td>{name}</td>
         <td>${price["$numberDecimal"]}</td>
         <td>{1}</td>
-        <td><Button onClick={props.removeCallback}>X</Button></td>
+        <td><DeleteButton onClick={props.removeCallback}>X</DeleteButton></td>
     </tr>);
 }
 
@@ -65,6 +70,7 @@ class Cart extends Component {
                 </tr>
                 {cartItemRows}
             </CartTable>
+            <CheckoutButton>Checkout</CheckoutButton>
         </Wrapper>);
     }
 }

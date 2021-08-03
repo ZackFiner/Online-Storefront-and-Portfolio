@@ -149,7 +149,7 @@ class NavBar extends Component {
                     <Collapse>
                     </Collapse>
                     <LoginIndicator/>
-                    <Link to="/cart"><FontAwesomeIcon icon={faShoppingCart} color="lightgray" size="2x"/></Link>
+                    <Link to="/storefront/cart"><FontAwesomeIcon icon={faShoppingCart} color="lightgray" size="2x"/></Link>
                 </Nav>,
                 <Sidebar>
                     <ul>

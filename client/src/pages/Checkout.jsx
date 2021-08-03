@@ -33,8 +33,8 @@ class Checkout extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            cart_items: [{_id: "321", name: "Test Item", price: "1.25", qty: 1},
-                         {_id: "123", name: "Test Item2", price: "2.75", qty: 1}],
+            cart_items: this.props.cartItems,/*[{_id: "321", name: "Test Item", price: "1.25", qty: 1},
+                         {_id: "123", name: "Test Item2", price: "2.75", qty: 1}],*/
             street_address: undefined,
             city: undefined,
             state_code: undefined,
@@ -59,7 +59,8 @@ class Checkout extends Component {
 
     render() {
         const {cart_items} = this.state;
-
+        if (cart_items.length < 1)
+            return <Wrapper><h1>No Items Selected</h1></Wrapper>
         return <Wrapper>
             <OrderBreakout items = {cart_items} />
             <FormWrapper onSubmit={this.submit}>
@@ -111,10 +112,11 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => {
-    const payload = state.accountRedu;
+    const {accountRedu, cartRedu} = state;
     return {
-        userdata: payload.userdata,
-        loggedin: payload.loggedin
+        userdata: accountRedu.userdata,
+        loggedin: accountRedu.loggedin,
+        cartItems: cartRedu.cartItems
     };
 }
 

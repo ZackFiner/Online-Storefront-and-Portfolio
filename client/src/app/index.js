@@ -33,7 +33,7 @@ function App() {
         <Route path="/items/view/:id" exact component={ItemView} />
         <AuthorizedRoute path="/items/view/:id/review" exact component={CreateReview} roles={['ROLE_ADMIN']} />
         <Route path="/storefront" exact component={StoreFront} />
-        <Route path="/cart" exact component={Cart} />
+        <Route path="/storefront/cart" exact component={Cart} />
         <Route path="/blog" exact component={BlogPage} />
         <AuthorizedRoute path="/frontpage/post" exact component={PostEditor} roles={['ROLE_ADMIN']} />
         <AuthorizedRoute path="/frontpage/post/:id" exact component={PostEditor} roles={['ROLE_ADMIN']} />

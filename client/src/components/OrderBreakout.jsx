@@ -24,7 +24,7 @@ margin: 30px;
 const BreakoutListItem = props => (<li class="cart-list-item">
         {props.item.name}
         <ul class="cart-list-details">
-            <li class="cart-list-detail">Price: ${props.item.price}</li>
+            <li class="cart-list-detail">Price: ${props.item.price["$numberDecimal"]}</li>
             <li class="cart-list-detail">Qty: {props.item.qty}</li>
         </ul>
     </li>)

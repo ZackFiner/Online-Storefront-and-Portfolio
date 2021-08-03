@@ -4,15 +4,16 @@ import {connect} from 'react-redux';
 import {removeItemFromCart} from '../redux/actions/cartAct';
 
 const Wrapper = styled.div`
+
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
 `;
 
 const CartTable = styled.table.attrs(props => ({
     ...props,
     className: 'table'
 }))`
-    width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
 `;
 
 const DeleteButton = styled.button.attrs(props => ({
@@ -22,9 +23,9 @@ const DeleteButton = styled.button.attrs(props => ({
 
 `
 
-const CheckoutButton = styled.button.attrs(props => ({
+const CheckoutButton = styled.a.attrs(props => ({
     ...props,
-    className: 'btn'
+    className: 'btn btn-primary'
 }))``;
 
 const CartItem = (props) => {
@@ -59,18 +60,18 @@ class Cart extends Component {
     }
 
     render() {
-        const cartItemRows = this.state.items.map(item => {return <CartItem item={item} removeCallback={this.removeItem(item)}/>});
+        const cartItemRows = this.state.items.map(item => {return <CartItem item={{...item, qty: 1}} removeCallback={this.removeItem(item)}/>});
         return (<Wrapper>
+            <h1>Cart</h1>
             <CartTable>
                 <tr>
                     <th>Name</th>
                     <th>Price</th>
                     <th>Quantity</th>
-                    <th></th>
                 </tr>
                 {cartItemRows}
             </CartTable>
-            <CheckoutButton>Checkout</CheckoutButton>
+            <CheckoutButton href="/storefront/checkout">Checkout</CheckoutButton>
         </Wrapper>);
     }
 }

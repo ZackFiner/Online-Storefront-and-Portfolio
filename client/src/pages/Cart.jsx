@@ -32,7 +32,7 @@ const CartItem = (props) => {
     return (<tr>
         <td>{name}</td>
         <td>${price["$numberDecimal"]}</td>
-        <td>{1}</td>
+        <td>{qty}</td>
         <td><DeleteButton onClick={props.removeCallback}>X</DeleteButton></td>
     </tr>);
 }

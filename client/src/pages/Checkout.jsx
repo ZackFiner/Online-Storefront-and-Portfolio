@@ -35,22 +35,47 @@ class Checkout extends Component {
         this.state = {
             cart_items: this.props.cartItems,/*[{_id: "321", name: "Test Item", price: "1.25", qty: 1},
                          {_id: "123", name: "Test Item2", price: "2.75", qty: 1}],*/
-            street_address: undefined,
-            city: undefined,
-            state_code: undefined,
-            zip: undefined,
+            shipping: {
+                street_address: undefined,
+                city: undefined,
+                state_code: undefined,
+                zip: undefined,
+            },
+            error_messages: {/* Field Input errors go here */}
         }
     }
 
     updateField = async (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
+        const field = event.target.name.split(".");
+        this.setState( field.length > 1 ? {
+            [field[0]]: {
+                ...this.state[field[0]],
+                [field[1]]: event.target.value
+            }
+        } : {
+            [field[0]]: event.target.value
+        }, () => {
+            console.log(this.state);
         });
     } 
 
     submit = async (event) => {
         event.preventDefault();
         // TODO: make sure data is valid, and proceed to paypal checkout
+        const {cart_items, street_address, city, state_code, zip} = this.state;
+        const {userdata: {_id}} = this.props; 
+
+
+        /*api.postOrder(_id, {
+            address: {
+                street_address,
+                city,
+                state_code,
+                zip
+            },
+            items: [...cart_items],
+            payment: {}
+        });*/
     }
 
     componentDidMount = async () => {
@@ -64,47 +89,50 @@ class Checkout extends Component {
         return <Wrapper>
             <OrderBreakout items = {cart_items} />
             <FormWrapper onSubmit={this.submit}>
-                <FormInputField {...{
-                    label_text: "Street Address & Apt. Number",
-                    input: {
-                        id: "inp-checkout-street-address",
-                        type: "text",
-                        placeholder: "Ex: 2401 Jones Blvd., Building A, Apartment 3",
-                        name: "street_address",
-                        onChnage: this.updateField
-                    }
-                }}/>
-                <FormInputField {...{
-                    label_text: "City",
-                    input: {
-                        id: "inp-checkout-city",
-                        type: "text",
-                        placeholder: "Ex: New York",
-                        name: "city",
-                        onChnage: this.updateField
-                    }
-                }}/>
-                <FormInputField {...{
-                    label_text: "State Code",
-                    input: {
-                        id: "inp-checkout-state-code",
-                        type: "text",
-                        placeholder: "Ex: NY",
-                        name: "state_code",
-                        maxlength: 2,
-                        onChnage: this.updateField
-                    }
-                }}/>
-                <FormInputField {...{
-                    label_text: "Zip Code",
-                    input: {
-                        id: "inp-checkout-zip-code",
-                        type: "text",
-                        placeholder: "Ex: 45017",
-                        name: "zip",
-                        onChnage: this.updateField
-                    }
-                }}/>
+                <FormGroup>
+                    <h2>Shipping Information</h2>
+                    <FormInputField {...{
+                        label_text: "Street Address & Apt. Number",
+                        input: {
+                            id: "inp-checkout-street-address",
+                            type: "text",
+                            placeholder: "Ex: 2401 Jones Blvd., Building A, Apartment 3",
+                            name: "shipping.street_address",
+                            onChange: this.updateField
+                        }
+                    }}/>
+                    <FormInputField {...{
+                        label_text: "City",
+                        input: {
+                            id: "inp-checkout-city",
+                            type: "text",
+                            placeholder: "Ex: New York",
+                            name: "shipping.city",
+                            onChange: this.updateField
+                        }
+                    }}/>
+                    <FormInputField {...{
+                        label_text: "State Code",
+                        input: {
+                            id: "inp-checkout-state-code",
+                            type: "text",
+                            placeholder: "Ex: NY",
+                            name: "shipping.state_code",
+                            maxlength: 2,
+                            onChange: this.updateField
+                        }
+                    }}/>
+                    <FormInputField {...{
+                        label_text: "Zip Code",
+                        input: {
+                            id: "inp-checkout-zip-code",
+                            type: "text",
+                            placeholder: "Ex: 45017",
+                            name: "shipping.zip",
+                            onChange: this.updateField
+                        }
+                    }}/>
+                </FormGroup>
                 <StyledComponents.Submit value="Finish Checkout with Paypal"/>
             </FormWrapper>
         </Wrapper>;

@@ -69,7 +69,14 @@ class PayPalSingleton {
                             }
                         }
                     },
-                    items: [
+                    items: order_info.items.map(item => ({
+                        quantity: item.quantity,
+                        name: item.name,
+                        unit_amount: {
+                            value: item.price,
+                            currency_code: 'USD'
+                        }
+                    }))/*[
                         {
                             quantity: order_info.items[0].quantity,
                             name: order_info.items[0].name,
@@ -78,7 +85,8 @@ class PayPalSingleton {
                                 currency_code: 'USD'
                             }
                         }
-                    ]
+                    ]*/
+                    
                 }
             ],
         }, {

@@ -27,6 +27,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
     const runner = getConnection().createQueryRunner();
     let address_id = undefined;    
     let inventory_record = undefined;
+    let cost = undefined;
 
     await runner.connect();
     await runner.startTransaction();
@@ -56,16 +57,24 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
             });
             address_id = result.identifiers[0].id;
         }
-
         inventory_records = await runner.manager
                 .createQueryBuilder()
                 .select("item")
                 .from(Item, "item")
                 .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
-                .where("item.item_desc_id IN (:...desc_id) AND item.qty > 0", {desc_id: item_ids})
+                .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
                 .getMany();
+        
+        cost = await runner.manager
+                .createQueryBuilder()
+                .select("SUM(price)", "cost")
+                .from(Item, "item")
+                .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
+                .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
+                .getRawOne();
+        cost = cost.cost;
 
-        if (!inventory_record) {
+        if (!inventory_records) {
             // terminate the transaction, this item doesn't exist
             await runner.rollbackTransaction();
             await runner.release();
@@ -93,10 +102,9 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
                 qty: item.qty-1
             };})
         )*/
-        
+        // NOTE: there is an issue here, the insertion is not adding our order items to the connections table.
         const result = await runner.manager.insert(Order, {
             user_id : userdata._id,
-            item_id : inventory_record.id,
             address_id : address_id,
             status : "PENDING",
             items : inventory_records
@@ -113,10 +121,11 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
         });
     }
     // send event to payments API with the price of the item and the payment info
+    // TODO: you need to sum the prices in sql using SUM, DON'T do it in JS as SQL has fixed point arithmitic working
     payments.postPayment({...payment, 
-        item_price: inventory_records.reduce((acc, cur) => {return acc + cur.price.price}), 
+        item_price: cost, 
         order_info:{
-            items: inventory_records.map(item => {return {name: item.item_name, quantity: 1, price: item.price.price}})
+            items: inventory_records.map(item => {return {id: item.id, name: item.item_name, quantity: 1, price: item.price.price}})
     }}, {userdata:userdata})
     .then(async (value) => {
         const {id, paypal_order_id} = value.data.data;

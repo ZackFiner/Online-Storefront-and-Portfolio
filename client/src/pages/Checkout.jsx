@@ -133,6 +133,7 @@ class Checkout extends Component {
                         }
                     }}/>
                 </FormGroup>
+                <PayPalGateway order_info={{items: this.state.cart_items, address: this.state.shipping}}/>
                 <StyledComponents.Submit value="Finish Checkout with Paypal"/>
             </FormWrapper>
         </Wrapper>;

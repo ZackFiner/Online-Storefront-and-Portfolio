@@ -37,6 +37,7 @@ module.exports = new EntitySchema({
         orders: {
             type: 'many-to-many',
             target: 'Order',
+            inverseSide: "items"
         }
     }
 })

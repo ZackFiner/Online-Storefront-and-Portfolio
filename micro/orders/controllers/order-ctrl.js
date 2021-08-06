@@ -102,15 +102,21 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
                 qty: item.qty-1
             };})
         )*/
-        // NOTE: there is an issue here, the insertion is not adding our order items to the connections table.
-        const result = await runner.manager.insert(Order, {
+
+        const result = await runner.manager.getRepository(Order).save({
             user_id : userdata._id,
             address_id : address_id,
             status : "PENDING",
-            items : inventory_records
-        });
-
-        order_id = result.identifiers[0].id;
+            items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
+        }); // YOU MUST USE .SAVE TO CORRECTLY USE THE ORM RELATIONS SYSTEM
+        /*const result = await runner.manager.insert(Order, {
+            user_id : userdata._id,
+            address_id : address_id,
+            status : "PENDING",
+            items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
+        });*/
+        console.log(inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered}));
+        order_id = result.id;
     } catch(err) {
         await runner.rollbackTransaction();
         await runner.release();

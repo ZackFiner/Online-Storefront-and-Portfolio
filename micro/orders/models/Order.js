@@ -52,9 +52,18 @@ module.exports = new EntitySchema({
     },
     relations: {
         items: {
+            name: "items",
             type: 'many-to-many',
             target: 'Item',
-            joinTable: true,
+            joinTable: {
+                name: "order_items",
+                joinColumn: "ordersId",
+                inverseJoinColumn: {
+                    name: "itemsId"
+                }
+            },
+            cascade: true,
+            inverseSide: "Order"
         }
     }
 })

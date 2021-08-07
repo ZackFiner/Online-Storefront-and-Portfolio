@@ -72,6 +72,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
                 .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
                 .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
                 .getRawOne();
+        // this should be combined
         cost = cost.cost;
 
         if (!inventory_records) {

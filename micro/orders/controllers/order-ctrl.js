@@ -110,12 +110,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
             status : "PENDING",
             items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
         }); // YOU MUST USE .SAVE TO CORRECTLY USE THE ORM RELATIONS SYSTEM
-        /*const result = await runner.manager.insert(Order, {
-            user_id : userdata._id,
-            address_id : address_id,
-            status : "PENDING",
-            items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
-        });*/
+
         console.log(inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered}));
         order_id = result.id;
     } catch(err) {

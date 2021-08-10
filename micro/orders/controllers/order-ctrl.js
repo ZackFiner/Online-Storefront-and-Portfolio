@@ -111,7 +111,6 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
             items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
         }); // YOU MUST USE .SAVE TO CORRECTLY USE THE ORM RELATIONS SYSTEM
 
-        console.log(inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered}));
         order_id = result.id;
     } catch(err) {
         await runner.rollbackTransaction();

@@ -1,7 +1,7 @@
 const {getConnection} = require("typeorm");
 const {Item, ItemPrice, Order, Address} = require('../models');
 const {payments} = require('../req');
-
+const {retrieveOrCreateAddress} = require('./util');
 postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, WHAT ARE YOU DOING?!
     const body = req.body;
     const userdata = req.authdata ? req.authdata.userdata : undefined; // from jwt token
@@ -32,7 +32,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
     await runner.connect();
     await runner.startTransaction();
     try {
-        if (address.id) {
+        /*if (address.id) {
             const r_address = await runner.manager.createQueryBuilder()
                                 .select("address")
                                 .from(Address, "address")
@@ -56,7 +56,11 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
                 zip : address.zip,
             });
             address_id = result.identifiers[0].id;
-        }
+        }*/
+        
+        const r_address = await retrieveOrCreateAddress(runner, userdata, address);
+        address_id = r_address.id;
+
         inventory_records = await runner.manager
                 .createQueryBuilder()
                 .select("item")

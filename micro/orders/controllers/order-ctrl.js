@@ -22,11 +22,10 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
         });
 
     const item_ids = items.map(item => {return item._id});
-    let order_id = undefined;
 
     const runner = getConnection().createQueryRunner();
-    let address_id = undefined;    
-    let inventory_record = undefined;
+    let order_id = undefined;
+    let address_id = undefined;
     let cost = undefined;
 
     await runner.connect();

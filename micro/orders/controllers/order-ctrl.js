@@ -91,9 +91,9 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
         if (inventory_records.length < item_ids.length) {
             await runner.rollbackTransaction();
             await runner.release();
-            return res.status(200).json({
+            return res.status(400).json({
                 success: false,
-                message: "Not all items are in stock"
+                message: "Requested Items are out of stock"
             });
         }
 /*

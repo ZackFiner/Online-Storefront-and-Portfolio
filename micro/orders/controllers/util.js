@@ -1,7 +1,7 @@
 const {getConnection} = require('typeorm');
 const {Item, ItemPrice, Order, Address} = require('../models');
 
-const retrieveOrCreateAddress = async (queryrunner, userdata, addressdata) => {
+retrieveOrCreateAddress = async (queryrunner, userdata, addressdata) => {
     const {id, street_address, city, state_code, zip} = addressdata;
 
     if (id) {
@@ -26,4 +26,26 @@ const retrieveOrCreateAddress = async (queryrunner, userdata, addressdata) => {
     }
 }
 
-module.exports = {retrieveOrCreateAddress};
+getItemRecords = async (queryrunner, item_ids) => {
+    return await queryrunner.manager
+    .createQueryBuilder()
+    .select("item")
+    .from(Item, "item")
+    .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
+    .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
+    .getMany();
+}
+
+getOrderCost = async (queryrunner, item_ids) => {
+    const rawcost = await queryrunner.manager
+    .createQueryBuilder()
+    .select("SUM(price)", "cost")
+    .from(Item, "item")
+    .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
+    .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
+    .getRawOne();
+    
+    return rawcost.cost;
+}
+
+module.exports = {retrieveOrCreateAddress, getItemRecords, getOrderCost};

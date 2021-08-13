@@ -1,7 +1,8 @@
 const {getConnection} = require("typeorm");
 const {Item, ItemPrice, Order, Address} = require('../models');
 const {payments} = require('../req');
-const {retrieveOrCreateAddress} = require('./util');
+const {retrieveOrCreateAddress, getItemRecords, getOrderCost} = require('./util');
+
 postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, WHAT ARE YOU DOING?!
     const body = req.body;
     const userdata = req.authdata ? req.authdata.userdata : undefined; // from jwt token
@@ -60,23 +61,10 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
         const r_address = await retrieveOrCreateAddress(runner, userdata, address);
         address_id = r_address.id;
 
-        inventory_records = await runner.manager
-                .createQueryBuilder()
-                .select("item")
-                .from(Item, "item")
-                .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
-                .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
-                .getMany();
-        
-        cost = await runner.manager
-                .createQueryBuilder()
-                .select("SUM(price)", "cost")
-                .from(Item, "item")
-                .leftJoinAndMapOne("item.price", ItemPrice, "price", "price.id = item.id")
-                .where("item.item_desc_id IN (:...ids) AND item.qty > 0", {ids: item_ids})
-                .getRawOne();
-        // this should be combined
-        cost = cost.cost;
+        // TODO: we should be a bit more clever, and combine these queries
+        inventory_records = await getItemRecords(runner, item_ids);
+        cost = await getOrderCost(runner, item_ids);
+
 
         if (!inventory_records) {
             // terminate the transaction, this item doesn't exist

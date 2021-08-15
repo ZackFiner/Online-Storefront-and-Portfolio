@@ -32,31 +32,6 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
     await runner.connect();
     await runner.startTransaction();
     try {
-        /*if (address.id) {
-            const r_address = await runner.manager.createQueryBuilder()
-                                .select("address")
-                                .from(Address, "address")
-                                .where("address.id = :adr_id", {adr_id: address.id})
-                                .getOne();
-            
-            if (address) {
-                address_id = r_address.id;
-            } else {
-                return res.status(400).json({
-                    success: false,
-                    error: "Invalid address information provided"
-                })
-            }
-        } else {
-            const result = await runner.manager.insert(Address, {
-                user_id : userdata._id,
-                street_address : address.street_address,
-                city : address.city,
-                state_code : address.state_code,
-                zip : address.zip,
-            });
-            address_id = result.identifiers[0].id;
-        }*/
         
         const r_address = await retrieveOrCreateAddress(runner, userdata, address);
         address_id = r_address.id;

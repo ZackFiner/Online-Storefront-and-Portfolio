@@ -122,6 +122,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
     })
 }
 
+// TODO: update these
 getOrders = async (req, res) => {
     const {user_id} = req.params;
     const userdata = req.authdata ? req.authdata.userdata : undefined;

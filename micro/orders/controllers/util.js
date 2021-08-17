@@ -1,5 +1,4 @@
-const {getConnection} = require('typeorm');
-const {Item, ItemPrice, Order, Address} = require('../models');
+const {Item, ItemPrice, Address} = require('../models');
 
 retrieveOrCreateAddress = async (queryrunner, userdata, addressdata) => {
     const {id, street_address, city, state_code, zip} = addressdata;

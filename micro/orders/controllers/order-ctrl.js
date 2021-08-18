@@ -75,7 +75,7 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
             address_id : address_id,
             status : "PENDING",
             items : inventory_records.map(item => {const filtered = {...item}; delete filtered.price; return filtered})
-        }); // YOU MUST USE .SAVE TO CORRECTLY USE THE ORM RELATIONS SYSTEM
+        });
 
         order_id = result.id;
     } catch(err) {

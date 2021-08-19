@@ -99,8 +99,8 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
         await runner.manager.update(Order, order_id, {
             payment_id: id
         });
-        await runner.commitTransaction(); // commit the transaction
-        await runner.release(); // release the query runner
+        await runner.commitTransaction();
+        await runner.release();
 
         return res.status(201).json({
             success: true,

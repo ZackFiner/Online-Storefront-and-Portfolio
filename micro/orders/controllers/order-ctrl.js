@@ -6,7 +6,7 @@ const {retrieveOrCreateAddress, getItemRecords, getOrderCost} = require('./util'
 postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, WHAT ARE YOU DOING?!
     const body = req.body;
     const userdata = req.authdata ? req.authdata.userdata : undefined; // from jwt token
-    //const userdata = {_id: req.params.user_id};
+
     if (!body || !userdata) {
         return res.status(400).json({
             success: false,

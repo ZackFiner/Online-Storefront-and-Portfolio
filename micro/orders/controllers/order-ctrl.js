@@ -3,7 +3,7 @@ const {Item, ItemPrice, Order, Address} = require('../models');
 const {payments} = require('../req');
 const {retrieveOrCreateAddress, getItemRecords, getOrderCost} = require('./util');
 
-postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, WHAT ARE YOU DOING?!
+postOrder = async (req, res) => {
     const body = req.body;
     const userdata = req.authdata ? req.authdata.userdata : undefined; // from jwt token
 
@@ -109,7 +109,6 @@ postOrder = async (req, res) => { // TODO: BREAK THIS THING APART INTO HELPERS, 
                 paypal_order_id: paypal_order_id
             }
         });
-
     })
     .catch(async (error) => {
         await runner.rollbackTransaction();

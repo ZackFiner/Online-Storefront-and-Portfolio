@@ -109,6 +109,19 @@ class PayPalSingleton {
             }
         })
     }
+
+    static async captureOrder(order_id, payer_id) {
+        if (!api_auth || (Date.now() - api_auth_refresh.getTime()) > TOKEN_REFRESH)
+            await this.initAuth();
+
+        return paypal_api_ax.post(`/v2/checkout/orders/${order_id}/capture`, {
+        }, {
+            headers: {
+                Authorization: `Bearer ${api_auth.data.access_token}`,
+                "PayPal-Request-Id": uuidv4()
+            }
+        })
+    }
 }
 
 module.exports = {PayPalSingleton}

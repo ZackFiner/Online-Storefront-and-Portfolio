@@ -108,13 +108,14 @@ const executePayment = async (req, res) => {
             throw new Error("No Payment with the specified id was found");
         }
 
-        const paypal_req_result = await PayPal.PayPalSingleton.authorizeOrder(order_id, payer_id);
+        const paypal_req_result = await PayPal.PayPalSingleton.captureOrder(order_id, payer_id);
+
         if (paypal_req_result.data.status != 'COMPLETED')
         {
             throw new Error("Failed to authorize payment")
         }
-        const authorization_id = paypal_req_result.data.payments.authorizations[0].id;
-        
+        const authorization_id = paypal_req_result.data.purchase_units[0].payments.captures[0].id;
+        //console.log(paypal_req_result.data.purchase_units[0].payments);
         const update_result = await runner.manager.update(Payment, payment.id, {
             paypal_authorization_id: authorization_id,
             status: "APPROVED"
@@ -136,6 +137,9 @@ const executePayment = async (req, res) => {
 
     } catch (err) {
         console.log(err);
+        /*
+        console.log("----ERROR DETAILS----");
+        console.log(err.response.data.details);*/
         await runner.rollbackTransaction();
         await runner.release();
 

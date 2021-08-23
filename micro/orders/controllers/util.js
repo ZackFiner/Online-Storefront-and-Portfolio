@@ -11,7 +11,7 @@ retrieveOrCreateAddress = async (queryrunner, userdata, addressdata) => {
                                 .getOne();
         return r_address;
     } else {
-        const result = await runner.manager.insert(Address, {
+        const result = await queryrunner.manager.insert(Address, {
             user_id : userdata._id,
             street_address : street_address,
             city : city,

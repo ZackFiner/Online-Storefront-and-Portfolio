@@ -137,9 +137,8 @@ const executePayment = async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        /*
         console.log("----ERROR DETAILS----");
-        console.log(err.response.data.details);*/
+        console.log(err.response.data.details);
         await runner.rollbackTransaction();
         await runner.release();
 
